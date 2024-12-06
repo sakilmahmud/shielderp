@@ -1,0 +1,220 @@
+.big-badge {
+	font-size: 1.5em; /* Adjust the size as needed */
+	padding: 0.3em 0.6em; /* Adjust padding as needed */
+}
+.ap-calendar {
+	display: flex;
+	flex-wrap: wrap;
+	max-width: 100%;
+	margin: 0 auto;
+	font-size: 16px;
+}
+.months {
+	display: flex;
+	flex-wrap: wrap;
+	max-width: 100%;
+	margin: 0 auto;
+	font-size: 16px;
+}
+
+.month {
+	width: 100px;
+	height: 50px;
+	font-weight: bold;
+	text-align: center;
+	margin: 10px 10px 0 5px;
+	padding: 10px;
+}
+
+.day {
+	width: 55px;
+	margin: 5px;
+	text-align: center;
+	cursor: pointer;
+	border: 1px solid #ccc;
+	padding: 5px;
+}
+
+.time-select {
+	margin-top: 10px;
+}
+
+.day.selected {
+	background-color: #007bff;
+	color: white;
+}
+
+select {
+	width: 100%;
+	padding: 5px;
+}
+/* January */
+.january {
+	background-color: #f2f5a9; /* Light Yellow */
+	color: #333; /* Dark Gray Text Color */
+}
+
+/* February */
+.february {
+	background-color: #f5a9a9; /* Light Red */
+	color: #333; /* Dark Gray Text Color */
+}
+
+/* March */
+.march {
+	background-color: #a9f5f2; /* Light Blue */
+	color: #333; /* Dark Gray Text Color */
+}
+
+/* April */
+.april {
+	background-color: #f5d0a9; /* Light Orange */
+	color: #333; /* Dark Gray Text Color */
+}
+
+/* May */
+.may {
+	background-color: #d0f5a9; /* Light Green */
+	color: #333; /* Dark Gray Text Color */
+}
+
+/* June */
+.june {
+	background-color: #a9bcf5; /* Light Purple */
+	color: #333; /* Dark Gray Text Color */
+}
+
+/* July */
+.july {
+	background-color: #f5a9bc; /* Light Pink */
+	color: #333; /* Dark Gray Text Color */
+}
+
+/* August */
+.august {
+	background-color: #f2f5a9; /* Light Yellow */
+	color: #333; /* Dark Gray Text Color */
+}
+
+/* September */
+.september {
+	background-color: #f5a9a9; /* Light Red */
+	color: #333; /* Dark Gray Text Color */
+}
+
+/* October */
+.october {
+	background-color: #a9f5f2; /* Light Blue */
+	color: #333; /* Dark Gray Text Color */
+}
+
+/* November */
+.november {
+	background-color: #f5d0a9; /* Light Orange */
+	color: #333; /* Dark Gray Text Color */
+}
+
+/* December */
+.december {
+	background-color: #d0f5a9; /* Light Green */
+	color: #333; /* Dark Gray Text Color */
+}
+.ap-calendar .day.selected {
+	background-color: #007bff; /* Blue background color for selected date */
+	color: #fff; /* White text color for selected date */
+	font-weight: bold; /* Bold text for selected date */
+}
+
+.doc_banner {
+	position: relative;
+}
+.appointmentDetails {
+	position: absolute;
+	top: 4px;
+	left: 10px;
+	color: #fff;
+	font-size: 20px;
+	background-color: rgba(7, 173, 110, 0.5);
+	padding: 5px 15px;
+	border-radius: 10px;
+}
+
+/* Media query for responsiveness */
+@media (max-width: 768px) {
+	.appointmentDetails {
+		font-size: 10px;
+		background-color: rgba(18, 23, 21, 0.5);
+		padding: 3px 5px;
+		border-radius: 5px;
+	}
+}
+
+.gap-3 {
+	gap: 20px;
+}
+
+.mt-4 {
+	margin-top: 1.9rem !important;
+}
+
+.chosen-container {
+	width: 100% !important;
+}
+
+div.chosen-container-multi ul,
+div.chosen-container-single {
+	min-height: 38px;
+	border-radius: 5px;
+	box-shadow: none;
+}
+
+div.chosen-container-multi ul li {
+	line-height: 36px;
+}
+
+div.chosen-container-single a {
+	line-height: 36px !important;
+	min-height: 38px;
+}
+
+.chosen-container-single .chosen-single div {
+	top: 7px !important;
+}
+
+div.chosen-container-multi.error ul {
+	border: 1px solid #f00 !important;
+}
+
+div.chosen-container-single.error {
+	border: 1px solid #f00 !important;
+}
+
+.chosen-container-multi .chosen-choices li.search-choice {
+	margin: 7px 5px 3px 0;
+}
+
+.product-list-container {
+	max-height: 300px;
+	overflow-y: auto;
+	border: 1px solid #ddd;
+	padding: 10px;
+	border-radius: 4px;
+}
+
+.product-list {
+	list-style-type: none;
+	padding-left: 0;
+	margin: 0;
+}
+
+.product-list li {
+	background: #f4f4f4;
+	margin: 5px 0;
+	padding: 5px 10px;
+	border-radius: 4px;
+	border: 1px solid #ddd;
+}
+
+.product-list li:hover {
+	background: #e4e4e4;
+}
