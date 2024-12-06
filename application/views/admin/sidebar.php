@@ -17,7 +17,7 @@
             <p>Dashboard</p>
           </a>
         </li>
-        <!-- <li class="nav-item <?php if ($activePage === 'tasks' || $activePage === 'clients' || $activePage === 'doers') echo 'menu-open'; ?>">
+        <li class="nav-item <?php if ($activePage === 'tasks' || $activePage === 'clients' || $activePage === 'doers') echo 'menu-open'; ?>">
           <a href="#" class="nav-link <?php if ($activePage === 'tasks' || $activePage === 'clients' || $activePage === 'doers') echo 'active'; ?>">
             <i class="nav-icon fas fa-file-invoice"></i>
             <p>Tasks <i class="fas fa-angle-left right"></i></p>
@@ -42,7 +42,7 @@
               </a>
             </li>
           </ul>
-        </li> -->
+        </li>
 
         <li class="nav-item <?php if ($activePage === 'invoices' || $activePage === 'customers') echo 'menu-open'; ?>">
           <a href="#" class="nav-link <?php if ($activePage === 'invoices' || $activePage === 'customers') echo 'active'; ?>">
@@ -86,18 +86,12 @@
           </ul>
         </li>
 
-        <li class="nav-item <?php if ($activePage === 'stocks' || $activePage === 'products' || $activePage === 'categories' || $activePage === 'brands' || $activePage === 'product_types') echo 'menu-open'; ?>">
-          <a href="#" class="nav-link <?php if ($activePage === 'stocks' || $activePage === 'products' || $activePage === 'categories' || $activePage === 'brands' || $activePage === 'product_types') echo 'active'; ?>">
+        <li class="nav-item <?php if ($activePage === 'products' || $activePage === 'categories' || $activePage === 'brands' || $activePage === 'product_types') echo 'menu-open'; ?>">
+          <a href="#" class="nav-link <?php if ($activePage === 'products' || $activePage === 'categories' || $activePage === 'brands' || $activePage === 'product_types') echo 'active'; ?>">
             <i class="nav-icon fas fa-boxes"></i>
-            <p>Stocks <i class="fas fa-angle-left right"></i></p>
+            <p>Products <i class="fas fa-angle-left right"></i></p>
           </a>
           <ul class="nav nav-treeview">
-            <li class="nav-item">
-              <a href="<?php echo base_url('admin/stocks'); ?>" class="nav-link <?php if ($activePage === 'stocks') echo 'active'; ?>">
-                <i class="nav-icon fas fa-warehouse"></i>
-                <p>Stock Management</p>
-              </a>
-            </li>
             <li class="nav-item">
               <a href="<?php echo base_url('admin/products'); ?>" class="nav-link <?php if ($activePage === 'products') echo 'active'; ?>">
                 <i class="nav-icon fas fa-cubes"></i>
@@ -124,6 +118,23 @@
             </li>
           </ul>
         </li>
+
+        <li class="nav-item <?php if ($activePage === 'stocks') echo 'menu-open'; ?>">
+          <a href="#" class="nav-link <?php if ($activePage === 'stocks') echo 'active'; ?>">
+            <i class="nav-icon fas fa-boxes"></i>
+            <p>Stocks <i class="fas fa-angle-left right"></i></p>
+          </a>
+          <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a href="<?php echo base_url('admin/stocks'); ?>" class="nav-link <?php if ($activePage === 'stocks') echo 'active'; ?>">
+                <i class="nav-icon fas fa-warehouse"></i>
+                <p>Stock Management</p>
+              </a>
+            </li>
+          </ul>
+        </li>
+
+
         <!-- Other Menu Items -->
 
         <li class="nav-item <?php if ($activePage === 'sales_report' || $activePage === 'purchase_report' || $activePage === 'gst_report') echo 'menu-open'; ?>">
