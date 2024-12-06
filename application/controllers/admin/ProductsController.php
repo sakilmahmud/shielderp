@@ -291,4 +291,93 @@ class ProductsController extends CI_Controller
             echo '<p>No products found for this category.</p>';
         }
     }
+
+    public function bulkUpload()
+    {
+        $data['activePage'] = 'products';
+        $this->load->view('admin/header', $data);
+        $this->load->view('admin/products/bulk_upload', $data);
+        $this->load->view('admin/footer');
+    }
+
+    public function processBulkUpload()
+    {
+        $config['upload_path'] = './uploads/csv/';
+        $config['allowed_types'] = 'csv';
+        $config['file_name'] = 'bulk_upload_' . time() . '.csv';
+
+        // Check if the folder exists, if not create it
+        if (!is_dir($config['upload_path'])) {
+            mkdir($config['upload_path'], 0777, true);
+        }
+
+        $this->upload->initialize($config);
+
+        if ($this->upload->do_upload('csv_file')) {
+            $uploadData = $this->upload->data();
+            $filePath = $uploadData['full_path'];
+
+            // Parse CSV
+            $file = fopen($filePath, 'r');
+            $header = fgetcsv($file); // First row is the header
+
+            $products = [];
+            while (($row = fgetcsv($file)) !== false) {
+                $products[] = array_combine($header, $row);
+            }
+            fclose($file);
+
+            // Insert products into the database
+            foreach ($products as $product) {
+                $productName = trim($product['name']);
+                $productSlug = $this->generateUniqueSlug($productName);
+
+                // Check for duplicate product name
+                $existingProduct = $this->ProductModel->get_product_by_name($productName);
+                if ($existingProduct) {
+                    $this->session->set_flashdata('error', "Duplicate product name found: $productName. Skipping.");
+                    continue;
+                }
+
+                $productData = [
+                    'name' => $productName,
+                    'slug' => $productSlug,
+                    'hsn_code' => $product['hsn_code'] ?? '8471', // Default HSN code
+                    'regular_price' => $product['regular_price'] ?? 100,
+                    'sale_price' => $product['sale_price'] ?? 90,
+                    'category_id' => $product['category_id'],
+                    'brand_id' => $product['brand_id'],
+                    'product_type_id' => 1
+                ];
+                $this->ProductModel->insert_product($productData);
+            }
+
+            $this->session->set_flashdata('message', 'Products uploaded successfully.');
+            redirect('admin/products');
+        } else {
+            $this->session->set_flashdata('error', $this->upload->display_errors());
+            redirect('admin/products/bulk-upload');
+        }
+    }
+
+    /**
+     * Generate a unique slug for the product name.
+     *
+     * @param string $productName
+     * @return string
+     */
+    private function generateUniqueSlug($productName)
+    {
+        $slug = url_title($productName, '-', true); // Convert product name to a URL-friendly slug
+        $originalSlug = $slug;
+        $counter = 1;
+
+        // Check if the slug already exists in the database
+        while ($this->ProductModel->check_duplicate_slug($slug)) {
+            $slug = $originalSlug . '-' . $counter;
+            $counter++;
+        }
+
+        return $slug;
+    }
 }

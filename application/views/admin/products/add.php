@@ -6,6 +6,7 @@
                     <h2><?php echo ($isUpdate) ? "Edit " : "Add " ?>Product</h2>
                 </div>
                 <div class="col-sm-6 text-right">
+                    <a href="<?php echo base_url('admin/products/bulk-upload'); ?>" class="btn btn-info">Bulk Upload</a>
                     <a href="<?php echo base_url('admin/products'); ?>" class="btn btn-primary">All Products</a>
                 </div>
             </div>

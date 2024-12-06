@@ -69,6 +69,9 @@ $route['admin/products/search'] = 'admin/ProductsController/search';
 $route['admin/products/get_last_price'] = 'admin/ProductsController/get_last_price';
 $route['admin/products/getProductsByCategory'] = 'admin/ProductsController/getProductsByCategory';
 
+$route['admin/products/bulk-upload'] = 'admin/ProductsController/bulkUpload';
+$route['admin/products/process-bulk-upload'] = 'admin/ProductsController/processBulkUpload';
+
 
 $route['admin/stocks'] = 'admin/StockManagementController/index';
 $route['admin/stocks/add']                  = 'admin/StockManagementController/add';

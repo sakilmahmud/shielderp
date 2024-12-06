@@ -190,4 +190,18 @@ class ProductModel extends CI_Model
 
         return $query->result_array();  // Return the result set as an array
     }
+
+    public function check_duplicate_slug($slug)
+    {
+        $this->db->where('slug', $slug);
+        $query = $this->db->get('products');
+        return $query->num_rows() > 0;
+    }
+
+    public function get_product_by_name($productName)
+    {
+        $this->db->where('name', $productName);
+        $query = $this->db->get('products');
+        return $query->row();
+    }
 }
