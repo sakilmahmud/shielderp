@@ -17,6 +17,31 @@
             <p>Dashboard</p>
           </a>
         </li>
+        <li class="nav-item <?php if ($activePage === 'dtp' || $activePage === 'dtp_categories') echo 'menu-open'; ?>">
+          <a href="#" class="nav-link <?php if ($activePage === 'dtp' || $activePage === 'dtp_categories') echo 'active'; ?>">
+            <i class="nav-icon fas fa-file-invoice"></i>
+            <p>
+              DTP Services
+              <i class="fas fa-angle-left right"></i>
+            </p>
+          </a>
+          <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a href="<?php echo base_url('admin/dtp'); ?>" class="nav-link <?php if ($activePage === 'dtp') echo 'active'; ?>">
+                <i class="nav-icon fas fa-calendar-alt"></i>
+                <p>All DTP Services</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="<?php echo base_url('admin/dtp/categories'); ?>" class="nav-link <?php if ($activePage === 'dtp_categories') echo 'active'; ?>">
+                <i class="nav-icon fas fa-tags"></i>
+                <p>DTP Categories</p>
+              </a>
+            </li>
+          </ul>
+        </li>
+
+
         <li class="nav-item <?php if ($activePage === 'tasks' || $activePage === 'clients' || $activePage === 'doers') echo 'menu-open'; ?>">
           <a href="#" class="nav-link <?php if ($activePage === 'tasks' || $activePage === 'clients' || $activePage === 'doers') echo 'active'; ?>">
             <i class="nav-icon fas fa-file-invoice"></i>

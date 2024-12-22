@@ -35,7 +35,19 @@ $route['admin/settings/bank_details'] = 'AdminController/bankDetails';
 $route['admin/password'] = 'AdminController/passwordChange';
 $route['admin/password/update'] = 'AdminController/updatePassword';
 
-/** Admin Routes */
+/** DTP Routes */
+$route['admin/dtp'] = 'admin/DtpController/index';
+$route['admin/dtp/add'] = 'admin/DtpController/add';
+$route['admin/dtp/edit/(:num)'] = 'admin/DtpController/edit/$1';
+$route['admin/dtp/delete/(:num)'] = 'admin/DtpController/delete/$1';
+$route['admin/dtp/get_log_data/(:num)'] = 'admin/DtpController/get_log_data/$1';
+/** DTP Categories */
+$route['admin/dtp/categories'] = 'admin/DtpController/categories';
+$route['admin/dtp/categories/add'] = 'admin/DtpController/addCategory';
+$route['admin/dtp/categories/edit/(:num)'] = 'admin/DtpController/editCategory/$1';
+$route['admin/dtp/categories/delete/(:num)'] = 'admin/DtpController/deleteCategory/$1';
+
+/** Categories */
 $route['admin/categories'] = 'admin/CategoriesController/index';
 $route['admin/categories/add'] = 'admin/CategoriesController/add';
 $route['admin/categories/add-ajax'] = 'admin/CategoriesController/addAjax';

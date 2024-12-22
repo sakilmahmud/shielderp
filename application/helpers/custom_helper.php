@@ -285,3 +285,23 @@ function get_product_types()
 
     return $parent_categories;
 }
+
+if (!function_exists('add_log_data')) {
+    /**
+     * Add log data to the specified table.
+     * 
+     * @param string $table_name Name of the log table (e.g., 'log_dtp_services' or 'log_dtp_service_categories').
+     * @param array $data Log data containing 'log_data', 'action', 'made_by_id', and 'made_by_name'.
+     */
+    function add_log_data($table_name, $data)
+    {
+        $CI = &get_instance();
+        $CI->db->insert($table_name, [
+            'log_data' => json_encode($data['log_data']),
+            'action' => $data['action'],
+            'made_by_id' => $data['made_by_id'],
+            'made_by_name' => $data['made_by_name'],
+            'created_at' => date('Y-m-d H:i:s'),
+        ]);
+    }
+}

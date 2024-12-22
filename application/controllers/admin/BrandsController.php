@@ -10,7 +10,7 @@ class BrandsController extends CI_Controller
         $this->load->model('BrandModel');
         $this->load->library('form_validation');
 
-        if (!$this->session->userdata('username')) {
+        if (!$this->session->userdata('user_id')) {
             redirect('login');
         }
     }

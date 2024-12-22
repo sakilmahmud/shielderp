@@ -60,6 +60,7 @@ class AuthController extends CI_Controller
                 $user_id = $user['id'];
                 $this->session->set_userdata('user_id', $user_id);
                 $this->session->set_userdata('username', $user['username']);
+                $this->session->set_userdata('full_name', $user['full_name']);
                 $this->session->set_userdata('role', $user['user_role']);
 
                 $remember = $this->input->post('remember') ? true : false;

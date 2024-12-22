@@ -15,7 +15,7 @@ class InvoiceController extends CI_Controller
         $this->load->model('TransactionModel');
         $this->load->library('form_validation');
 
-        if (!$this->session->userdata('username')) {
+        if (!$this->session->userdata('user_id')) {
             redirect('login');
         }
     }
