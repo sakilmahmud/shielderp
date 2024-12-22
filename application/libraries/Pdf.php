@@ -14,6 +14,9 @@ class Pdf
 
         $options = new Options();
         $options->set('defaultFont', 'DejaVu Sans');
+        $options->set('isHtml5ParserEnabled', true);
+        $options->set('isPhpEnabled', true);
+        $options->set('isRemoteEnabled', true);
         $this->dompdf = new Dompdf($options);
     }
 

@@ -26,6 +26,7 @@ class DtpController extends CI_Controller
         $this->load->view('admin/footer');
     }
 
+
     public function add()
     {
         $data['activePage'] = 'dtp';
@@ -58,6 +59,7 @@ class DtpController extends CI_Controller
 
             // Append the service ID to the log data
             $logData = [
+                'dtp_service_id' => $serviceId,
                 'log_data' => json_encode(array_merge(['id' => $serviceId], $saveData)),
                 'action' => 1, // 1 = Add
                 'made_by_id' => $this->session->userdata('user_id'),
@@ -106,6 +108,7 @@ class DtpController extends CI_Controller
 
             // Append the service ID to the log data
             $logData = [
+                'dtp_service_id' => $id,
                 'log_data' => json_encode(array_merge(['id' => $id], $updateData)), // Include 'id' in log_data
                 'action' => 2, // 2 = Edit
                 'made_by_id' => $this->session->userdata('user_id'),
@@ -132,6 +135,7 @@ class DtpController extends CI_Controller
 
         // Prepare log data
         $logData = [
+            'dtp_service_id' => $id,
             'log_data' => json_encode($service), // Log the deleted service details
             'action' => 3, // 3 = Delete
             'made_by_id' => $this->session->userdata('user_id'),
@@ -180,6 +184,7 @@ class DtpController extends CI_Controller
 
             // Prepare log data
             $logData = [
+                'service_cat_id' => $categoryId,
                 'log_data' => json_encode(array_merge(['id' => $categoryId], $saveData)),
                 'action' => 1, // 1 = Add
                 'made_by_id' => $this->session->userdata('user_id'),
@@ -218,6 +223,7 @@ class DtpController extends CI_Controller
 
             // Append the service ID to the log data
             $logData = [
+                'service_cat_id' => $id,
                 'log_data' => json_encode(array_merge(['id' => $id], $updateData)), // Include 'id' in log_data
                 'action' => 2, // 2 = Edit
                 'made_by_id' => $this->session->userdata('user_id'),
@@ -243,6 +249,7 @@ class DtpController extends CI_Controller
 
         // Prepare log data
         $logData = [
+            'service_cat_id' => $id,
             'log_data' => json_encode($category), // Log the deleted category details
             'action' => 3, // 3 = Delete
             'made_by_id' => $this->session->userdata('user_id'),

@@ -419,7 +419,7 @@ class InvoiceController extends CI_Controller
             show_404();
         }
         $data['invoice'] = $invoice;
-
+        $data['biller']['logo']     = base_url(getSetting('frontend_logo'));
         $data['biller']['name']     = getSetting('site_title');
         $data['biller']['address']  = getSetting('company_address');
         $data['biller']['contact']  = getSetting('company_contact');
@@ -435,8 +435,11 @@ class InvoiceController extends CI_Controller
         $invoice_details = $this->InvoiceModel->get_invoice_details($invoice_id);
         $data['invoice_details'] = $invoice_details;
 
-        $html = $this->load->view('admin/invoices/print', $data, true);
+        $data['transactions'] = $this->InvoiceModel->get_invoice_transactions($invoice_id);
 
+        $html = $this->load->view('admin/invoices/print', $data, true);
+        /* echo $html;
+        die; */
         // Load the PDF library
         $this->load->library('pdf');
         $this->pdf->loadHtml($html);
