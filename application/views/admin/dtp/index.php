@@ -24,6 +24,48 @@
                             <?php echo $this->session->flashdata('message'); ?>
                         </div>
                     <?php endif; ?>
+                    <div class="card_header">
+                        <form method="get" action="<?php echo base_url('admin/dtp'); ?>">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <label for="from_date">From Date</label>
+                                    <input type="date" class="form-control" id="from_date" name="from_date" value="<?php echo $this->input->get('from_date', true) ?: date('Y-m-d'); ?>">
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="to_date">To Date</label>
+                                    <input type="date" class="form-control" id="to_date" name="to_date" value="<?php echo $this->input->get('to_date', true) ?: date('Y-m-d'); ?>">
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="created_by">Created By</label>
+                                    <select class="form-control" id="created_by" name="created_by">
+                                        <option value="">All</option>
+                                        <?php foreach ($users as $user): ?>
+                                            <option value="<?php echo $user['id']; ?>" <?php echo ($this->input->get('created_by') == $user['id']) ? 'selected' : ''; ?>>
+                                                <?php echo $user['full_name']; ?>
+                                            </option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="category">Category</label>
+                                    <select class="form-control" id="category" name="category">
+                                        <option value="">All</option>
+                                        <?php foreach ($categories as $category): ?>
+                                            <option value="<?php echo $category['id']; ?>" <?php echo ($this->input->get('category') == $category['id']) ? 'selected' : ''; ?>>
+                                                <?php echo $category['cat_title']; ?>
+                                            </option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row mt-3">
+                                <div class="col-md-12 text-right">
+                                    <button type="submit" class="btn btn-primary">Filter</button>
+                                    <a href="<?php echo base_url('admin/dtp'); ?>" class="btn btn-secondary">Reset</a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
                     <table id="commonTable" class="table table-bordered table-striped">
                         <thead>
                             <tr>
@@ -52,8 +94,8 @@
                                             echo !empty($category) ? current($category)['cat_title'] : 'Unknown';
                                             ?>
                                         </td>
-                                        <td><?php echo number_format($service['service_charge'], 2); ?></td>
-                                        <td><?php echo number_format($service['paid_amount'], 2); ?></td>
+                                        <td>₹<?php echo number_format($service['service_charge'], 2); ?></td>
+                                        <td>₹<?php echo number_format($service['paid_amount'], 2); ?></td>
                                         <td>
                                             <?php
                                             $status = ['Due', 'Full Paid', 'Partial'];
@@ -61,9 +103,15 @@
                                             ?>
                                         </td>
                                         <td><?php echo date('d-m-Y', strtotime($service['service_date'])); ?></td>
-                                        <td><?php echo $service['created_by']; ?></td>
                                         <td>
-
+                                            <?php
+                                            $user = array_filter($users, function ($user_name) use ($service) {
+                                                return $user_name['id'] === $service['created_by'];
+                                            });
+                                            echo !empty($user) ? current($user)['full_name'] : 'Unknown';
+                                            ?>
+                                        </td>
+                                        <td>
                                             <a href="<?php echo base_url('admin/dtp/edit/' . $service['id']); ?>" class="btn btn-warning btn-sm">Edit</a>
                                             <?php if ($this->session->userdata('role') == 1) : ?>
                                                 <a href="<?php echo base_url('admin/dtp/delete/' . $service['id']); ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this service?');">Delete</a>
@@ -78,7 +126,16 @@
                                 </tr>
                             <?php endif; ?>
                         </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="3"><strong>Total</strong></td>
+                                <td><strong>₹<?php echo number_format($total_service_charge, 2); ?></strong></td>
+                                <td><strong>₹<?php echo number_format($total_paid_amount, 2); ?></strong></td>
+                                <td colspan="4"></td>
+                            </tr>
+                        </tfoot>
                     </table>
+
                 </div>
             </div>
         </div>

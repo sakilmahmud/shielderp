@@ -7,6 +7,7 @@ class DtpController extends CI_Controller
     public function __construct()
     {
         parent::__construct();
+        $this->load->model('UserModel');
         $this->load->model('DtpModel');
         $this->load->library('form_validation');
 
@@ -18,13 +19,39 @@ class DtpController extends CI_Controller
     public function index()
     {
         $data['activePage'] = 'dtp';
-        $data['dtp_services'] = $this->DtpModel->all();
+
+        // Get filter inputs
+        $from_date = $this->input->get('from_date', true);
+        $to_date = $this->input->get('to_date', true);
+        $created_by = $this->input->get('created_by', true);
+        $category_id = $this->input->get('category', true);
+
+        // Default to today's data
+        if (empty($from_date)) {
+            $from_date = date('Y-m-d');
+        }
+        if (empty($to_date)) {
+            $to_date = date('Y-m-d');
+        }
+
+        // Fetch filtered data
+        $dtp_services = $this->DtpModel->getFilteredData($from_date, $to_date, $created_by, $category_id);
+        $data['dtp_services'] = $dtp_services;
+
+        // Calculate totals
+        $data['total_service_charge'] = array_sum(array_column($dtp_services, 'service_charge'));
+        $data['total_paid_amount'] = array_sum(array_column($dtp_services, 'paid_amount'));
+
+        // Get all categories and users for filters
         $data['categories'] = $this->DtpModel->getCategories();
+        $data['users'] = $this->UserModel->getUsers(array(1, 2)); // Assuming this method exists to fetch users
 
         $this->load->view('admin/header', $data);
         $this->load->view('admin/dtp/index', $data);
         $this->load->view('admin/footer');
     }
+
+
 
 
     public function add()

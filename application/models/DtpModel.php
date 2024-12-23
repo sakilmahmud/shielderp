@@ -37,6 +37,28 @@ class DtpModel extends CI_Model
         return $this->db->get('dtp_services')->result_array();
     }
 
+    public function getFilteredData($from_date, $to_date, $created_by, $category_id)
+    {
+        $this->db->select('*');
+        $this->db->from('dtp_services');
+        $this->db->where('DATE(service_date) >=', $from_date);
+        $this->db->where('DATE(service_date) <=', $to_date);
+
+        if (!empty($created_by)) {
+            $this->db->where('created_by', $created_by);
+        }
+        if (!empty($category_id)) {
+            $this->db->where('dtp_service_category_id', $category_id);
+        }
+
+        // Multiple order by conditions
+        $this->db->order_by('service_date', 'DESC'); // Primary sorting
+        $this->db->order_by('id', 'DESC'); // Secondary sorting (e.g., for tie-breaking)
+
+        return $this->db->get()->result_array();
+    }
+
+
     public function saveService($data)
     {
         $this->db->insert('dtp_services', $data);

@@ -87,28 +87,42 @@ class UserModel extends CI_Model
 
 
 
-    public function getUsers($role_id = "", $added_by = "")
+    public function getUsers($role_id = null, $added_by = null)
     {
-        /** user roles 
-            1 = Super Admin
-            2 = Admin
-            3 = Doer
-            4 = Client
-        user roles */
+        /**
+         * User roles:
+         * 1 = Super Admin
+         * 2 = Admin
+         * 3 = Doer
+         * 4 = Client
+         */
+
         // Fetch the users from the database
         $this->db->select('*');
         $this->db->from('users');
-        if ($role_id != "") {
-            $this->db->where('user_role', $role_id);
+
+        // Apply role filter: handle single role or multiple roles
+        if (!is_null($role_id)) {
+            if (is_array($role_id)) {
+                $this->db->where_in('user_role', $role_id); // Multiple roles
+            } else {
+                $this->db->where('user_role', $role_id); // Single role
+            }
         }
-        if ($added_by != "") {
+
+        // Apply added_by filter if provided
+        if (!is_null($added_by)) {
             $this->db->where('added_by', $added_by);
         }
-        // Add ORDER BY clause to sort by booking date in descending order
+
+        // Order by descending ID by default
         $this->db->order_by('id', 'desc');
+
+        // Execute the query and return the results
         $query = $this->db->get();
         return $query->result_array();
     }
+
 
     public function getUserByUsernameOrMobileOrEmail($usernameOrMobileOrEmail)
     {
