@@ -34,7 +34,16 @@
                                     <select class="form-control" id="dtp_service_categories" name="dtp_service_categories">
                                         <option value="">Select Category</option>
                                         <?php foreach ($categories as $category) : ?>
-                                            <option value="<?php echo $category['id']; ?>" <?php echo set_select('dtp_service_categories', $category['id'], (isset($service['dtp_service_category_id']) && $service['dtp_service_category_id'] == $category['id'])); ?>>
+                                            <option value="<?php echo $category['id']; ?>"
+                                                <?php
+                                                echo set_select(
+                                                    'dtp_service_categories',
+                                                    $category['id'],
+                                                    isset($service['dtp_service_category_id'])
+                                                        ? $service['dtp_service_category_id'] == $category['id']
+                                                        : $category['id'] == 1 // Default to category with ID 1
+                                                );
+                                                ?>>
                                                 <?php echo $category['cat_title']; ?>
                                             </option>
                                         <?php endforeach; ?>
@@ -48,9 +57,27 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="paid_status">Paid Status</label><br>
-                                    <label><input type="radio" name="paid_status" value="1" <?php echo set_radio('paid_status', '1', (isset($service['paid_status']) && $service['paid_status'] == 1)); ?>> Full Paid</label>
-                                    <label><input type="radio" name="paid_status" value="2" <?php echo set_radio('paid_status', '2', (isset($service['paid_status']) && $service['paid_status'] == 2)); ?>> Partial</label>
-                                    <label><input type="radio" name="paid_status" value="0" <?php echo set_radio('paid_status', '0', (isset($service['paid_status']) && $service['paid_status'] == 0)); ?>> Due</label>
+                                    <label>
+                                        <input type="radio" name="paid_status" value="1"
+                                            <?php echo set_radio('paid_status', '1', isset($service['paid_status'])
+                                                ? $service['paid_status'] == 1
+                                                : true); // Default to "Full Paid"
+                                            ?>> Full Paid
+                                    </label>
+                                    <label>
+                                        <input type="radio" name="paid_status" value="2"
+                                            <?php echo set_radio('paid_status', '2', isset($service['paid_status'])
+                                                ? $service['paid_status'] == 2
+                                                : false);
+                                            ?>> Partial
+                                    </label>
+                                    <label>
+                                        <input type="radio" name="paid_status" value="0"
+                                            <?php echo set_radio('paid_status', '0', isset($service['paid_status'])
+                                                ? $service['paid_status'] == 0
+                                                : false);
+                                            ?>> Due
+                                    </label>
                                     <?php echo form_error('paid_status'); ?>
                                 </div>
                                 <div class="form-group">
@@ -67,3 +94,9 @@
         </div>
     </section>
 </div>
+<script>
+    // Set focus to the Service Description field on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('service_descriptions').focus();
+    });
+</script>
