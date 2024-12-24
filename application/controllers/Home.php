@@ -25,9 +25,9 @@ class Home extends CI_Controller
 
         // Fetch all categories
         $data['categories'] = $this->CategoryModel->get_all_categories();
-        //$this->load->view('inc/header', $data);
+        $this->load->view('inc/header', $data);
         $this->load->view('home', $data);
-        //$this->load->view('inc/footer', $data);
+        $this->load->view('inc/footer', $data);
     }
 
     public function contact()
@@ -231,6 +231,27 @@ class Home extends CI_Controller
         // Load the view
         $this->load->view('inc/header', $data);
         $this->load->view('products', $data);
+        $this->load->view('inc/footer', $data);
+    }
+
+    public function terms()
+    {
+        $data['title'] = "Nandon :: Term & Conditions";
+        $data['meta_descriptions'] = "Nandon.com";
+        $data['canonical_url'] = base_url('terms');
+
+        $this->load->view('inc/header', $data);
+        $this->load->view('terms', $data);
+        $this->load->view('inc/footer', $data);
+    }
+    public function privacy()
+    {
+        $data['title'] = "Nandon :: Privacy & Policy";
+        $data['meta_descriptions'] = "Nandon.com";
+        $data['canonical_url'] = base_url('privacy');
+
+        $this->load->view('inc/header', $data);
+        $this->load->view('privacy', $data);
         $this->load->view('inc/footer', $data);
     }
 }
