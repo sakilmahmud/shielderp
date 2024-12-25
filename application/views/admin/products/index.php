@@ -3,6 +3,10 @@
         color: red;
         font-weight: bold;
     }
+
+    tbody td p {
+        margin-bottom: 0 !important;
+    }
 </style>
 <div class="content-wrapper">
     <section class="content-header">
@@ -85,11 +89,12 @@
                                                 <td><a href="<?php echo base_url('products/' . $endpoint); ?>" target="_blank"><?php echo $product['name']; ?></a></td>
                                                 <td><?php echo $product['category_name']; ?></td>
                                                 <td>
-                                                    <?php echo ($product['sale_price'] > 0)
-                                                        ? '<del>₹' . number_format($product['regular_price'], 2) . '</del> <span class="sale-price">₹' . number_format($product['sale_price'], 2) . '</span>'
-                                                        : '₹' . number_format($product['regular_price'], 2); ?>
+                                                    <p>MRP: ₹<?php echo number_format($product['regular_price'], 2); ?></p>
+                                                    <p>Sale: ₹<?php echo number_format($product['sale_price'], 2); ?></p>
+                                                    <p>Purchase: <span class="purchase-price" style="display: none;">₹<?php echo number_format($product['purchase_price'], 2); ?></span>
+                                                        <a href="javascript:void(0);" class="show_pp" data-purchase-price="₹<?php echo number_format($product['purchase_price'], 2); ?>">Show</a>
+                                                    </p>
                                                 </td>
-
 
                                                 <td>
                                                     Total Purchased: <?php echo $total_quantity; ?><br>
@@ -114,3 +119,12 @@
         </div>
     </section>
 </div>
+<script>
+    $(document).ready(function() {
+        $('.show_pp').on('click', function() {
+            const purchasePrice = $(this).data('purchase-price');
+            $(this).siblings('.purchase-price').text(purchasePrice).show(); // Show the purchase price
+            $(this).hide(); // Hide the "Show" link
+        });
+    });
+</script>
