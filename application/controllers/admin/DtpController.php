@@ -25,6 +25,7 @@ class DtpController extends CI_Controller
         $to_date = $this->input->get('to_date', true);
         $created_by = $this->input->get('created_by', true);
         $category_id = $this->input->get('category', true);
+        $paid_status = $this->input->get('paid_status', true); // New filter for Paid Status
 
         // Default to today's data
         if (empty($from_date)) {
@@ -35,7 +36,7 @@ class DtpController extends CI_Controller
         }
 
         // Fetch filtered data
-        $dtp_services = $this->DtpModel->getFilteredData($from_date, $to_date, $created_by, $category_id);
+        $dtp_services = $this->DtpModel->getFilteredData($from_date, $to_date, $created_by, $category_id, $paid_status);
         $data['dtp_services'] = $dtp_services;
 
         // Calculate totals
@@ -50,8 +51,6 @@ class DtpController extends CI_Controller
         $this->load->view('admin/dtp/index', $data);
         $this->load->view('admin/footer');
     }
-
-
 
 
     public function add()
@@ -71,12 +70,20 @@ class DtpController extends CI_Controller
             $this->load->view('admin/footer');
         } else {
             $postData = $this->input->post();
+            $partial_paid = $postData['partial_paid'];
+            if ($postData['paid_status'] == 2) {
+                $paid_amount = $partial_paid;
+            } elseif ($postData['paid_status'] == 0) {
+                $paid_amount = 0;
+            } else {
+                $paid_amount = $postData['service_charge'];
+            }
             $saveData = [
                 'service_descriptions' => $postData['service_descriptions'],
                 'dtp_service_category_id' => $postData['dtp_service_categories'],
                 'service_charge' => $postData['service_charge'],
                 'paid_status' => $postData['paid_status'],
-                'paid_amount' => ($postData['paid_status'] == 2) ? $postData['paid_amount'] : $postData['service_charge'],
+                'paid_amount' => $paid_amount,
                 'service_date' => $postData['service_date'],
                 'created_by' => $this->session->userdata('user_id') // Use authenticated user ID
             ];

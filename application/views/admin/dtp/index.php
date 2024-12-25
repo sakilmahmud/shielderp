@@ -26,16 +26,16 @@
                     <?php endif; ?>
                     <div class="card_header">
                         <form method="get" action="<?php echo base_url('admin/dtp'); ?>">
-                            <div class="row">
-                                <div class="col-md-3">
+                            <div class="row mb-3">
+                                <div class="col-md-2">
                                     <label for="from_date">From Date</label>
                                     <input type="date" class="form-control" id="from_date" name="from_date" value="<?php echo $this->input->get('from_date', true) ?: date('Y-m-d'); ?>">
                                 </div>
-                                <div class="col-md-3">
+                                <div class="col-md-2">
                                     <label for="to_date">To Date</label>
                                     <input type="date" class="form-control" id="to_date" name="to_date" value="<?php echo $this->input->get('to_date', true) ?: date('Y-m-d'); ?>">
                                 </div>
-                                <div class="col-md-3">
+                                <div class="col-md-2">
                                     <label for="created_by">Created By</label>
                                     <select class="form-control" id="created_by" name="created_by">
                                         <option value="">All</option>
@@ -46,7 +46,7 @@
                                         <?php endforeach; ?>
                                     </select>
                                 </div>
-                                <div class="col-md-3">
+                                <div class="col-md-2">
                                     <label for="category">Category</label>
                                     <select class="form-control" id="category" name="category">
                                         <option value="">All</option>
@@ -57,9 +57,16 @@
                                         <?php endforeach; ?>
                                     </select>
                                 </div>
-                            </div>
-                            <div class="row mt-3">
-                                <div class="col-md-12 text-right">
+                                <div class="col-md-2">
+                                    <label for="paid_status">Paid Status</label>
+                                    <select class="form-control" id="paid_status" name="paid_status">
+                                        <option value="">All</option>
+                                        <option value="1" <?php echo ($this->input->get('paid_status') == '1') ? 'selected' : ''; ?>>Full Paid</option>
+                                        <option value="2" <?php echo ($this->input->get('paid_status') == '2') ? 'selected' : ''; ?>>Partial</option>
+                                        <option value="0" <?php echo ($this->input->get('paid_status') == '0') ? 'selected' : ''; ?>>Due</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-2 mt-4">
                                     <button type="submit" class="btn btn-primary">Filter</button>
                                     <a href="<?php echo base_url('admin/dtp'); ?>" class="btn btn-secondary">Reset</a>
                                 </div>

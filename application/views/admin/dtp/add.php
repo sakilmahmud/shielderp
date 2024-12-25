@@ -26,7 +26,7 @@
                             <form action="<?php echo $action; ?>" method="post">
                                 <div class="form-group">
                                     <label for="service_descriptions">Service Description</label>
-                                    <input type="text" class="form-control" id="service_descriptions" name="service_descriptions" value="<?php echo set_value('service_descriptions', isset($service['service_descriptions']) ? $service['service_descriptions'] : ''); ?>">
+                                    <input type="text" class="form-control" id="service_descriptions" name="service_descriptions" value="<?php echo set_value('service_descriptions', isset($service['service_descriptions']) ? $service['service_descriptions'] : ''); ?>" required>
                                     <?php echo form_error('service_descriptions'); ?>
                                 </div>
                                 <div class="form-group">
@@ -52,7 +52,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="service_charge">Service Charge</label>
-                                    <input type="number" class="form-control" id="service_charge" name="service_charge" value="<?php echo set_value('service_charge', isset($service['service_charge']) ? $service['service_charge'] : ''); ?>">
+                                    <input type="number" class="form-control" id="service_charge" name="service_charge" value="<?php echo set_value('service_charge', isset($service['service_charge']) ? $service['service_charge'] : ''); ?>" required>
                                     <?php echo form_error('service_charge'); ?>
                                 </div>
                                 <div class="form-group">
@@ -80,6 +80,12 @@
                                     </label>
                                     <?php echo form_error('paid_status'); ?>
                                 </div>
+                                <!-- Hidden input for Partial Paid -->
+                                <div class="form-group" id="partial_paid_container" style="display: none;">
+                                    <label for="partial_paid">Partial Paid Amount</label>
+                                    <input type="number" class="form-control" id="partial_paid" name="partial_paid" value="<?php echo set_value('partial_paid', isset($service['partial_paid']) ? $service['partial_paid'] : ''); ?>">
+                                    <?php echo form_error('partial_paid'); ?>
+                                </div>
                                 <div class="form-group">
                                     <label for="service_date">Service Date</label>
                                     <input type="date" class="form-control" id="service_date" name="service_date" value="<?php echo set_value('service_date', isset($service['service_date']) ? $service['service_date'] : date('Y-m-d')); ?>">
@@ -95,8 +101,22 @@
     </section>
 </div>
 <script>
-    // Set focus to the Service Description field on page load
-    document.addEventListener('DOMContentLoaded', function() {
-        document.getElementById('service_descriptions').focus();
+    $(document).ready(function() {
+        // Set focus to the Service Description field on page load
+        $('#service_descriptions').focus();
+
+        // Show/Hide the Partial Paid input based on Paid Status
+        $('input[name="paid_status"]').change(function() {
+            if ($(this).val() == '2') {
+                $('#partial_paid_container').show();
+                $('#partial_paid').prop('required', true);
+            } else {
+                $('#partial_paid_container').hide();
+                $('#partial_paid').prop('required', false).val('');
+            }
+        });
+
+        // Trigger change event on page load to handle pre-selected Paid Status
+        $('input[name="paid_status"]:checked').trigger('change');
     });
 </script>
