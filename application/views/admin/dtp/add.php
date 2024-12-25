@@ -91,6 +91,25 @@
                                     <input type="date" class="form-control" id="service_date" name="service_date" value="<?php echo set_value('service_date', isset($service['service_date']) ? $service['service_date'] : date('Y-m-d')); ?>">
                                     <?php echo form_error('service_date'); ?>
                                 </div>
+                                <!-- New Payment Mode Field -->
+                                <div class="form-group">
+                                    <label for="payment_mode">Payment Mode</label><br>
+                                    <label>
+                                        <input type="radio" name="payment_mode" value="1"
+                                            <?php echo set_radio('payment_mode', '1', isset($service['payment_mode'])
+                                                ? $service['payment_mode'] == 1
+                                                : true); // Default to "Cash"
+                                            ?>> Cash
+                                    </label>
+                                    <label>
+                                        <input type="radio" name="payment_mode" value="2"
+                                            <?php echo set_radio('payment_mode', '2', isset($service['payment_mode'])
+                                                ? $service['payment_mode'] == 2
+                                                : false);
+                                            ?>> Online
+                                    </label>
+                                    <?php echo form_error('payment_mode'); ?>
+                                </div>
                                 <button type="submit" class="btn btn-primary"><?php echo ($isUpdate) ? "Update" : "Add"; ?></button>
                             </form>
                         </div>

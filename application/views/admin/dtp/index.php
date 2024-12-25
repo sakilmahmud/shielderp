@@ -36,17 +36,6 @@
                                     <input type="date" class="form-control" id="to_date" name="to_date" value="<?php echo $this->input->get('to_date', true) ?: date('Y-m-d'); ?>">
                                 </div>
                                 <div class="col-md-2">
-                                    <label for="created_by">Created By</label>
-                                    <select class="form-control" id="created_by" name="created_by">
-                                        <option value="">All</option>
-                                        <?php foreach ($users as $user): ?>
-                                            <option value="<?php echo $user['id']; ?>" <?php echo ($this->input->get('created_by') == $user['id']) ? 'selected' : ''; ?>>
-                                                <?php echo $user['full_name']; ?>
-                                            </option>
-                                        <?php endforeach; ?>
-                                    </select>
-                                </div>
-                                <div class="col-md-2">
                                     <label for="category">Category</label>
                                     <select class="form-control" id="category" name="category">
                                         <option value="">All</option>
@@ -57,7 +46,7 @@
                                         <?php endforeach; ?>
                                     </select>
                                 </div>
-                                <div class="col-md-2">
+                                <div class="col-md-1">
                                     <label for="paid_status">Paid Status</label>
                                     <select class="form-control" id="paid_status" name="paid_status">
                                         <option value="">All</option>
@@ -66,7 +55,27 @@
                                         <option value="0" <?php echo ($this->input->get('paid_status') == '0') ? 'selected' : ''; ?>>Due</option>
                                     </select>
                                 </div>
-                                <div class="col-md-2 mt-4">
+                                <!-- New Filter for Payment Mode -->
+                                <div class="col-md-1">
+                                    <label for="payment_mode">Payment Mode</label>
+                                    <select class="form-control" id="payment_mode" name="payment_mode">
+                                        <option value="">All</option>
+                                        <option value="1" <?php echo ($this->input->get('payment_mode') == '1') ? 'selected' : ''; ?>>Cash</option>
+                                        <option value="2" <?php echo ($this->input->get('payment_mode') == '2') ? 'selected' : ''; ?>>Online</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-2">
+                                    <label for="created_by">Created By</label>
+                                    <select class="form-control" id="created_by" name="created_by">
+                                        <option value="">All</option>
+                                        <?php foreach ($users as $user): ?>
+                                            <option value="<?php echo $user['id']; ?>" <?php echo ($this->input->get('created_by') == $user['id']) ? 'selected' : ''; ?>>
+                                                <?php echo $user['full_name']; ?>
+                                            </option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+                                <div class="col-md-2 mt-4 text-right">
                                     <button type="submit" class="btn btn-primary">Filter</button>
                                     <a href="<?php echo base_url('admin/dtp'); ?>" class="btn btn-secondary">Reset</a>
                                 </div>
@@ -82,6 +91,7 @@
                                 <th>Service Charge</th>
                                 <th>Paid Amount</th>
                                 <th>Paid Status</th>
+                                <th>Payment Mode</th>
                                 <th>Service Date</th>
                                 <th>Created By</th>
                                 <th>Actions</th>
@@ -107,6 +117,12 @@
                                             <?php
                                             $status = ['Due', 'Full Paid', 'Partial'];
                                             echo $status[$service['paid_status']];
+                                            ?>
+                                        </td>
+                                        <td>
+                                            <?php
+                                            $paymentModes = ['1' => 'Cash', '2' => 'Online'];
+                                            echo isset($paymentModes[$service['payment_mode']]) ? $paymentModes[$service['payment_mode']] : 'Unknown';
                                             ?>
                                         </td>
                                         <td><?php echo date('d-m-Y', strtotime($service['service_date'])); ?></td>
@@ -138,7 +154,7 @@
                                 <td colspan="3"><strong>Total</strong></td>
                                 <td><strong>₹<?php echo number_format($total_service_charge, 2); ?></strong></td>
                                 <td><strong>₹<?php echo number_format($total_paid_amount, 2); ?></strong></td>
-                                <td colspan="4"></td>
+                                <td colspan="5"></td>
                             </tr>
                         </tfoot>
                     </table>

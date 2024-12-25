@@ -37,7 +37,7 @@ class DtpModel extends CI_Model
         return $this->db->get('dtp_services')->result_array();
     }
 
-    public function getFilteredData($from_date, $to_date, $created_by = null, $category_id = null, $paid_status = null)
+    public function getFilteredData($from_date, $to_date, $created_by = null, $category_id = null, $paid_status = null, $payment_mode = null)
     {
         $this->db->select('*');
         $this->db->from('dtp_services');
@@ -52,6 +52,10 @@ class DtpModel extends CI_Model
         }
         if ($paid_status !== null && $paid_status !== '') { // Check for all valid statuses
             $this->db->where('paid_status', $paid_status);
+        }
+
+        if (!is_null($payment_mode) && $payment_mode !== '') { // Add Payment Mode filter
+            $this->db->where('payment_mode', $payment_mode);
         }
 
         // Multiple order by conditions

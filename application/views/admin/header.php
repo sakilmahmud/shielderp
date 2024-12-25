@@ -55,7 +55,7 @@
     }
 
     .table thead th {
-      font-size: 13px;
+      font-size: 12px;
     }
 
     .form-control {
@@ -80,7 +80,7 @@
     }
 
     .table td {
-      font-size: 13px !important;
+      font-size: 12px !important;
     }
 
     sup {

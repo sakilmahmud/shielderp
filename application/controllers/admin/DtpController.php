@@ -25,9 +25,10 @@ class DtpController extends CI_Controller
         $to_date = $this->input->get('to_date', true);
         $created_by = $this->input->get('created_by', true);
         $category_id = $this->input->get('category', true);
-        $paid_status = $this->input->get('paid_status', true); // New filter for Paid Status
+        $paid_status = $this->input->get('paid_status', true); // Existing filter for Paid Status
+        $payment_mode = $this->input->get('payment_mode', true); // New filter for Payment Mode
 
-        // Default to today's data
+        // Default to today's data if no date is selected
         if (empty($from_date)) {
             $from_date = date('Y-m-d');
         }
@@ -36,7 +37,7 @@ class DtpController extends CI_Controller
         }
 
         // Fetch filtered data
-        $dtp_services = $this->DtpModel->getFilteredData($from_date, $to_date, $created_by, $category_id, $paid_status);
+        $dtp_services = $this->DtpModel->getFilteredData($from_date, $to_date, $created_by, $category_id, $paid_status, $payment_mode);
         $data['dtp_services'] = $dtp_services;
 
         // Calculate totals
@@ -53,6 +54,7 @@ class DtpController extends CI_Controller
     }
 
 
+
     public function add()
     {
         $data['activePage'] = 'dtp';
@@ -63,6 +65,7 @@ class DtpController extends CI_Controller
         $this->form_validation->set_rules('dtp_service_categories', 'DTP Service Category', 'required');
         $this->form_validation->set_rules('service_charge', 'Service Charge', 'required|numeric');
         $this->form_validation->set_rules('paid_status', 'Paid Status', 'required');
+        $this->form_validation->set_rules('payment_mode', 'Payment Mode', 'required'); // New validation rule
 
         if ($this->form_validation->run() === FALSE) {
             $this->load->view('admin/header', $data);
@@ -84,6 +87,7 @@ class DtpController extends CI_Controller
                 'service_charge' => $postData['service_charge'],
                 'paid_status' => $postData['paid_status'],
                 'paid_amount' => $paid_amount,
+                'payment_mode' => $postData['payment_mode'], // Save the selected payment mode
                 'service_date' => $postData['service_date'],
                 'created_by' => $this->session->userdata('user_id') // Use authenticated user ID
             ];
