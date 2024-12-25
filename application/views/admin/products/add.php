@@ -40,15 +40,22 @@
                                         <!-- Regular Price Field -->
                                         <div class="form-group">
                                             <label for="regular_price">Regular Price <sup>*</sup></label>
-                                            <input type="text" class="form-control" id="regular_price" name="regular_price" value="<?php echo set_value('regular_price', isset($product['regular_price']) ? $product['regular_price'] : ''); ?>">
+                                            <input type="text" class="form-control" id="regular_price" name="regular_price" value="<?php echo set_value('regular_price', isset($product['regular_price']) ? $product['regular_price'] : ''); ?>" required>
                                             <?php echo form_error('regular_price'); ?>
                                         </div>
 
                                         <!-- Sale Price Field -->
                                         <div class="form-group">
-                                            <label for="sale_price">Sale Price</label>
-                                            <input type="text" class="form-control" id="sale_price" name="sale_price" value="<?php echo set_value('sale_price', isset($product['sale_price']) ? $product['sale_price'] : ''); ?>">
+                                            <label for="sale_price">Sale Price <sup>*</sup></label>
+                                            <input type="text" class="form-control" id="sale_price" name="sale_price" value="<?php echo set_value('sale_price', isset($product['sale_price']) ? $product['sale_price'] : ''); ?>" required>
                                             <?php echo form_error('sale_price'); ?>
+                                        </div>
+
+                                        <!-- Purchase Price Field -->
+                                        <div class="form-group">
+                                            <label for="purchase_price">Purchase Price <sup>*</sup></label>
+                                            <input type="text" class="form-control" id="purchase_price" name="purchase_price" value="<?php echo set_value('purchase_price', isset($product['purchase_price']) ? $product['purchase_price'] : ''); ?>" required>
+                                            <?php echo form_error('purchase_price'); ?>
                                         </div>
                                         <div class="form-group">
                                             <div class="mt-1 d-flex justify-content-between">
@@ -66,7 +73,7 @@
 
                                         <div class="form-group">
                                             <div class="mt-1 d-flex justify-content-between">
-                                                <label for="brand_id">Brand</label>
+                                                <label for="brand_id">Brand <sup>*</sup></label>
                                                 <a href="javascript:void(0)" class="text-sm add_brand">Add Brand</a>
                                             </div>
                                             <select class="form-control brand_id" id="brand_id" name="brand_id">

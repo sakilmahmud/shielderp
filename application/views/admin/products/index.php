@@ -26,6 +26,16 @@
                             <?php if (!empty($error)) : ?>
                                 <div class="alert alert-danger"><?php echo $error; ?></div>
                             <?php endif; ?>
+                            <?php if ($this->session->flashdata('duplicate')) : ?>
+                                <div class="alert alert-warning">
+                                    <?php echo $this->session->flashdata('duplicate'); ?>
+                                </div>
+                            <?php endif; ?>
+                            <?php if ($this->session->flashdata('update')) : ?>
+                                <div class="alert alert-info">
+                                    <?php echo $this->session->flashdata('update'); ?>
+                                </div>
+                            <?php endif; ?>
                             <?php if ($this->session->flashdata('message')) : ?>
                                 <div class="alert alert-success">
                                     <?php echo $this->session->flashdata('message'); ?>
@@ -72,7 +82,7 @@
                                                         <img src="<?php echo base_url('uploads/products/' . $product['featured_image']); ?>" alt="Featured Image" style="max-width: 50px;">
                                                     </div>
                                                 </td>
-                                                <td><a href="<?php echo base_url('product/' . $endpoint); ?>" target="_blank"><?php echo $product['name']; ?></a></td>
+                                                <td><a href="<?php echo base_url('products/' . $endpoint); ?>" target="_blank"><?php echo $product['name']; ?></a></td>
                                                 <td><?php echo $product['category_name']; ?></td>
                                                 <td>
                                                     <?php echo ($product['sale_price'] > 0)

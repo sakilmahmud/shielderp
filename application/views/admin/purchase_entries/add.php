@@ -216,10 +216,10 @@
                         <form id="addProductForm">
                             <div class="form-group">
                                 <div class="mt-1 d-flex justify-content-between">
-                                    <label for="category_id">Category</label>
+                                    <label for="category_id">Category <sup>*</sup></label>
                                     <a href="javascript:void(0)" class="text-sm add_category">Add Category</a>
                                 </div>
-                                <select class="form-control category_id" name="category_id">
+                                <select class="form-control category_id" name="category_id" required>
                                     <option value="">Select Category</option>
                                     <?php foreach ($categories as $category) { ?>
                                         <option value="<?php echo $category['id']; ?>"><?php echo $category['name']; ?></option>
@@ -229,10 +229,10 @@
 
                             <div class="form-group">
                                 <div class="mt-1 d-flex justify-content-between">
-                                    <label for="brand_id">Brand</label>
+                                    <label for="brand_id">Brand <sup>*</sup></label>
                                     <a href="javascript:void(0)" class="text-sm add_brand">Add Brand</a>
                                 </div>
-                                <select class="form-control brand_id" id="brand_id" name="brand_id">
+                                <select class="form-control brand_id" id="brand_id" name="brand_id" required>
                                     <option value="">Select Brand</option>
                                     <?php foreach ($brands as $brand) { ?>
                                         <option value="<?php echo $brand['id']; ?>"><?php echo $brand['brand_name']; ?></option>
@@ -241,9 +241,22 @@
                                 <?php echo form_error('brand_id'); ?>
                             </div>
                             <div class="form-group">
-                                <label for="name">Product Name</label>
-                                <input type="text" class="form-control" id="name" name="name">
+                                <label for="name">Product Name <sup>*</sup></label>
+                                <input type="text" class="form-control" id="name" name="name" required>
                             </div>
+                            <div class="form-group">
+                                <label for="mrp_price">MRP Price <sup>*</sup></label>
+                                <input type="text" class="form-control" id="mrp_price" name="mrp_price" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="sale_price">Sale Price <sup>*</sup></label>
+                                <input type="text" class="form-control" id="sale_price" name="sale_price" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="purchase_price">Purchase Price <sup>*</sup></label>
+                                <input type="text" class="form-control" id="purchase_price" name="purchase_price" required>
+                            </div>
+
                             <div class="form-group">
                                 <label for="description">Description</label>
                                 <textarea class="form-control" id="description" name="description"></textarea>

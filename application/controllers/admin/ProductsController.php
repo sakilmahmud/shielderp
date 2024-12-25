@@ -38,6 +38,32 @@ class ProductsController extends CI_Controller
 
         $this->form_validation->set_rules('name', 'Name', 'required');
         $this->form_validation->set_rules('category_id', 'Category', 'required');
+        $this->form_validation->set_rules('brand_id', 'Brand', 'required');
+
+        // Validation for MRP Price (regular_price)
+        $this->form_validation->set_rules(
+            'regular_price',
+            'Regular Price',
+            'required|numeric|greater_than[0]',
+            ['greater_than' => 'The {field} must be greater than 0.']
+        );
+
+        // Validation for Sale Price
+        $this->form_validation->set_rules(
+            'sale_price',
+            'Sale Price',
+            'required|numeric|greater_than[0]',
+            ['greater_than' => 'The {field} must be greater than 0.']
+        );
+
+        // Validation for Purchase Price
+        $this->form_validation->set_rules(
+            'purchase_price',
+            'Purchase Price',
+            'required|numeric|greater_than[0]',
+            ['greater_than' => 'The {field} must be greater than 0.']
+        );
+
 
         if ($this->form_validation->run() === FALSE) {
             $data['isUpdate'] = false;
@@ -101,6 +127,7 @@ class ProductsController extends CI_Controller
                 'slug' => $this->input->post('slug'),
                 'regular_price' => $this->input->post('regular_price'),
                 'sale_price' => $this->input->post('sale_price'),
+                'purchase_price' => $this->input->post('purchase_price'),
                 'description' => $this->input->post('description'),
                 'featured_image' => $featured_image,
                 'gallery_images' => $gallery_images_encoded,
@@ -126,6 +153,31 @@ class ProductsController extends CI_Controller
 
         $this->form_validation->set_rules('name', 'Name', 'required');
         $this->form_validation->set_rules('category_id', 'Category', 'required');
+        $this->form_validation->set_rules('brand_id', 'Brand', 'required');
+
+        // Validation for MRP Price (regular_price)
+        $this->form_validation->set_rules(
+            'regular_price',
+            'Regular Price',
+            'required|numeric|greater_than[0]',
+            ['greater_than' => 'The {field} must be greater than 0.']
+        );
+
+        // Validation for Sale Price
+        $this->form_validation->set_rules(
+            'sale_price',
+            'Sale Price',
+            'required|numeric|greater_than[0]',
+            ['greater_than' => 'The {field} must be greater than 0.']
+        );
+
+        // Validation for Purchase Price
+        $this->form_validation->set_rules(
+            'purchase_price',
+            'Purchase Price',
+            'required|numeric|greater_than[0]',
+            ['greater_than' => 'The {field} must be greater than 0.']
+        );
 
         if ($this->form_validation->run() === FALSE) {
             $data['isUpdate'] = true;
@@ -204,6 +256,7 @@ class ProductsController extends CI_Controller
                 'slug' => $this->input->post('slug'),
                 'regular_price' => $this->input->post('regular_price'),
                 'sale_price' => $this->input->post('sale_price'),
+                'purchase_price' => $this->input->post('purchase_price'),
                 'description' => $this->input->post('description'),
                 'category_id' => $this->input->post('category_id'),
                 'brand_id' => $this->input->post('brand_id'),
@@ -228,11 +281,46 @@ class ProductsController extends CI_Controller
         $this->form_validation->set_rules('category_id', 'Category', 'required');
         $this->form_validation->set_rules('brand_id', 'Brand', 'required');
 
+        // Validation for MRP Price (regular_price)
+        $this->form_validation->set_rules(
+            'mrp_price',
+            'MRP Price',
+            'required|numeric|greater_than[0]',
+            ['greater_than' => 'The {field} must be greater than 0.']
+        );
+
+        // Validation for Sale Price
+        $this->form_validation->set_rules(
+            'sale_price',
+            'Sale Price',
+            'required|numeric|greater_than[0]',
+            ['greater_than' => 'The {field} must be greater than 0.']
+        );
+
+        // Validation for Purchase Price
+        $this->form_validation->set_rules(
+            'purchase_price',
+            'Purchase Price',
+            'required|numeric|greater_than[0]',
+            ['greater_than' => 'The {field} must be greater than 0.']
+        );
+
         if ($this->form_validation->run() == FALSE) {
             $response = array('success' => false, 'errors' => validation_errors());
         } else {
+
+            $productName = $this->input->post('name');
+            $productSlug = $this->generateUniqueSlug($productName);
+            $regular_price = $this->input->post('mrp_price');
+            $sale_price = $this->input->post('sale_price');
+            $purchase_price = $this->input->post('purchase_price');
+
             $data = array(
-                'name' => $this->input->post('name'),
+                'name' => $productName,
+                'slug' => $productSlug,
+                'regular_price' => $regular_price,
+                'sale_price' => $sale_price,
+                'purchase_price' => $purchase_price,
                 'description' => $this->input->post('description'),
                 'category_id' => $this->input->post('category_id'),
                 'brand_id' => $this->input->post('brand_id')
@@ -326,32 +414,39 @@ class ProductsController extends CI_Controller
                 $products[] = array_combine($header, $row);
             }
             fclose($file);
-
+            $got_duplicate = 0;
+            $product_update_count = 0;
             // Insert products into the database
             foreach ($products as $product) {
                 $productName = trim($product['name']);
                 $productSlug = $this->generateUniqueSlug($productName);
 
-                // Check for duplicate product name
-                $existingProduct = $this->ProductModel->get_product_by_name($productName);
-                if ($existingProduct) {
-                    $this->session->set_flashdata('error', "Duplicate product name found: $productName. Skipping.");
-                    continue;
-                }
-
                 $productData = [
                     'name' => $productName,
                     'slug' => $productSlug,
                     'hsn_code' => $product['hsn_code'] ?? '8471', // Default HSN code
-                    'regular_price' => $product['regular_price'] ?? 100,
-                    'sale_price' => $product['sale_price'] ?? 90,
+                    'regular_price' => isset($product['sp']) ? (float)$product['sp'] * 1.5 : 150,
+                    'sale_price' => $product['sp'] ?? 100,
+                    'purchase_price' => $product['pp'] ?? 90,
                     'category_id' => $product['category_id'],
                     'brand_id' => $product['brand_id'],
                     'product_type_id' => 1
                 ];
-                $this->ProductModel->insert_product($productData);
-            }
 
+                // Check for duplicate product name
+                $existingProduct = $this->ProductModel->get_product_by_name($productName);
+                if ($existingProduct) {
+                    $got_duplicate++;
+
+                    if ($this->ProductModel->update_product_by_name($productName, $productData)) {
+                        $product_update_count++;
+                    }
+                } else {
+                    $this->ProductModel->insert_product($productData);
+                }
+            }
+            $this->session->set_flashdata('duplicate', "Duplicate product name found:" . $got_duplicate);
+            $this->session->set_flashdata('update', "Product updated:" . $product_update_count);
             $this->session->set_flashdata('message', 'Products uploaded successfully.');
             redirect('admin/products');
         } else {
