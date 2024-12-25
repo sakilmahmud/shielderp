@@ -22,12 +22,25 @@ class ProductsController extends CI_Controller
     public function index()
     {
         $data['activePage'] = 'products';
-        $data['products'] = $this->ProductModel->get_all_products();
+
+        // Get filter inputs
+        $category_id = $this->input->get('category_id', true);
+        $brand_id = $this->input->get('brand_id', true);
+        $product_type_id = $this->input->get('product_type_id', true);
+
+        // Get filtered products
+        $data['products'] = $this->ProductModel->get_filtered_products($category_id, $brand_id, $product_type_id);
+
+        // Get all categories, brands, and product types for filters
+        $data['categories'] = $this->CategoryModel->get_all_categories();
+        $data['brands'] = $this->BrandModel->get_all_brands();
+        $data['product_types'] = $this->ProductTypeModel->get_all_product_types();
 
         $this->load->view('admin/header', $data);
         $this->load->view('admin/products/index', $data);
         $this->load->view('admin/footer');
     }
+
 
     public function add()
     {

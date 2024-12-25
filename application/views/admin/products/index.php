@@ -51,6 +51,48 @@
                                     <?php echo $this->session->flashdata('error'); ?>
                                 </div>
                             <?php endif; ?>
+                            <div class="card_header">
+                                <form method="get" action="<?php echo base_url('admin/products'); ?>">
+                                    <div class="row mb-3">
+                                        <div class="col-md-3">
+                                            <label for="category_id">Category</label>
+                                            <select class="form-control category_id" id="category_id" name="category_id">
+                                                <option value="">All</option>
+                                                <?php foreach ($categories as $category): ?>
+                                                    <option value="<?php echo $category['id']; ?>" <?php echo ($this->input->get('category_id') == $category['id']) ? 'selected' : ''; ?>>
+                                                        <?php echo $category['name']; ?>
+                                                    </option>
+                                                <?php endforeach; ?>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label for="brand_id">Brand</label>
+                                            <select class="form-control brand_id" id="brand_id" name="brand_id">
+                                                <option value="">All</option>
+                                                <?php foreach ($brands as $brand): ?>
+                                                    <option value="<?php echo $brand['id']; ?>" <?php echo ($this->input->get('brand_id') == $brand['id']) ? 'selected' : ''; ?>>
+                                                        <?php echo $brand['brand_name']; ?>
+                                                    </option>
+                                                <?php endforeach; ?>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label for="product_type_id">Product Type</label>
+                                            <select class="form-control" id="product_type_id" name="product_type_id">
+                                                <option value="">All</option>
+                                                <?php foreach ($product_types as $product_type): ?>
+                                                    <option value="<?php echo $product_type['id']; ?>" <?php echo ($this->input->get('product_type_id') == $product_type['id']) ? 'selected' : ''; ?>>
+                                                        <?php echo $product_type['product_type_name']; ?>
+                                                    </option>
+                                                <?php endforeach; ?>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-3 mt-4">
+                                            <button type="submit" class="btn btn-primary">Filter</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
 
                             <?php if (!empty($products)) : ?>
                                 <table class="table table-sm table-striped table-bordered" id="commonTable">
@@ -61,6 +103,7 @@
                                             <th></th>
                                             <th>Name</th>
                                             <th>Category</th>
+                                            <th>Brand</th>
                                             <th>Price</th>
                                             <th>Stocks</th>
                                             <th>Action</th>
@@ -88,6 +131,7 @@
                                                 </td>
                                                 <td><a href="<?php echo base_url('products/' . $endpoint); ?>" target="_blank"><?php echo $product['name']; ?></a></td>
                                                 <td><?php echo $product['category_name']; ?></td>
+                                                <td><?php echo $product['brand_name']; ?></td>
                                                 <td>
                                                     <p>MRP: ₹<?php echo number_format($product['regular_price'], 2); ?></p>
                                                     <p>Sale: ₹<?php echo number_format($product['sale_price'], 2); ?></p>

@@ -210,4 +210,29 @@ class ProductModel extends CI_Model
         $this->db->where('name', $name);
         return $this->db->update('products', $data);
     }
+
+    public function get_filtered_products($category_id = null, $brand_id = null, $product_type_id = null)
+    {
+
+        // Select fields including the joined category and brand names
+        $this->db->select('products.*, categories.name as category_name, brands.brand_name');
+        $this->db->from('products');
+        $this->db->join('categories', 'products.category_id = categories.id', 'left');
+        $this->db->join('brands', 'products.brand_id = brands.id', 'left');
+
+
+        // Apply filters if set
+        if ($category_id) {
+            $this->db->where('category_id', $category_id);
+        }
+        if ($brand_id) {
+            $this->db->where('brand_id', $brand_id);
+        }
+        if ($product_type_id) {
+            $this->db->where('product_type_id', $product_type_id);
+        }
+
+        $query = $this->db->get();
+        return $query->result_array();
+    }
 }
