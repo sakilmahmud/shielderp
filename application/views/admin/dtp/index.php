@@ -121,8 +121,13 @@
                                         </td>
                                         <td>
                                             <?php
-                                            $paymentModes = ['1' => 'Cash', '2' => 'Online'];
-                                            echo isset($paymentModes[$service['payment_mode']]) ? $paymentModes[$service['payment_mode']] : 'Unknown';
+                                            if ($service['paid_status'] == 0) {
+                                                echo '-';
+                                            } else {
+                                                $paymentModes = ['1' => 'Cash', '2' => 'Online'];
+                                                echo isset($paymentModes[$service['payment_mode']]) ? $paymentModes[$service['payment_mode']] : 'Unknown';
+                                            }
+
                                             ?>
                                         </td>
                                         <td><?php echo date('d-m-Y', strtotime($service['service_date'])); ?></td>
