@@ -132,12 +132,21 @@ class DtpController extends CI_Controller
             $this->load->view('admin/footer');
         } else {
             $postData = $this->input->post();
+            $partial_paid = $postData['partial_paid'];
+            if ($postData['paid_status'] == 2) {
+                $paid_amount = $partial_paid;
+            } elseif ($postData['paid_status'] == 0) {
+                $paid_amount = 0;
+            } else {
+                $paid_amount = $postData['service_charge'];
+            }
             $updateData = [
                 'service_descriptions' => $postData['service_descriptions'],
                 'dtp_service_category_id' => $postData['dtp_service_categories'],
                 'service_charge' => $postData['service_charge'],
                 'paid_status' => $postData['paid_status'],
-                'paid_amount' => ($postData['paid_status'] == 2) ? $postData['paid_amount'] : $postData['service_charge'],
+                'paid_amount' => $paid_amount,
+                'payment_mode' => $postData['payment_mode'], // Save the selected payment mode
                 'service_date' => $postData['service_date']
             ];
 
