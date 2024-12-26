@@ -47,6 +47,29 @@ $route['admin/dtp/categories/add'] = 'admin/DtpController/addCategory';
 $route['admin/dtp/categories/edit/(:num)'] = 'admin/DtpController/editCategory/$1';
 $route['admin/dtp/categories/delete/(:num)'] = 'admin/DtpController/deleteCategory/$1';
 
+/** Income routes */
+$route['admin/income'] = 'admin/IncomeController/index';
+$route['admin/income/add'] = 'admin/IncomeController/addIncome';
+$route['admin/income/edit/(:num)'] = 'admin/IncomeController/editIncome/$1';
+$route['admin/income/delete/(:num)'] = 'admin/IncomeController/deleteIncome/$1';
+
+$route['admin/income/head'] = 'admin/IncomeController/head';
+$route['admin/income/head/add'] = 'admin/IncomeController/addHead';
+$route['admin/income/head/edit/(:num)'] = 'admin/IncomeController/editHead/$1';
+$route['admin/income/head/delete/(:num)'] = 'admin/IncomeController/deleteHead/$1';
+
+/** Expense routes */
+$route['admin/expense'] = 'admin/ExpenseController/index';
+$route['admin/expense/add'] = 'admin/ExpenseController/addExpense';
+$route['admin/expense/edit/(:num)'] = 'admin/ExpenseController/editExpense/$1';
+$route['admin/expense/delete/(:num)'] = 'admin/ExpenseController/deleteExpense/$1';
+
+$route['admin/expense/head'] = 'admin/ExpenseController/head';
+$route['admin/expense/head/add'] = 'admin/ExpenseController/addHead';
+$route['admin/expense/head/edit/(:num)'] = 'admin/ExpenseController/editHead/$1';
+$route['admin/expense/head/delete/(:num)'] = 'admin/ExpenseController/deleteHead/$1';
+
+
 /** Categories */
 $route['admin/categories'] = 'admin/CategoriesController/index';
 $route['admin/categories/add'] = 'admin/CategoriesController/add';

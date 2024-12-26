@@ -41,6 +41,54 @@
           </ul>
         </li>
 
+        <li class="nav-item <?php if ($activePage === 'income_head' || $activePage === 'income') echo 'menu-open'; ?>">
+          <a href="#" class="nav-link <?php if ($activePage === 'income' || $activePage === 'income_head') echo 'active'; ?>">
+            <i class="nav-icon fas fa-wallet"></i>
+            <p>
+              Income
+              <i class="fas fa-angle-left right"></i>
+            </p>
+          </a>
+          <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a href="<?php echo base_url('admin/income'); ?>" class="nav-link <?php if ($activePage === 'income') echo 'active'; ?>">
+                <i class="fas fa-list nav-icon"></i>
+                <p>All Incomes</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="<?php echo base_url('admin/income/head'); ?>" class="nav-link <?php if ($activePage === 'income_head') echo 'active'; ?>">
+                <i class="nav-icon fas fa-tags"></i>
+                <p>Income Heads</p>
+              </a>
+            </li>
+          </ul>
+        </li>
+
+        <li class="nav-item <?php if ($activePage === 'expense_head' || $activePage === 'expense') echo 'menu-open'; ?>">
+          <a href="#" class="nav-link <?php if ($activePage === 'expense' || $activePage === 'expense_head') echo 'active'; ?>">
+            <i class="nav-icon fas fa-wallet"></i>
+            <p>
+              Expenses
+              <i class="fas fa-angle-left right"></i>
+            </p>
+          </a>
+          <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a href="<?php echo base_url('admin/expense'); ?>" class="nav-link <?php if ($activePage === 'expense') echo 'active'; ?>">
+                <i class="fas fa-list nav-icon"></i>
+                <p>All Expenses</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="<?php echo base_url('admin/expense/head'); ?>" class="nav-link <?php if ($activePage === 'expense_head') echo 'active'; ?>">
+                <i class="nav-icon fas fa-tags"></i>
+                <p>Expense Heads</p>
+              </a>
+            </li>
+          </ul>
+        </li>
+
 
         <li class="nav-item <?php if ($activePage === 'tasks' || $activePage === 'clients' || $activePage === 'doers') echo 'menu-open'; ?>">
           <a href="#" class="nav-link <?php if ($activePage === 'tasks' || $activePage === 'clients' || $activePage === 'doers') echo 'active'; ?>">
