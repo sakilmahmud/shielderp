@@ -8,6 +8,8 @@ class ExpenseModel extends CI_Model
         return $this->db->select('expenses.*, expense_heads.head_title, payment_methods.title as method_name')
             ->join('expense_heads', 'expense_heads.id = expenses.expense_head_id', 'left')
             ->join('payment_methods', 'payment_methods.id = expenses.payment_method_id', 'left')
+            ->order_by('expenses.transaction_date', 'DESC')
+            ->order_by('expenses.id', 'DESC')
             ->get('expenses')->result_array();
     }
 

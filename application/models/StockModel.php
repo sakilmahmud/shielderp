@@ -3,10 +3,34 @@ class StockModel extends CI_Model
 {
     public function get_all_stocks()
     {
-        $this->db->select('stock_management.*, products.name as product_name, suppliers.supplier_name');
+        $this->db->select('stock_management.*, products.name as product_name, suppliers.supplier_name, categories.name as cat_name, brands.brand_name');
         $this->db->from('stock_management');
         $this->db->join('products', 'stock_management.product_id = products.id');
+        $this->db->join('categories', 'categories.id = products.category_id');
+        $this->db->join('brands', 'brands.id = products.brand_id');
         $this->db->join('suppliers', 'stock_management.supplier_id = suppliers.id', 'left');
+        $this->db->order_by('stock_management.id', 'DESC');
+        $query = $this->db->get();
+        return $query->result_array();
+    }
+
+    public function get_filtered_stocks($filters)
+    {
+        $this->db->select('stock_management.*, products.name as product_name, suppliers.supplier_name, categories.name as cat_name, brands.brand_name');
+        $this->db->from('stock_management');
+        $this->db->join('products', 'stock_management.product_id = products.id');
+        $this->db->join('categories', 'categories.id = products.category_id');
+        $this->db->join('brands', 'brands.id = products.brand_id');
+        $this->db->join('suppliers', 'stock_management.supplier_id = suppliers.id', 'left');
+
+        // Apply filters
+        if (!empty($filters['category_id'])) {
+            $this->db->where('categories.id', $filters['category_id']);
+        }
+        if (!empty($filters['brand_id'])) {
+            $this->db->where('brands.id', $filters['brand_id']);
+        }
+
         $this->db->order_by('stock_management.id', 'DESC');
         $query = $this->db->get();
         return $query->result_array();

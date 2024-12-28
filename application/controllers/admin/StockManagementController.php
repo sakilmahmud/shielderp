@@ -8,6 +8,8 @@ class StockManagementController extends CI_Controller
         parent::__construct();
         $this->load->model('StockModel');
         $this->load->model('ProductModel'); // Assuming this model already exists
+        $this->load->model('CategoryModel');
+        $this->load->model('BrandModel');
         $this->load->library('form_validation');
 
         if (!$this->session->userdata('username')) {
@@ -18,7 +20,16 @@ class StockManagementController extends CI_Controller
     public function index()
     {
         $data['activePage'] = 'stocks';
-        $data['stocks'] = $this->StockModel->get_all_stocks();
+        //$data['stocks'] = $this->StockModel->get_all_stocks();
+
+        // Fetch all stocks
+        $filters = $this->input->get(); // Get filter values from the request
+        $data['stocks'] = $this->StockModel->get_filtered_stocks($filters);
+
+        // Fetch categories and brands for filters
+        $data['categories'] = $this->CategoryModel->get_all_categories();
+        $data['brands'] = $this->BrandModel->get_all_brands();
+
         $this->load->view('admin/header', $data);
         $this->load->view('admin/stocks/index', $data);
         $this->load->view('admin/footer');
