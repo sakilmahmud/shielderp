@@ -96,6 +96,29 @@ class ProductModel extends CI_Model
             return 0; // Default price if none found
         }
     }
+    public function getLastPurchasePrice($product_id)
+    {
+        $this->db->select('purchase_price');
+        $this->db->from('stock_management');
+        $this->db->where('product_id', $product_id);
+        $this->db->order_by('purchase_date', 'DESC');
+        $this->db->order_by('id', 'DESC');
+        $this->db->limit(1);
+        $query = $this->db->get();
+
+        if ($query->num_rows() > 0) {
+            return $query->row()->purchase_price;
+        }
+
+        return null; // Return null if no record found
+    }
+
+    public function updateProductPrice($product_id, $data)
+    {
+        $this->db->where('id', $product_id);
+        return $this->db->update('products', $data);
+    }
+
     public function getProductsByCategory($categoryId)
     {
         $this->db->where('category_id', $categoryId);

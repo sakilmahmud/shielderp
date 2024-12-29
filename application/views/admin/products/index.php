@@ -135,9 +135,27 @@
                                                 <td>
                                                     <p>MRP: ₹<?php echo number_format($product['regular_price'], 2); ?></p>
                                                     <p>Sale: ₹<?php echo number_format($product['sale_price'], 2); ?></p>
-                                                    <p>Purchase: <span class="purchase-price" style="display: none;">₹<?php echo number_format($product['purchase_price'], 2); ?></span>
-                                                        <a href="javascript:void(0);" class="show_pp" data-purchase-price="₹<?php echo number_format($product['purchase_price'], 2); ?>">Show</a>
+                                                    <p>
+                                                        Purchase:
+                                                        <span class="purchase-price" data-product-id="<?php echo $product['id']; ?>" style="display: none;">
+                                                            ₹<?php echo number_format($product['purchase_price'], 2); ?>
+                                                        </span>
+                                                        <a href="javascript:void(0);"
+                                                            class="show_pp"
+                                                            data-product-id="<?php echo $product['id']; ?>"
+                                                            data-purchase-price="₹<?php echo number_format($product['purchase_price'], 2); ?>">
+                                                            Show
+                                                        </a>
                                                     </p>
+                                                    <a href="javascript:void(0);"
+                                                        class="quick-edit"
+                                                        data-product-id="<?php echo $product['id']; ?>"
+                                                        data-product-name="<?php echo $product['name']; ?>"
+                                                        data-regular-price="<?php echo $product['regular_price'] ?? 0; ?>"
+                                                        data-sale-price="<?php echo $product['sale_price'] ?? 0; ?>"
+                                                        data-purchase-price="<?php echo $product['purchase_price'] ?? 0; ?>">
+                                                        <i class="fa fa-edit"></i> Quick Edit
+                                                    </a>
                                                 </td>
 
                                                 <td>
@@ -163,12 +181,118 @@
         </div>
     </section>
 </div>
+
+<!-- Modal -->
+<div class="modal fade" id="quickEditModal" tabindex="-1" role="dialog" aria-labelledby="quickEditModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="quickEditModalLabel">Edit Product</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="quickEditForm">
+                    <div class="form-group">
+                        <label for="mrp">MRP</label>
+                        <input type="number" class="form-control" id="mrp" name="mrp" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="sale_price">Sale Price</label>
+                        <input type="number" class="form-control" id="sale_price" name="sale_price" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="purchase_price">Purchase Price</label>
+                        <input type="number" class="form-control" id="purchase_price" name="purchase_price" step="0.01" required>
+                    </div>
+                    <input type="hidden" id="product_id" name="product_id">
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="updateProduct">Update</button>
+            </div>
+        </div>
+    </div>
+</div>
 <script>
+    $(document).ready(function() {
+        // Show modal with product data
+        $('.quick-edit').on('click', function() {
+            const productId = $(this).data('product-id');
+            const productName = $(this).data('product-name');
+            const regularPrice = $(this).data('regular-price');
+            const salePrice = $(this).data('sale-price');
+            const purchasePrice = $(this).data('purchase-price');
+
+            // Populate modal fields
+            $('#quickEditModalLabel').text(`Edit Product: ${productName}`);
+            $('#product_id').val(productId);
+            $('#mrp').val(regularPrice);
+            $('#sale_price').val(salePrice);
+            $('#purchase_price').val(purchasePrice);
+
+            // Show the modal
+            $('#quickEditModal').modal('show');
+        });
+
+        // Handle update button click
+        $('#updateProduct').on('click', function() {
+            const formData = $('#quickEditForm').serialize(); // Get form data
+
+            $.ajax({
+                url: '<?php echo base_url('/'); ?>admin/products/update_price', // Adjust the endpoint as needed
+                type: 'POST',
+                data: formData,
+                dataType: 'json',
+                success: function(response) {
+                    if (response.status === 'success') {
+                        alert('Product updated successfully!');
+                        $('#quickEditModal').modal('hide');
+                        location.reload(); // Reload the page to reflect changes
+                    } else {
+                        alert(response.message || 'Failed to update the product.');
+                    }
+                },
+                error: function() {
+                    alert('An error occurred while updating the product.');
+                }
+            });
+        });
+    });
+
     $(document).ready(function() {
         $('.show_pp').on('click', function() {
             const purchasePrice = $(this).data('purchase-price');
             $(this).siblings('.purchase-price').text(purchasePrice).show(); // Show the purchase price
             $(this).hide(); // Hide the "Show" link
+        });
+    });
+    $(document).ready(function() {
+        $('.show_pp').on('click', function() {
+            const productId = $(this).data('product-id'); // Add a `data-product-id` attribute to your HTML element
+
+            $.ajax({
+                url: '<?php echo base_url('/'); ?>admin/products/last_purchase_price',
+                type: 'POST',
+                data: {
+                    product_id: productId
+                },
+                dataType: 'json',
+                success: function(response) {
+                    if (response.status === 'success') {
+                        const purchasePrice = response.purchase_price;
+                        $(`.purchase-price[data-product-id="${productId}"]`).text(`₹${purchasePrice}`).show();
+                        $(`.show_pp[data-product-id="${productId}"]`).hide();
+                    } else {
+                        alert(response.message);
+                    }
+                },
+                error: function() {
+                    alert('An error occurred while fetching the purchase price.');
+                }
+            });
         });
     });
 </script>

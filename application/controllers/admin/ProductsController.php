@@ -375,6 +375,64 @@ class ProductsController extends CI_Controller
         echo json_encode(['price' => $price]);
     }
 
+    public function get_last_purchase_price()
+    {
+        // Load necessary models if not autoloaded
+        $this->load->model('ProductModel'); // Adjust the model name as needed
+
+        // Get product_id from AJAX request
+        $product_id = $this->input->post('product_id');
+
+        // Validate the input
+        if (empty($product_id)) {
+            echo json_encode(['status' => 'error', 'message' => 'Product ID is required']);
+            return;
+        }
+
+        // Fetch the last purchase price using the model
+        $last_purchase_price = $this->ProductModel->getLastPurchasePrice($product_id);
+
+        // Check if a price was found
+        if ($last_purchase_price !== null) {
+            echo json_encode([
+                'status' => 'success',
+                'purchase_price' => number_format($last_purchase_price, 2)
+            ]);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'No purchase price found for this product']);
+        }
+    }
+
+    public function update_price()
+    {
+        $product_id = $this->input->post('product_id');
+        $mrp = $this->input->post('mrp');
+        $sale_price = $this->input->post('sale_price');
+        $purchase_price = $this->input->post('purchase_price');
+
+        if (empty($product_id) || !is_numeric($mrp) || !is_numeric($sale_price) || !is_numeric($purchase_price)) {
+            echo json_encode(['status' => 'error', 'message' => 'Invalid input']);
+            return;
+        }
+
+        $data = [
+            'regular_price' => $mrp,
+            'sale_price' => $sale_price,
+            'purchase_price' => $purchase_price,
+            'updated_at' => date('Y-m-d H:i:s'),
+        ];
+
+        $updateStatus = $this->ProductModel->updateProductPrice($product_id, $data);
+
+        if ($updateStatus) {
+            echo json_encode(['status' => 'success']);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Failed to update product']);
+        }
+    }
+
+
+
     public function getProductsByCategory()
     {
         $categoryId = $this->input->post('category_id');

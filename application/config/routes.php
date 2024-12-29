@@ -102,6 +102,8 @@ $route['admin/products/edit/(:num)'] = 'admin/ProductsController/edit/$1';
 $route['admin/products/delete/(:num)'] = 'admin/ProductsController/delete/$1';
 $route['admin/products/search'] = 'admin/ProductsController/search';
 $route['admin/products/get_last_price'] = 'admin/ProductsController/get_last_price';
+$route['admin/products/last_purchase_price'] = 'admin/ProductsController/get_last_purchase_price';
+$route['admin/products/update_price'] = 'admin/ProductsController/update_price';
 $route['admin/products/getProductsByCategory'] = 'admin/ProductsController/getProductsByCategory';
 
 $route['admin/products/bulk-upload'] = 'admin/ProductsController/bulkUpload';
