@@ -151,16 +151,21 @@
                                                         class="quick-edit"
                                                         data-product-id="<?php echo $product['id']; ?>"
                                                         data-product-name="<?php echo $product['name']; ?>"
-                                                        data-regular-price="<?php echo $product['regular_price'] ?? 0; ?>"
-                                                        data-sale-price="<?php echo $product['sale_price'] ?? 0; ?>"
-                                                        data-purchase-price="<?php echo $product['purchase_price'] ?? 0; ?>">
                                                         <i class="fa fa-edit"></i> Quick Edit
                                                     </a>
                                                 </td>
 
                                                 <td>
                                                     Total Purchased: <?php echo $total_quantity; ?><br>
-                                                    In stocks: <?php echo $total_available_stocks; ?>
+                                                    In stocks: <?php echo $total_available_stocks; ?><br>
+                                                    <a href="javascript:void(0);"
+                                                        class="quick-stock-update"
+                                                        data-product-id="<?php echo $product['id']; ?>"
+                                                        data-product-name="<?php echo $product['name']; ?>"
+                                                        data-total-purchased="<?php echo $total_quantity; ?>"
+                                                        data-current-stocks="<?php echo $total_available_stocks; ?>">
+                                                        <i class="fa fa-plus-circle"></i> Quick Stock Update
+                                                    </a>
                                                 </td>
 
                                                 <td>
@@ -182,6 +187,48 @@
     </section>
 </div>
 
+<!-- Stock Update Modal -->
+<div class="modal fade" id="stockUpdateModal" tabindex="-1" role="dialog" aria-labelledby="stockUpdateModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="stockUpdateModalLabel">Update Stock</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p id="stockInfo"></p>
+                <form id="stockUpdateForm">
+                    <div class="form-group">
+                        <label>Action:</label><br>
+                        <input type="radio" name="action" value="increase" id="increase" required>
+                        <label for="increase">Increase</label><br>
+                        <input type="radio" name="action" value="decrease" id="decrease" required>
+                        <label for="decrease">Decrease</label>
+                    </div>
+                    <div class="form-group">
+                        <label for="quantity">Quantity</label>
+                        <input type="number" class="form-control" id="quantity" name="quantity" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="sale_price">Sale Price</label>
+                        <input type="number" class="form-control" id="st_sale_price" name="sale_price" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="purchase_price">Purchase Price</label>
+                        <input type="number" class="form-control" id="st_purchase_price" name="purchase_price" required>
+                    </div>
+                    <input type="hidden" id="stock_product_id" name="product_id">
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="updateStock">Update Stock</button>
+            </div>
+        </div>
+    </div>
+</div>
 <!-- Modal -->
 <div class="modal fade" id="quickEditModal" tabindex="-1" role="dialog" aria-labelledby="quickEditModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -219,19 +266,113 @@
 <script>
     $(document).ready(function() {
         // Show modal with product data
+        $('.quick-stock-update').on('click', function() {
+            const productId = $(this).data('product-id');
+            const productName = $(this).data('product-name');
+            const totalPurchased = $(this).data('total-purchased');
+            const currentStocks = $(this).data('current-stocks');
+
+            // Set modal header and stock information
+            $('#stockUpdateModalLabel').text(`Update Stock: ${productName}`);
+            $('#stockInfo').html(`Total Purchased: ${totalPurchased} | Current Stocks: ${currentStocks}`);
+            $('#stock_product_id').val(productId);
+
+            $.ajax({
+                url: '<?php echo base_url('/'); ?>admin/products/get_product_prices', // Adjust the endpoint as needed
+                type: 'POST',
+                data: {
+                    product_id: productId
+                },
+                dataType: 'json',
+                success: function(response) {
+                    if (response && response.prices) {
+                        // Populate form fields with prices
+                        $('#st_sale_price').val(response.prices.sale_price || 0);
+
+                        // Use 'last_purchase_price' if available, otherwise fallback to 'purchase_price'
+                        const purchasePrice = response.last_purchase_price !== null ?
+                            response.last_purchase_price :
+                            response.prices.purchase_price;
+
+                        $('#st_purchase_price').val(purchasePrice || 0);
+                    } else {
+                        $('#st_sale_price').val(0);
+                        $('#st_purchase_price').val(0);
+                    }
+                },
+                error: function() {
+                    alert('An error occurred while fetching product prices.');
+                }
+            });
+
+            // Show the modal
+            $('#stockUpdateModal').modal('show');
+        });
+
+
+        // Handle stock update submission
+        $('#updateStock').on('click', function() {
+            const formData = $('#stockUpdateForm').serialize(); // Serialize form data
+
+            $.ajax({
+                url: '<?php echo base_url('/'); ?>admin/products/update_stock', // Adjust the endpoint as needed
+                type: 'POST',
+                data: formData,
+                dataType: 'json',
+                success: function(response) {
+                    if (response.status === 'success') {
+                        alert('Stock updated successfully!');
+                        $('#stockUpdateModal').modal('hide');
+                        location.reload(); // Reload the page to reflect changes
+                    } else {
+                        alert(response.message || 'Failed to update stock.');
+                    }
+                },
+                error: function() {
+                    alert('An error occurred while updating stock.');
+                }
+            });
+        });
+    });
+
+    $(document).ready(function() {
+        // Show modal with product data
         $('.quick-edit').on('click', function() {
             const productId = $(this).data('product-id');
             const productName = $(this).data('product-name');
-            const regularPrice = $(this).data('regular-price');
-            const salePrice = $(this).data('sale-price');
-            const purchasePrice = $(this).data('purchase-price');
 
             // Populate modal fields
             $('#quickEditModalLabel').text(`Edit Product: ${productName}`);
             $('#product_id').val(productId);
-            $('#mrp').val(regularPrice);
-            $('#sale_price').val(salePrice);
-            $('#purchase_price').val(purchasePrice);
+
+            $.ajax({
+                url: '<?php echo base_url('/'); ?>admin/products/get_product_prices', // Adjust the endpoint as needed
+                type: 'POST',
+                data: {
+                    product_id: productId
+                },
+                dataType: 'json',
+                success: function(response) {
+                    if (response && response.prices) {
+
+                        // Use 'last_purchase_price' if available, otherwise fallback to 'purchase_price'
+                        const purchasePrice = response.last_purchase_price !== null ?
+                            response.last_purchase_price :
+                            response.prices.purchase_price;
+
+                        $('#mrp').val(response.prices.regular_price);
+                        $('#sale_price').val(response.prices.sale_price);
+                        $('#purchase_price').val(purchasePrice);
+                    } else {
+                        $('#mrp').val(0);
+                        $('#sale_price').val(0);
+                        $('#purchase_price').val(0);
+                    }
+                },
+                error: function() {
+                    alert('An error occurred while fetching product prices.');
+                }
+            });
 
             // Show the modal
             $('#quickEditModal').modal('show');

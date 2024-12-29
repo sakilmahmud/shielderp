@@ -117,4 +117,9 @@ class StockModel extends CI_Model
         $this->db->where('id', $stock_id);
         $this->db->update('stock_management', ['available_stock' => $newStock]);
     }
+
+    public function addStockRecord($data)
+    {
+        return $this->db->insert('stock_management', $data);
+    }
 }

@@ -368,18 +368,15 @@ class ProductsController extends CI_Controller
         echo json_encode($products);
     }
 
-    public function get_last_price()
+    public function get_product_prices()
     {
-        $product_id = $this->input->get('product_id');
-        $price = $this->ProductModel->get_last_price($product_id);
-        echo json_encode(['price' => $price]);
+        $product_id = $this->input->post('product_id');
+        $prices = $this->ProductModel->get_product_prices($product_id);
+        echo json_encode($prices);
     }
 
     public function get_last_purchase_price()
     {
-        // Load necessary models if not autoloaded
-        $this->load->model('ProductModel'); // Adjust the model name as needed
-
         // Get product_id from AJAX request
         $product_id = $this->input->post('product_id');
 
@@ -545,5 +542,54 @@ class ProductsController extends CI_Controller
         }
 
         return $slug;
+    }
+
+    public function update_stock()
+    {
+        $this->load->model('StockModel');
+
+        $product_id = $this->input->post('product_id');
+        $action = $this->input->post('action');
+        $quantity = $this->input->post('quantity');
+        $sale_price = $this->input->post('sale_price');
+        $purchase_price = $this->input->post('purchase_price');
+
+        // Validate inputs
+        if (empty($product_id) || !in_array($action, ['increase', 'decrease']) || !is_numeric($quantity) || $quantity <= 0) {
+            echo json_encode(['status' => 'error', 'message' => 'Invalid input']);
+            return;
+        }
+
+        // Determine quantity to add to `stock_management`
+        $quantity = ($action === 'decrease') ? -$quantity : $quantity;
+        $available_stock = ($action === 'decrease') ? 0 : $quantity;
+        $purchase_date = date('Y-m-d');
+        $data = [
+            'product_id' => $product_id,
+            'purchase_price' => $purchase_price,
+            'sale_price' => $sale_price,
+            'purchase_date' => $purchase_date,
+            'quantity' => $quantity,
+            'available_stock' => $available_stock,
+            'created_at' => date('Y-m-d H:i:s'),
+        ];
+
+        // Insert into `stock_management` table
+        $insertStatus = $this->StockModel->addStockRecord($data);
+
+        if ($insertStatus) {
+
+            $product_data = [
+                'sale_price' => $sale_price,
+                'purchase_price' => $purchase_price,
+                'updated_at' => date('Y-m-d H:i:s'),
+            ];
+
+            $this->ProductModel->updateProductPrice($product_id, $product_data);
+
+            echo json_encode(['status' => 'success']);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Failed to update stock']);
+        }
     }
 }

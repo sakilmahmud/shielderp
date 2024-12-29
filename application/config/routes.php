@@ -101,7 +101,7 @@ $route['admin/products/add-ajax'] = 'admin/ProductsController/addAjax';
 $route['admin/products/edit/(:num)'] = 'admin/ProductsController/edit/$1';
 $route['admin/products/delete/(:num)'] = 'admin/ProductsController/delete/$1';
 $route['admin/products/search'] = 'admin/ProductsController/search';
-$route['admin/products/get_last_price'] = 'admin/ProductsController/get_last_price';
+$route['admin/products/get_product_prices'] = 'admin/ProductsController/get_product_prices';
 $route['admin/products/last_purchase_price'] = 'admin/ProductsController/get_last_purchase_price';
 $route['admin/products/update_price'] = 'admin/ProductsController/update_price';
 $route['admin/products/getProductsByCategory'] = 'admin/ProductsController/getProductsByCategory';
@@ -109,6 +109,7 @@ $route['admin/products/getProductsByCategory'] = 'admin/ProductsController/getPr
 $route['admin/products/bulk-upload'] = 'admin/ProductsController/bulkUpload';
 $route['admin/products/process-bulk-upload'] = 'admin/ProductsController/processBulkUpload';
 
+$route['admin/products/update_stock'] = 'admin/ProductsController/update_stock';
 
 $route['admin/stocks'] = 'admin/StockManagementController/index';
 $route['admin/stocks/add']                  = 'admin/StockManagementController/add';

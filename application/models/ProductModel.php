@@ -82,16 +82,19 @@ class ProductModel extends CI_Model
         $query = $this->db->get();
         return $query->result_array();
     }
-    public function get_last_price($product_id)
+    public function get_product_prices($product_id)
     {
-        $this->db->select('price');
+        $getLastPurchasePrice = $this->getLastPurchasePrice($product_id);
+
+        $this->db->select('regular_price, sale_price, purchase_price');
         $this->db->from('products');
         $this->db->where('id', $product_id);
         $this->db->order_by('updated_at', 'DESC'); // Assuming you have a timestamp or similar column
         $this->db->limit(1);
         $query = $this->db->get();
         if ($query->num_rows() > 0) {
-            return $query->row()->price;
+            $arr = array('prices' => $query->row(), 'last_purchase_price' => $getLastPurchasePrice);
+            return $arr;
         } else {
             return 0; // Default price if none found
         }
