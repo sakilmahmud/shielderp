@@ -111,15 +111,10 @@
                                     </thead>
                                     <tbody>
                                         <?php foreach ($products as $product) :
-                                            $getProductStocks = getProductStocks($product['id']);
-                                            if (!empty($getProductStocks)) {
-                                                $total_quantity = $getProductStocks['total_quantity'];
-                                                $total_available_stocks = $getProductStocks['total_available_stocks'];
-                                            } else {
 
-                                                $total_quantity = 0;
-                                                $total_available_stocks = 0;
-                                            }
+                                            $total_quantity = $product['total_quantity'];
+                                            $total_available_stocks = $product['total_available_stocks'];
+
                                             $endpoint = ($product['slug'] != "") ? $product['slug'] : $product['id'];
                                         ?>
                                             <tr>
@@ -150,13 +145,12 @@
                                                     <a href="javascript:void(0);"
                                                         class="quick-edit"
                                                         data-product-id="<?php echo $product['id']; ?>"
-                                                        data-product-name="<?php echo $product['name']; ?>"
+                                                        data-product-name="<?php echo $product['name']; ?>">
                                                         <i class="fa fa-edit"></i> Quick Edit
                                                     </a>
                                                 </td>
 
                                                 <td>
-                                                    Total Purchased: <?php echo $total_quantity; ?><br>
                                                     In stocks: <?php echo $total_available_stocks; ?><br>
                                                     <a href="javascript:void(0);"
                                                         class="quick-stock-update"

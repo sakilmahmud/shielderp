@@ -237,7 +237,7 @@ class ProductModel extends CI_Model
         return $this->db->update('products', $data);
     }
 
-    public function get_filtered_products($category_id = null, $brand_id = null, $product_type_id = null)
+    /* public function get_filtered_products($category_id = null, $brand_id = null, $product_type_id = null)
     {
 
         // Select fields including the joined category and brand names
@@ -260,5 +260,61 @@ class ProductModel extends CI_Model
 
         $query = $this->db->get();
         return $query->result_array();
+    } */
+
+    public function get_filtered_products($category_id = null, $brand_id = null, $product_type_id = null)
+    {
+        $this->db->select('products.*, categories.name as category_name, brands.brand_name');
+        $this->db->from('products');
+        $this->db->join('categories', 'products.category_id = categories.id', 'left');
+        $this->db->join('brands', 'products.brand_id = brands.id', 'left');
+
+        // Apply filters if set
+        if ($category_id) {
+            $this->db->where('products.category_id', $category_id);
+        }
+        if ($brand_id) {
+            $this->db->where('products.brand_id', $brand_id);
+        }
+        if ($product_type_id) {
+            $this->db->where('products.product_type_id', $product_type_id);
+        }
+
+        $query = $this->db->get();
+        $products = $query->result_array();
+
+        // Iterate over products and calculate stock data for each product
+        foreach ($products as &$product) {
+            $product_id = $product['id'];
+
+            // Get the total product quantity from stock_management
+            $this->db->select('SUM(quantity) as total_quantity');
+            $this->db->from('stock_management');
+            $this->db->where('product_id', $product_id);
+            $product_query = $this->db->get();
+            $product_data = $product_query->row_array();
+
+            $total_quantity = $product_data['total_quantity'] ?? 0; // Total quantity added to stock
+
+            // Get the total sold quantity from invoice_details
+            $this->db->select('SUM(quantity) as sold_quantity');
+            $this->db->from('invoice_details');
+            $this->db->where('product_id', $product_id);
+            $this->db->where('status', 1); // Optional: filter only active or completed invoices
+            $sold_query = $this->db->get();
+            $sold_data = $sold_query->row_array();
+
+            $total_sold_quantity = $sold_data['sold_quantity'] ?? 0; // Total quantity sold
+
+            // Calculate final stock
+            $final_stock = $total_quantity - $total_sold_quantity;
+
+            // Add stock data to the product array
+            $product['total_quantity'] = $total_quantity;
+            $product['total_sold_quantity'] = $total_sold_quantity;
+            $product['total_available_stocks'] = $final_stock;
+        }
+
+        return $products;
     }
 }

@@ -63,8 +63,8 @@
     $('#customer_name, #customer_phone').on('input', function() {
       let search_term = $(this).val(); // Get the input value
 
-      // If the input has 3 or more characters, start the AJAX search
-      if (search_term.length >= 3) {
+      // If the input has 1 or more characters, start the AJAX search
+      if (search_term.length >= 1) {
         $.ajax({
           url: '<?= base_url("commonController/searchCustomer") ?>', // Your search API endpoint
           method: 'GET',

@@ -61,7 +61,7 @@ function numberTowords($num)
         } else {
             $rettxt .= $ones[substr($i, 0, 1)] . " " . $hundreds[0];
             $rettxt .= " " . $tens[substr($i, 1, 1)];
-            $rettxt .= " " . $ones[substr($i, 2, 1)];
+            @$rettxt .= " " . $ones[substr($i, 2, 1)];
         }
         if ($key > 0) {
             $rettxt .= " " . $hundreds[$key] . " ";
@@ -149,12 +149,36 @@ function getLastBalance($payment_method_id)
 function getProductStocks($product_id)
 {
     $CI = &get_instance();
-    $CI->db->select('product_id, SUM(quantity) as total_quantity, SUM(available_stock) as total_available_stocks');
+
+    // Get the total product quantity from stock_management
+    $CI->db->select('SUM(quantity) as total_quantity, SUM(available_stock) as total_available_stocks');
     $CI->db->from('stock_management');
     $CI->db->where('product_id', $product_id);
-    $CI->db->group_by('product_id');
-    $query = $CI->db->get();
-    return $query->row_array();
+    $product_query = $CI->db->get();
+    $product_data = $product_query->row_array();
+
+    $total_quantity = $product_data['total_quantity'] ?? 0; // Total quantity added to stock
+
+    // Get the total sold quantity from invoice_details
+    $CI->db->select('SUM(quantity) as sold_quantity');
+    $CI->db->from('invoice_details');
+    $CI->db->where('product_id', $product_id);
+    $CI->db->where('status', 1); // Optional: filter only active or completed invoices
+    $sold_query = $CI->db->get();
+    $sold_data = $sold_query->row_array();
+
+    $total_sold_quantity = $sold_data['sold_quantity'] ?? 0; // Total quantity sold
+
+    // Calculate final stock
+    $final_stock = $total_quantity - $total_sold_quantity;
+
+    // Return the calculated stock data
+    return [
+        'product_id' => $product_id,
+        'total_quantity' => $total_quantity,
+        'total_sold_quantity' => $total_sold_quantity,
+        'final_stock' => $final_stock
+    ];
 }
 
 function getSetting($setting_name)

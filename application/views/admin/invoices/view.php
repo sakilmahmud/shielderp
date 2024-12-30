@@ -66,7 +66,10 @@
                                 <tbody>
                                     <?php foreach ($invoice_details as $detail) : ?>
                                         <tr>
-                                            <td><?php echo $detail['product_name']; ?></td>
+                                            <td>
+                                                <b><?php echo $detail['product_name']; ?></b><br>
+                                                <p><?php echo $detail['product_descriptions']; ?></p>
+                                            </td>
                                             <td><?php echo $detail['quantity']; ?></td>
                                             <td><?php echo $detail['price']; ?></td>
                                             <td><?php echo $detail['discount']; ?></td>

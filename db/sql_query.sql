@@ -1,0 +1,1 @@
+ALTER TABLE `invoice_details` ADD `product_descriptions` TEXT NULL DEFAULT NULL AFTER `product_id`; 

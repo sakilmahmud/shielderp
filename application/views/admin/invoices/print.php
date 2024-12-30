@@ -66,12 +66,23 @@
             margin: 15px 0;
         }
 
-        .table-section th,
-        .table-section td {
+        .table-section th {
             border: 1px solid #ddd;
             padding: 7px;
             text-align: center;
             font-size: 12px;
+        }
+
+        .table-section td {
+            border: 1px solid #ddd;
+            padding: 5px;
+            text-align: left;
+            font-size: 12px;
+        }
+
+        .table-section td p {
+            padding: 2px;
+            margin: 2px 0;
         }
 
         .hsn_gst_sec table {
@@ -274,7 +285,10 @@
                     ?>
                         <tr>
                             <td><?php echo $index + 1; ?></td>
-                            <td><?php echo $detail['product_name']; ?></td>
+                            <td>
+                                <b><?php echo $detail['product_name']; ?></b><br>
+                                <p><?php echo $detail['product_descriptions']; ?></p>
+                            </td>
                             <td><?php echo isset($detail['hsn']) ? $detail['hsn'] : '8471'; ?></td>
                             <td><?php echo $detail['quantity']; ?> PCS</td>
                             <td><span style="font-family: DejaVu Sans; sans-serif;">&#8377;</span><?php echo number_format($detail['price'], 2); ?></td>
