@@ -308,6 +308,7 @@ class InvoiceController extends CI_Controller
             // Prepare new invoice details data
             $invoiceDetailsData = [];
             $product_ids = $this->input->post('product_id');
+            $product_descriptions = $this->input->post('product_descriptions');
             $quantities = $this->input->post('qnt');
             $purchase_prices = $this->input->post('purchase_price');
             $discount_types = $this->input->post('discount_type');
@@ -321,6 +322,7 @@ class InvoiceController extends CI_Controller
                     'invoice_id' => $invoice_id,
                     'customer_id' => $this->input->post('customer_id'),
                     'product_id' => $product_id,
+                    'product_descriptions' => $product_descriptions[$index],
                     'quantity' => $quantities[$index],
                     'price' => $purchase_prices[$index],
                     'discount_type' => $discount_types[$index],

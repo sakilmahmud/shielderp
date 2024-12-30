@@ -362,19 +362,6 @@
         });
 
         // Handle price input
-        /* $(document).on("input", ".price", function() {
-            const price = parseFloat($(this).val()) || 0;
-            const gstRate = parseFloat($(this).closest(".col-md-2").siblings(".col-md-1").find(".gst_rate").val()) || 0;
-            const netPrice = price + (price * gstRate) / 100;
-            console.log(gstRate);
-            // Update the net price field
-            const netPriceSection = $(this).siblings(".net_price_section");
-            netPriceSection.find(".net_price").text(netPrice.toFixed(2));
-            netPriceSection.show();
-        }); */
-
-
-        // Handle price input
         $(document).on("input", "#modal_price", function() {
             const price = parseFloat($(this).val()) || 0;
             const gstRate = parseFloat($(".gst_rate").val()) || 0;
@@ -392,16 +379,6 @@
 
             // Update the price field
             $("#modal_price").val(price.toFixed(2));
-        });
-
-        // Handle modal net price input (on typing)
-        $(document).on("input", ".net_price_section .net_price", function() {
-            const netPrice = parseFloat($(this).text()) || 0;
-            const gstRate = parseFloat($(this).closest(".col-md-2").siblings(".col-md-1").find(".gst_rate").val()) || 0;
-            const price = netPrice / (1 + gstRate / 100);
-
-            // Update the price field
-            $(this).closest(".form-group").find(".price").val(price.toFixed(2));
         });
     });
 </script>
