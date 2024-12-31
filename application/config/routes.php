@@ -86,6 +86,14 @@ $route['admin/product-type/delete/(:num)'] = 'admin/ProductTypeController/delete
 
 /** end of product type */
 
+/**PaymentMethods routes */
+$route['admin/PaymentMethods'] = 'admin/PaymentMethodsController/index';
+$route['admin/PaymentMethods/add'] = 'admin/PaymentMethodsController/add';
+$route['admin/PaymentMethods/store'] = 'admin/PaymentMethodsController/store';
+$route['admin/PaymentMethods/edit/(:num)'] = 'admin/PaymentMethodsController/edit/$1';
+$route['admin/PaymentMethods/delete/(:num)'] = 'admin/PaymentMethodsController/delete/$1';
+/**end of PaymentMethods routes */
+
 /** brands */
 $route['admin/brands'] = 'admin/BrandsController/index';
 $route['admin/brands/add'] = 'admin/BrandsController/add';

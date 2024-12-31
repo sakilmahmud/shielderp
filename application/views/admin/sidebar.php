@@ -259,6 +259,12 @@
               </a>
             </li>
             <li class="nav-item">
+              <a href="<?php echo base_url('admin/PaymentMethods'); ?>" class="nav-link <?php if ($activePage === 'payment_methods') echo 'active'; ?>">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Payment Methods</p>
+              </a>
+            </li>
+            <li class="nav-item">
               <a href="<?php echo base_url('admin/settings/company_details'); ?>" class="nav-link <?php if ($activePage === 'company_details') echo 'active'; ?>">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Company Details</p>
