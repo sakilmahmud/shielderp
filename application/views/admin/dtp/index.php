@@ -24,6 +24,11 @@
                             <?php echo $this->session->flashdata('message'); ?>
                         </div>
                     <?php endif; ?>
+                    <?php if ($this->session->flashdata('payment')) : ?>
+                        <div class="alert alert-info">
+                            <?php echo $this->session->flashdata('payment'); ?>
+                        </div>
+                    <?php endif; ?>
                     <div class="card_header">
                         <form method="get" action="<?php echo base_url('admin/dtp'); ?>">
                             <div class="row mb-3">

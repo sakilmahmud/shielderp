@@ -35,6 +35,9 @@ $route['admin/settings/bank_details'] = 'AdminController/bankDetails';
 $route['admin/password'] = 'AdminController/passwordChange';
 $route['admin/password/update'] = 'AdminController/updatePassword';
 
+/** Account Routes */
+$route['admin/accounts/account_balance'] = 'admin/AccountsController/account_balance';
+
 /** DTP Routes */
 $route['admin/dtp'] = 'admin/DtpController/index';
 $route['admin/dtp/add'] = 'admin/DtpController/add';
@@ -144,6 +147,7 @@ $route['admin/invoices/create']             = 'admin/InvoiceController/createInv
 $route['admin/invoices/edit/(:num)']        = 'admin/InvoiceController/updateInvoice/$1';
 $route['admin/invoices/view/(:num)']        = 'admin/InvoiceController/view/$1';
 $route['admin/invoices/print/(:num)']       = 'admin/InvoiceController/print/$1';
+$route['admin/invoices/delete/(:num)'] = 'admin/InvoiceController/delete/$1';
 
 $route['admin/invoices/getLastestStocks']   = 'admin/InvoiceController/getLastestStocks';
 $route['admin/invoices/addPayment']         = 'admin/InvoiceController/addPayment';

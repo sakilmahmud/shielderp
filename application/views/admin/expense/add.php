@@ -55,6 +55,12 @@
                                         <?php endforeach; ?>
                                     </select>
                                 </div>
+                                <!-- Invoice Number -->
+                                <div class="form-group">
+                                    <label for="invoice_no">Invoice No</label>
+                                    <input type="text" class="form-control" id="invoice_no" name="invoice_no" value="<?php echo set_value('invoice_no', isset($expense['invoice_no']) ? $expense['invoice_no'] : ''); ?>">
+                                    <?php echo form_error('invoice_no'); ?>
+                                </div>
                                 <!-- Document -->
                                 <div class="form-group">
                                     <label for="documents">Upload Document</label>

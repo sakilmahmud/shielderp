@@ -9,6 +9,7 @@ class DtpController extends CI_Controller
         parent::__construct();
         $this->load->model('UserModel');
         $this->load->model('DtpModel');
+        $this->load->model('TransactionModel');
         $this->load->model('PaymentMethodsModel');
         $this->load->library('form_validation');
 
@@ -110,6 +111,25 @@ class DtpController extends CI_Controller
             // Insert log entry
             add_log_data('log_dtp_services', $logData);
 
+            if ($paid_amount > 0) {
+                $transaction_data = [
+                    'amount' => $paid_amount,
+                    'trans_type' => 1, // Credit
+                    'payment_method_id' => $postData['payment_mode'],
+                    'descriptions' => 'Payment for DTP service',
+                    'transaction_for_table' => 'dtp_services',
+                    'table_id' => $serviceId, // Order ID
+                    'trans_by' => $this->session->userdata('user_id'), // User ID
+                    'trans_date' => $postData['service_date'],
+                    'created_at' => date('Y-m-d H:i:s')
+                ];
+
+                $last_insert_id = $this->TransactionModel->insert_transaction($transaction_data);
+                if ($last_insert_id > 0) {
+                    $this->session->set_flashdata('payment', 'Payment added successfully');
+                }
+            }
+
             $this->session->set_flashdata('message', 'Service added successfully');
             redirect('admin/dtp');
         }
@@ -143,6 +163,7 @@ class DtpController extends CI_Controller
             } else {
                 $paid_amount = $postData['service_charge'];
             }
+
             $updateData = [
                 'service_descriptions' => $postData['service_descriptions'],
                 'dtp_service_category_id' => $postData['dtp_service_categories'],
@@ -168,6 +189,41 @@ class DtpController extends CI_Controller
 
             // Insert log entry
             add_log_data('log_dtp_services', $logData);
+
+            if ($paid_amount > 0) {
+                $existingTransaction = $this->TransactionModel->get_transaction_by_table_and_id('dtp_services', $id);
+
+                $transaction_data = [
+                    'amount' => $paid_amount,
+                    'trans_type' => 1, // Credit
+                    'payment_method_id' => $postData['payment_mode'],
+                    'descriptions' => 'Payment for DTP service',
+                    'transaction_for_table' => 'dtp_services',
+                    'table_id' => $id,
+                    'trans_by' => $this->session->userdata('user_id'),
+                    'trans_date' => $postData['service_date'],
+                    'created_at' => date('Y-m-d H:i:s')
+                ];
+
+                if ($existingTransaction) {
+                    // Update the existing transaction
+                    $this->TransactionModel->update_transaction($existingTransaction['id'], $transaction_data);
+                    $this->session->set_flashdata('payment', 'Payment updated successfully');
+                } else {
+                    // Insert a new transaction
+                    $last_insert_id = $this->TransactionModel->insert_transaction($transaction_data);
+                    if ($last_insert_id > 0) {
+                        $this->session->set_flashdata('payment', 'Payment added successfully');
+                    }
+                }
+            } else {
+                // Delete transaction if paid_amount is 0 and transaction exists
+                $existingTransaction = $this->TransactionModel->get_transaction_by_table_and_id('dtp_services', $id);
+                if ($existingTransaction) {
+                    $this->TransactionModel->delete_transaction($existingTransaction['id']);
+                    $this->session->set_flashdata('payment', 'Payment deleted successfully');
+                }
+            }
 
             $this->session->set_flashdata('message', 'Service updated successfully');
             redirect('admin/dtp');
@@ -195,6 +251,10 @@ class DtpController extends CI_Controller
 
         // Insert log entry
         add_log_data('log_dtp_services', $logData);
+
+
+        // Delete the related transactions from 'transactions'
+        $this->db->delete('transactions', ['table_id' => $id, 'transaction_for_table' => 'dtp_services']);
 
         // Set flash message and redirect
         $this->session->set_flashdata('message', 'Service deleted successfully');

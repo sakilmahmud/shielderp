@@ -17,6 +17,12 @@
             <p>Dashboard</p>
           </a>
         </li>
+        <li class="nav-item">
+          <a href="<?php echo base_url('admin/accounts/account_balance'); ?>" class="nav-link <?php if ($activePage === 'accounts') echo 'active'; ?>">
+            <i class="nav-icon fas fa-wallet"></i>
+            <p>Accounts</p>
+          </a>
+        </li>
         <li class="nav-item <?php if ($activePage === 'dtp' || $activePage === 'dtp_categories') echo 'menu-open'; ?>">
           <a href="#" class="nav-link <?php if ($activePage === 'dtp' || $activePage === 'dtp_categories') echo 'active'; ?>">
             <i class="nav-icon fas fa-file-invoice"></i>
