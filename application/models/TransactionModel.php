@@ -27,12 +27,15 @@ class TransactionModel extends CI_Model
     // Get payment details by invoice ID
     public function get_payment_by_invoice($invoice_id)
     {
-        return $this->db->where('table_id', $invoice_id)
-            ->where('trans_type', 1)  // Only get credit transactions
-            ->where('transaction_for_table', 'invoices')  // Filter for 'invoices' table
-            ->where('status', 1)  // Only active transactions
-            ->get('transactions')
-            ->result_array();
+        $this->db->select('transactions.*, payment_methods.title AS payment_mode_title');
+        $this->db->from('transactions');
+        $this->db->join('payment_methods', 'payment_methods.id = transactions.payment_method_id', 'left'); // Join with payment_methods table
+        $this->db->where('transactions.table_id', $invoice_id);
+        $this->db->where('transactions.trans_type', 1); // Only get credit transactions
+        $this->db->where('transactions.transaction_for_table', 'invoices'); // Filter for 'invoices' table
+        $this->db->where('transactions.status', 1); // Only active transactions
+
+        return $this->db->get()->result_array();
     }
 
     // Get total paid amount by invoice

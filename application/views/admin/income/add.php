@@ -69,8 +69,7 @@
                                 <!-- Payment Method -->
                                 <div class="form-group">
                                     <label for="payment_method_id">Payment Method</label>
-                                    <select class="form-control" id="payment_method_id" name="payment_method_id">
-                                        <option value="">Select Payment Method</option>
+                                    <select class="form-control payment_method_id" id="payment_method_id" name="payment_method_id">
                                         <?php foreach ($payment_methods as $method) : ?>
                                             <option value="<?php echo $method['id']; ?>" <?php echo set_select('payment_method_id', $method['id'], isset($income['payment_method_id']) && $income['payment_method_id'] == $method['id']); ?>>
                                                 <?php echo $method['title']; ?>

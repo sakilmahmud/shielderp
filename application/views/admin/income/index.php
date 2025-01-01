@@ -26,8 +26,10 @@
                                 <thead>
                                     <tr>
                                         <th>ID</th>
+                                        <th>Income Head</th>
                                         <th>Income Title</th>
                                         <th>Amount</th>
+                                        <th>Mode</th>
                                         <th>Invoice No</th>
                                         <th>Transaction Date</th>
                                         <th>Actions</th>
@@ -37,8 +39,10 @@
                                     <?php foreach ($incomes as $income) : ?>
                                         <tr>
                                             <td><?php echo $income['id']; ?></td>
+                                            <td><?php echo $income['income_head']; ?></td>
                                             <td><?php echo $income['income_title']; ?></td>
                                             <td><?php echo $income['transaction_amount']; ?></td>
+                                            <td><?php echo $income['method_name']; ?></td>
                                             <td><?php echo $income['invoice_no']; ?></td>
                                             <td><?php echo $income['transaction_date']; ?></td>
                                             <td>

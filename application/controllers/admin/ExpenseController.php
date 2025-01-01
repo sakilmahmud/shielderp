@@ -6,7 +6,7 @@ class ExpenseController extends CI_Controller
     {
         parent::__construct();
         $this->load->model('ExpenseModel');
-        $this->load->model('PaymentModel');
+        $this->load->model('PaymentMethodsModel');
         $this->load->library('form_validation');
         if (!$this->session->userdata('user_id')) {
             redirect('login');
@@ -28,7 +28,7 @@ class ExpenseController extends CI_Controller
         $data['activePage'] = 'expense';
         $data['isUpdate'] = false;
         $data['expenseHeads'] = $this->ExpenseModel->getAllExpenseHeads();
-        $data['paymentMethods'] = $this->PaymentModel->get_all_payment_methods();
+        $data['paymentMethods'] = $this->PaymentMethodsModel->getAll();
 
         $this->form_validation->set_rules('expense_title', 'Expense Title', 'required');
         $this->form_validation->set_rules('transaction_amount', 'Transaction Amount', 'required');
@@ -63,7 +63,7 @@ class ExpenseController extends CI_Controller
         $data['isUpdate'] = true;
         $data['expense'] = $this->ExpenseModel->getExpense($id);
         $data['expenseHeads'] = $this->ExpenseModel->getAllExpenseHeads();
-        $data['paymentMethods'] = $this->PaymentModel->get_all_payment_methods();
+        $data['paymentMethods'] = $this->PaymentMethodsModel->getAll();
 
         $this->form_validation->set_rules('expense_title', 'Expense Title', 'required');
         $this->form_validation->set_rules('transaction_amount', 'Transaction Amount', 'required');

@@ -7,9 +7,10 @@ class IncomeModel extends CI_Model
     // Get all income records
     public function getAllIncomes()
     {
-        $this->db->select('incomes.*, income_heads.head_title as income_head');
+        $this->db->select('incomes.*, income_heads.head_title as income_head, payment_methods.title as method_name');
         $this->db->from('incomes');
         $this->db->join('income_heads', 'income_heads.id = incomes.income_head_id', 'left');
+        $this->db->join('payment_methods', 'payment_methods.id = incomes.payment_method_id', 'left');
         $this->db->where('incomes.status', 1); // Only active incomes
         $this->db->order_by('incomes.created_at', 'DESC');
         return $this->db->get()->result_array();

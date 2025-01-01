@@ -19,7 +19,7 @@
                         <div class="card-body">
                             <?php
                             // Determine form action URL based on create/update context
-                            $action = base_url(($isUpdate) ? 'admin/PaymentMethods/edit/' . $payment_method['id'] : 'admin/PaymentMethods/store');
+                            $action = base_url(($isUpdate) ? 'admin/PaymentMethods/edit/' . $payment_method['id'] : 'admin/PaymentMethods/add');
                             ?>
                             <form action="<?php echo $action; ?>" method="post">
                                 <div class="form-group">

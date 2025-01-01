@@ -263,8 +263,6 @@
                                             <div class="col-md-5 offset-md-7">
                                                 <?php
                                                 $paid_amount = 0;
-                                                $paymentModes = getPaymentModes();
-                                                //print_r($paymentModes);
 
                                                 if (!empty($invoice_payments)) :
                                                 ?>
@@ -279,14 +277,16 @@
                                                         </thead>
                                                         <tbody>
                                                             <?php
-
+                                                            /* echo "<pre>";
+                                                            print_r($paymentModes);
+                                                            die; */
                                                             foreach ($invoice_payments as $payment) :
                                                                 $paid_amount += $payment['amount'];
                                                                 //echo $payment['payment_method_id'];
                                                             ?>
                                                                 <tr data-id="<?php echo $payment['id'] ?>">
                                                                     <td>₹<?php echo $payment['amount'] ?></td>
-                                                                    <td><?php echo $paymentModes[$payment['payment_method_id']] ?? "-"; ?></td>
+                                                                    <td><?php echo $payment['payment_mode_title'] ?? "-"; ?></td>
                                                                     <td><?php echo $payment['trans_date'] ?></td>
                                                                     <td width="25%" class="text-center">
                                                                         <button type="button" class="btn btn-info btn-sm edit-payment">Edit</button>
@@ -368,15 +368,14 @@
                 <div>Balance Amount: <span class="balance_amount">₹<?php echo number_format(($balance > 0) ? $balance : 0, 2); ?></span></div>
                 <input type="hidden" id="balance_amount" value="<?php echo ($balance > 0) ? $balance : 0; ?>">
                 <form id="addPaymentForm">
-                    <div class="form-group">
-                        <label for="payment_method">Payment Method</label>
-                        <select class="form-control" id="payment_method" name="payment_method" required>
-                            <option value="">Select Payment Method</option>
-                            <?php foreach ($paymentModes as $index => $method) : ?>
-                                <option value="<?= $index ?>" <?= $index == 1 ? 'selected' : '' ?>><?= $method ?></option>
-                            <?php endforeach; ?>
+                    <div class="form-group payment_method_section">
+                        <select class="form-control payment_method_id" id="payment_method" name="payment_method" required>
+                            <?php if (!empty($paymentModes)) :
+                                foreach ($paymentModes as $index => $paymentMode) :
+                                    echo '<option value="' . $paymentMode['id'] . '">' . $paymentMode['title'] . '</option>';
+                                endforeach;
+                            endif; ?>
                         </select>
-
                     </div>
                     <div class="form-group">
                         <label for="payment_amount">Amount</label>
@@ -392,7 +391,7 @@
                     </div>
                     <input type="hidden" id="payment_id" name="payment_id">
                     <input type="hidden" id="invoice_id" name="invoice_id" value="<?= $invoice['id'] ?>">
-                    <button type="submit" class="btn btn-primary" id="add_payment_btn" disabled>Add Payment</button>
+                    <button type="submit" class="btn btn-primary" id="add_payment_btn">Add Payment</button>
                 </form>
             </div>
         </div>

@@ -9,6 +9,7 @@ class DtpController extends CI_Controller
         parent::__construct();
         $this->load->model('UserModel');
         $this->load->model('DtpModel');
+        $this->load->model('PaymentMethodsModel');
         $this->load->library('form_validation');
 
         if (!$this->session->userdata('user_id')) {
@@ -59,6 +60,7 @@ class DtpController extends CI_Controller
     {
         $data['activePage'] = 'dtp';
         $data['categories'] = $this->DtpModel->getCategories();
+        $data['payment_methods'] = $this->PaymentMethodsModel->getAll();
         $data['isUpdate'] = false;
 
         $this->form_validation->set_rules('service_descriptions', 'Service Description', 'required');
@@ -118,6 +120,7 @@ class DtpController extends CI_Controller
     {
         $data['activePage'] = 'dtp';
         $data['categories'] = $this->DtpModel->getCategories();
+        $data['payment_methods'] = $this->PaymentMethodsModel->getAll();
         $data['service'] = $this->DtpModel->getService($id);
         $data['isUpdate'] = true;
 

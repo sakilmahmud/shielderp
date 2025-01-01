@@ -258,12 +258,11 @@
                                     <div id="payment-section">
                                         <div class="payment-row">
                                             <div class="d-flex gap-3 justify-content-end">
-                                                <div class="form-group">
-                                                    <select class="form-control payment_mode" name="payment_mode[]">
-                                                        <option value="">Payment Mode</option>
+                                                <div class="form-group payment_method_section">
+                                                    <select class="form-control payment_method_id" name="payment_mode[]">
                                                         <?php if (!empty($paymentModes)) :
                                                             foreach ($paymentModes as $index => $paymentMode) :
-                                                                echo '<option value="' . $index . '">' . $paymentMode . '</option>';
+                                                                echo '<option value="' . $paymentMode['id'] . '">' . $paymentMode['title'] . '</option>';
                                                             endforeach;
                                                         endif; ?>
                                                     </select>

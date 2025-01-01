@@ -22,8 +22,10 @@
                                 <thead>
                                     <tr>
                                         <th>#</th>
+                                        <th>Expense Head</th>
                                         <th>Expense Title</th>
                                         <th>Amount</th>
+                                        <th>Mode</th>
                                         <th>Date</th>
                                         <th>Status</th>
                                         <th>Actions</th>
@@ -33,8 +35,10 @@
                                     <?php foreach ($expenses as $expense): ?>
                                         <tr>
                                             <td><?php echo $expense['id']; ?></td>
+                                            <td><?php echo $expense['head_title']; ?></td>
                                             <td><?php echo $expense['expense_title']; ?></td>
                                             <td><?php echo $expense['transaction_amount']; ?></td>
+                                            <td><?php echo $expense['method_name']; ?></td>
                                             <td><?php echo $expense['transaction_date']; ?></td>
                                             <td><?php echo ($expense['status'] == 1) ? 'Active' : 'Inactive'; ?></td>
                                             <td>

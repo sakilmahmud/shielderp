@@ -40,7 +40,7 @@
 
 <script>
   $(document).ready(function() {
-    $(".product_id, .category_id, .brand_id, .client_id, .doer_id").chosen().trigger("chosen:updated");
+    $(".product_id, .category_id, .brand_id, .client_id, .doer_id, .payment_method_id").chosen().trigger("chosen:updated");
   });
 </script>
 <script src="<?php echo base_url('assets/admin/dist/js/demo.js') ?>"></script>

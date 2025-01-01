@@ -39,32 +39,42 @@ class DtpModel extends CI_Model
 
     public function getFilteredData($from_date, $to_date, $created_by = null, $category_id = null, $paid_status = null, $payment_mode = null)
     {
-        $this->db->select('*');
+        $this->db->select('dtp_services.*, dtp_service_categories.cat_title AS category_title, payment_methods.title AS payment_mode_title, users.full_name AS created_by_name');
+
         $this->db->from('dtp_services');
-        $this->db->where('service_date >=', $from_date);
-        $this->db->where('service_date <=', $to_date);
+
+        // Left join with dtp_service_categories
+        $this->db->join('dtp_service_categories', 'dtp_service_categories.id = dtp_services.dtp_service_category_id', 'left');
+        // Left join with payment_methods
+        $this->db->join('payment_methods', 'payment_methods.id = dtp_services.payment_mode', 'left');
+        // Left join with users
+        $this->db->join('users', 'users.id = dtp_services.created_by', 'left');
+
+        // Filters
+        $this->db->where('dtp_services.service_date >=', $from_date);
+        $this->db->where('dtp_services.service_date <=', $to_date);
 
         if (!empty($created_by)) {
-            $this->db->where('created_by', $created_by);
+            $this->db->where('dtp_services.created_by', $created_by);
         }
         if (!empty($category_id)) {
-            $this->db->where('dtp_service_category_id', $category_id);
+            $this->db->where('dtp_services.dtp_service_category_id', $category_id);
         }
         if ($paid_status !== null && $paid_status !== '') { // Check for all valid statuses
-            $this->db->where('paid_status', $paid_status);
+            $this->db->where('dtp_services.paid_status', $paid_status);
         }
-
         if (!is_null($payment_mode) && $payment_mode !== '') { // Add Payment Mode filter
-            $this->db->where('payment_mode', $payment_mode);
+            $this->db->where('dtp_services.payment_mode', $payment_mode);
         }
 
-        // Multiple order by conditions
-        $this->db->order_by('service_date', 'DESC'); // Primary sorting
-        $this->db->order_by('id', 'DESC'); // Secondary sorting (e.g., for tie-breaking)
+        // Order By
+        $this->db->order_by('dtp_services.service_date', 'DESC'); // Primary sorting
+        $this->db->order_by('dtp_services.id', 'DESC'); // Secondary sorting (tie-breaking)
 
         $query = $this->db->get();
         return $query->result_array();
     }
+
 
 
 

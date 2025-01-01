@@ -7,7 +7,7 @@ class IncomeController extends CI_Controller
     {
         parent::__construct();
         $this->load->model('IncomeModel');
-        $this->load->model('PaymentModel');
+        $this->load->model('PaymentMethodsModel');
         $this->load->library('form_validation');
         if (!$this->session->userdata('user_id')) {
             redirect('login');
@@ -29,7 +29,7 @@ class IncomeController extends CI_Controller
         $data['activePage'] = 'income';
         $data['isUpdate'] = false;
         $data['income_heads'] = $this->IncomeModel->getIncomeHeads(); // Fetch available income heads
-        $data['payment_methods'] = $this->PaymentModel->get_all_payment_methods(); // Load payment methods
+        $data['payment_methods'] = $this->PaymentMethodsModel->getAll(); // Load payment methods
         /* echo "<pre>";
         print_r($data);
         die; */
@@ -69,7 +69,7 @@ class IncomeController extends CI_Controller
         $data['isUpdate'] = true;
         $data['income'] = $this->IncomeModel->getIncome($id);
         $data['income_heads'] = $this->IncomeModel->getIncomeHeads();
-        $data['payment_methods'] = $this->PaymentModel->get_all_payment_methods(); // Load payment methods
+        $data['payment_methods'] = $this->PaymentMethodsModel->getAll(); // Load payment methods
 
         $this->form_validation->set_rules('income_title', 'Income Title', 'required');
         $this->form_validation->set_rules('transaction_amount', 'Transaction Amount', 'required|numeric');

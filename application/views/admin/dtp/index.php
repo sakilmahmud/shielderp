@@ -57,7 +57,7 @@
                                 </div>
                                 <!-- New Filter for Payment Mode -->
                                 <div class="col-md-1">
-                                    <label for="payment_mode">Payment Mode</label>
+                                    <label for="payment_mode">Modes</label>
                                     <select class="form-control" id="payment_mode" name="payment_mode">
                                         <option value="">All</option>
                                         <option value="1" <?php echo ($this->input->get('payment_mode') == '1') ? 'selected' : ''; ?>>Cash</option>
@@ -103,14 +103,7 @@
                                     <tr>
                                         <td><?php echo $service['id']; ?></td>
                                         <td><?php echo $service['service_descriptions']; ?></td>
-                                        <td>
-                                            <?php
-                                            $category = array_filter($categories, function ($cat) use ($service) {
-                                                return $cat['id'] === $service['dtp_service_category_id'];
-                                            });
-                                            echo !empty($category) ? current($category)['cat_title'] : 'Unknown';
-                                            ?>
-                                        </td>
+                                        <td><?php echo $service['category_title']; ?></td>
                                         <td>₹<?php echo number_format($service['service_charge'], 2); ?></td>
                                         <td>₹<?php echo number_format($service['paid_amount'], 2); ?></td>
                                         <td>
@@ -119,26 +112,9 @@
                                             echo $status[$service['paid_status']];
                                             ?>
                                         </td>
-                                        <td>
-                                            <?php
-                                            if ($service['paid_status'] == 0) {
-                                                echo '-';
-                                            } else {
-                                                $paymentModes = ['1' => 'Cash', '2' => 'Online'];
-                                                echo isset($paymentModes[$service['payment_mode']]) ? $paymentModes[$service['payment_mode']] : 'Unknown';
-                                            }
-
-                                            ?>
-                                        </td>
+                                        <td><?php echo $service['payment_mode_title']; ?></td>
                                         <td><?php echo date('d-m-Y', strtotime($service['service_date'])); ?></td>
-                                        <td>
-                                            <?php
-                                            $user = array_filter($users, function ($user_name) use ($service) {
-                                                return $user_name['id'] === $service['created_by'];
-                                            });
-                                            echo !empty($user) ? current($user)['full_name'] : 'Unknown';
-                                            ?>
-                                        </td>
+                                        <td><?php echo $service['created_by_name']; ?></td>
                                         <td>
                                             <a href="<?php echo base_url('admin/dtp/edit/' . $service['id']); ?>" class="btn btn-warning btn-sm">Edit</a>
                                             <?php if ($this->session->userdata('role') == 1) : ?>

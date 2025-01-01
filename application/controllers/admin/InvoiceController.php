@@ -11,7 +11,7 @@ class InvoiceController extends CI_Controller
         $this->load->model('ProductModel');
         $this->load->model('CustomerModel');
         $this->load->model('StockModel');
-        $this->load->model('PaymentModel');
+        $this->load->model('PaymentMethodsModel');
         $this->load->model('TransactionModel');
         $this->load->library('form_validation');
 
@@ -37,7 +37,8 @@ class InvoiceController extends CI_Controller
         // Load necessary data for the view
         $data['products'] = $this->ProductModel->get_all_products();
         $data['customers'] = $this->CustomerModel->get_all_customers();
-        $data['paymentModes'] = getPaymentModes();
+
+        $data['paymentModes'] = $this->PaymentMethodsModel->getAll();
         /* print_r($data['paymentModes']);
         die; */
         $this->form_validation->set_rules('customer_id', 'Customer', 'required');
@@ -246,13 +247,14 @@ class InvoiceController extends CI_Controller
         // Load existing invoice data
         $data['invoice'] = $this->InvoiceModel->get_invoice_by_id($invoice_id);
         $data['invoice_details'] = $this->InvoiceModel->get_invoice_details($invoice_id);
-
+        $data['paymentModes'] = $this->PaymentMethodsModel->getAll();
         $data['is_gst_bill'] = getSetting('is_gst_bill');
 
         // Load necessary data for the view
         $data['products'] = $this->ProductModel->get_all_products();
         $data['customers'] = $this->CustomerModel->get_all_customers();
-        $data['payment_methods'] = $this->PaymentModel->get_all_payment_methods(); // Load payment methods
+        //$data['payment_methods'] = $this->PaymentModel->get_all_payment_methods(); // Load payment methods
+
         // Check if a payment already exists for this invoice
         $existing_payments = $this->TransactionModel->get_payment_by_invoice($invoice_id);
         $current_balance = 0;
