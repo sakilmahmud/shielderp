@@ -158,7 +158,7 @@ class InvoiceController extends CI_Controller
                     'created_at' => $current_date_time
                 ];
                 // Reduce the stock for each product
-                $this->StockModel->reduceStock($product_id, $quantities[$index]);
+                //$this->StockModel->reduceStock($product_id, $quantities[$index]);
             }
 
             $this->db->insert_batch('invoice_details', $invoiceDetailsData);
@@ -253,13 +253,15 @@ class InvoiceController extends CI_Controller
         // Load necessary data for the view
         $data['products'] = $this->ProductModel->get_all_products();
         $data['customers'] = $this->CustomerModel->get_all_customers();
-        //$data['payment_methods'] = $this->PaymentModel->get_all_payment_methods(); // Load payment methods
 
-        // Check if a payment already exists for this invoice
-        $existing_payments = $this->TransactionModel->get_payment_by_invoice($invoice_id);
-        $current_balance = 0;
+        // Check existing payments for this invoice
+        $existing_transactions = $this->TransactionModel->get_payment_by_invoice($invoice_id);
+        $existing_transactions_map = [];
+        foreach ($existing_transactions as $transaction) {
+            $existing_transactions_map[$transaction['id']] = $transaction;
+        }
 
-        $data['invoice_payments'] = $existing_payments;
+        $data['invoice_payments'] = $existing_transactions;
 
         $this->form_validation->set_rules('customer_id', 'Customer', 'required');
         $this->form_validation->set_rules('invoice_date', 'Invoice Date', 'required');
@@ -270,10 +272,8 @@ class InvoiceController extends CI_Controller
             $this->load->view('admin/invoices/update', $data);
             $this->load->view('admin/footer');
         } else {
-            /* echo "<pre>";
-            print_r($_POST);
-            die; */
             $current_date_time = date('Y-m-d H:i:s');
+
             // Prepare updated invoice data
             $invoiceData = [
                 'invoice_date' => $this->input->post('invoice_date'),
@@ -304,50 +304,71 @@ class InvoiceController extends CI_Controller
             ];
             $this->db->insert('log_invoices', $logInvoiceData);
 
-            // Delete existing invoice details data
-            $this->db->delete('invoice_details', ['invoice_id' => $invoice_id]);
+            // Handle payment updates
+            $payment_modes = $this->input->post('payment_mode');
+            $payment_amounts = $this->input->post('payment_amount');
+            $payment_dates = $this->input->post('payment_date');
+            $paid_amount = 0;
 
-            // Prepare new invoice details data
-            $invoiceDetailsData = [];
-            $product_ids = $this->input->post('product_id');
-            $product_descriptions = $this->input->post('product_descriptions');
-            $quantities = $this->input->post('qnt');
-            $purchase_prices = $this->input->post('purchase_price');
-            $discount_types = $this->input->post('discount_type');
-            $discounts = $this->input->post('discount');
-            $gst_rates = $this->input->post('gst_rate');
-            $gst_amounts = $this->input->post('gst_amount');
-            $final_prices = $this->input->post('final_price');
+            if (!empty($payment_modes)) {
+                $new_transactions = [];
 
-            foreach ($product_ids as $index => $product_id) {
-                $invoiceDetailsData[] = [
-                    'invoice_id' => $invoice_id,
-                    'customer_id' => $this->input->post('customer_id'),
-                    'product_id' => $product_id,
-                    'product_descriptions' => $product_descriptions[$index],
-                    'quantity' => $quantities[$index],
-                    'price' => $purchase_prices[$index],
-                    'discount_type' => $discount_types[$index],
-                    'discount' => $discounts[$index],
-                    'gst_rate' => $gst_rates[$index],
-                    'gst_amount' => $gst_amounts[$index],
-                    'final_price' => $final_prices[$index],
-                    'created_at' => $current_date_time
-                ];
+                foreach ($payment_modes as $index => $payment_mode) {
+                    if (!empty($payment_mode)) {
+                        $paid_amount += $payment_amounts[$index];
+
+                        // Check if the transaction exists
+                        $transaction_id = $this->input->post('transaction_id')[$index] ?? null;
+                        if ($transaction_id && isset($existing_transactions_map[$transaction_id])) {
+                            // Update existing transaction
+                            $transactionData = [
+                                'amount' => $payment_amounts[$index],
+                                'payment_method_id' => $payment_mode,
+                                'trans_date' => $payment_dates[$index],
+                                'updated_at' => $current_date_time
+                            ];
+                            $this->db->where('id', $transaction_id);
+                            $this->db->update('transactions', $transactionData);
+                            unset($existing_transactions_map[$transaction_id]); // Remove from map
+                        } else {
+                            // Add new transaction
+                            $new_transactions[] = [
+                                'amount' => $payment_amounts[$index],
+                                'trans_type' => 1, // Credit
+                                'payment_method_id' => $payment_mode,
+                                'descriptions' => 'Payment for Invoice #' . $data['invoice']['invoice_no'],
+                                'transaction_for_table' => 'invoices',
+                                'table_id' => $invoice_id,
+                                'trans_by' => $this->session->userdata('user_id'),
+                                'trans_date' => $payment_dates[$index],
+                                'created_at' => $current_date_time
+                            ];
+                        }
+                    }
+                }
+
+                // Insert new transactions
+                if (!empty($new_transactions)) {
+                    $this->db->insert_batch('transactions', $new_transactions);
+                }
+
+                // Delete any remaining transactions that were not updated
+                if (!empty($existing_transactions_map)) {
+                    $this->db->where_in('id', array_keys($existing_transactions_map));
+                    $this->db->delete('transactions');
+                }
+
+                // Update payment status in the invoice
+                $payment_status = ($paid_amount >= $invoiceData['total_amount']) ? 1 : (($paid_amount > 0) ? 2 : 0);
+                $this->db->where('id', $invoice_id);
+                $this->db->update('invoices', ['payment_status' => $payment_status, 'updated_at' => $current_date_time]);
             }
-
-            // Insert new invoice details data into 'invoice_details' table
-            $this->db->insert_batch('invoice_details', $invoiceDetailsData);
-
-            // Handle payment update/insert
-            /*  */
 
             // Set flash message and redirect
             $this->session->set_flashdata('message', 'Invoice updated successfully');
             redirect('admin/invoices');
         }
     }
-
 
 
     public function generate_invoice_no($is_gst)
