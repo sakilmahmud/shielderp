@@ -37,6 +37,7 @@ $route['admin/password/update'] = 'AdminController/updatePassword';
 
 /** Account Routes */
 $route['admin/accounts/account_balance'] = 'admin/AccountsController/account_balance';
+$route['admin/accounts/transfer_fund'] = 'admin/AccountsController/transfer_fund';
 
 /** DTP Routes */
 $route['admin/dtp'] = 'admin/DtpController/index';

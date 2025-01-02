@@ -10,6 +10,30 @@
     </div>
     <div class="content">
         <div class="container-fluid">
+            <!-- Date Range Filter Form -->
+            <div class="card">
+                <div class="card-header">
+                    <form method="get" action="<?php echo base_url('admin/accounts/account_balance'); ?>">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label for="from_date">From Date</label>
+                                <input type="date" id="from_date" name="from_date" class="form-control" value="<?php echo $from_date; ?>">
+                            </div>
+                            <div class="col-md-4">
+                                <label for="to_date">To Date</label>
+                                <input type="date" id="to_date" name="to_date" class="form-control" value="<?php echo $to_date; ?>">
+                            </div>
+                            <div class="col-md-4">
+                                <label>&nbsp;</label><br>
+                                <button type="submit" class="btn btn-primary">Filter</button>
+                                <a href="<?php echo base_url('admin/accounts/account_balance'); ?>" class="btn btn-secondary">Reset</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Balances Table -->
             <div class="card">
                 <div class="card-header">
                     <h3 class="card-title">Balances by Payment Methods</h3>
@@ -18,7 +42,7 @@
                     <table class="table table-bordered">
                         <thead>
                             <tr>
-                                <th>Payment Method ID</th>
+                                <th>Payment Method</th>
                                 <th>Total Credit</th>
                                 <th>Total Debit</th>
                                 <th>Net Balance</th>
@@ -34,7 +58,6 @@
                                 </tr>
                             <?php endforeach; ?>
                         </tbody>
-
                     </table>
                 </div>
                 <div class="card-footer">

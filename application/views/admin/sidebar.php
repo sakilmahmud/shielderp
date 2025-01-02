@@ -17,12 +17,31 @@
             <p>Dashboard</p>
           </a>
         </li>
-        <li class="nav-item">
-          <a href="<?php echo base_url('admin/accounts/account_balance'); ?>" class="nav-link <?php if ($activePage === 'accounts') echo 'active'; ?>">
+
+        <li class="nav-item <?php if ($activePage === 'accounts' || $activePage === 'transfer_fund') echo 'menu-open'; ?>">
+          <a href="#" class="nav-link <?php if ($activePage === 'accounts' || $activePage === 'transfer_fund') echo 'active'; ?>">
             <i class="nav-icon fas fa-wallet"></i>
-            <p>Accounts</p>
+            <p>
+              Accounts
+              <i class="fas fa-angle-left right"></i>
+            </p>
           </a>
+          <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a href="<?php echo base_url('admin/accounts/account_balance'); ?>" class="nav-link <?php if ($activePage === 'accounts') echo 'active'; ?>">
+                <i class="nav-icon fas fa-calendar-alt"></i>
+                <p>Account Balances</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="<?php echo base_url('admin/accounts/transfer_fund'); ?>" class="nav-link <?php if ($activePage === 'transfer_fund') echo 'active'; ?>">
+                <i class="nav-icon fas fa-tags"></i>
+                <p>Transfer Fund</p>
+              </a>
+            </li>
+          </ul>
         </li>
+
         <li class="nav-item <?php if ($activePage === 'dtp' || $activePage === 'dtp_categories') echo 'menu-open'; ?>">
           <a href="#" class="nav-link <?php if ($activePage === 'dtp' || $activePage === 'dtp_categories') echo 'active'; ?>">
             <i class="nav-icon fas fa-file-invoice"></i>
