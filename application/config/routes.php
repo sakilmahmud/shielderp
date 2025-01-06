@@ -35,6 +35,17 @@ $route['admin/settings/bank_details'] = 'AdminController/bankDetails';
 $route['admin/password'] = 'AdminController/passwordChange';
 $route['admin/password/update'] = 'AdminController/updatePassword';
 
+/** Contacts Routes */
+$route['admin/contacts/group/add'] = 'admin/ContactsGroupController/add';
+$route['admin/contacts/group'] = 'admin/ContactsGroupController/index';
+
+$route['admin/contacts'] = 'admin/ContactsController/index';
+$route['admin/contacts/add'] = 'admin/ContactsController/add';
+$route['admin/contacts/edit/(:num)'] = 'admin/ContactsController/edit/$1';
+$route['admin/contacts/delete/(:num)'] = 'admin/ContactsController/delete/$1';
+$route['admin/contacts/bulk-add'] = 'admin/ContactsController/bulkAdd';
+$route['admin/contacts/get-contacts'] = 'admin/ContactsController/getContacts';
+
 /** Account Routes */
 $route['admin/accounts/account_balance'] = 'admin/AccountsController/account_balance';
 $route['admin/accounts/transfer_fund'] = 'admin/AccountsController/transfer_fund';

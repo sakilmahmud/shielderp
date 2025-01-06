@@ -110,8 +110,11 @@ class AdminController extends CI_Controller
         $data['activePage'] = 'whatsapp';
         $data['error'] = ''; // Initialize the error message
 
-        // Load the model to get all posts
+        $this->load->model('ContactsGroupModel');
         $this->load->model('PostModel');
+
+        $data['groups'] = $this->ContactsGroupModel->getAll();
+        // Load the model to get all posts
         $data['posts'] = $this->PostModel->getAllPosts();
 
         $this->load->view('admin/header', $data);
@@ -121,134 +124,106 @@ class AdminController extends CI_Controller
 
     public function whatsappPost()
     {
+        /* echo "<pre>";
+        print_r($_POST);
+        die; */
         $source_contacts = $this->input->post('source_contacts');
         $sender_number = $this->input->post('sender_number');
         $message = $this->input->post('message');
         $post_id = $this->input->post('posts_id'); // Get the selected post ID
 
+        $file_uploaded = false; // Default to no file uploaded
+        $file_path = '';
+        $file_type = '';
+        $media_type = '';
 
+        // If a post is selected, get the media details from the post
+        if (!empty($post_id)) {
+            $post = $this->db->get_where('posts', ['id' => $post_id])->row_array();
 
-        $validation_msg = "";
-        // Set validation rules
-        /* if (empty($post_id)) {
-            $validation_msg = "Message Required";
-            //$this->form_validation->set_rules('message', 'Message', 'required');
-        } elseif (empty($source_contacts)) {
-            $validation_msg = "Post Required";
-            $this->form_validation->set_rules('post_d', 'Post', 'required');
-        }
-
-        if (empty($sender_number)) {
-            $validation_msg = "Sender Number";
-            $this->form_validation->set_rules('sender_number', 'Sender Number', 'required');
-        } elseif (empty($source_contacts)) {
-            $validation_msg = "Source Contacts";
-            $this->form_validation->set_rules('source_contacts', 'Source Contacts', 'required');
-        } */
-
-        //if ($this->form_validation->run() === FALSE) {
-        if ($validation_msg != "") {
-            // Set flash message and redirect
-            //$this->session->set_flashdata('error_message', $validation_msg);
-            //redirect('admin/wa');
-            echo $validation_msg;
-            echo "<pre>";
-            print_r($_POST);
-            die;
+            if ($post) {
+                $message = $post['post_content'];
+                $file_path = $post['post_media_url'];
+                $file_path = base_url($post['post_media_url']);
+                $file_type = $post['media_type'];
+            }
         } else {
-            $file_uploaded = false; // Default to no file uploaded
-            $file_path = '';
-            $file_type = '';
-            $media_type = '';
-
-            // If a post is selected, get the media details from the post
-            if (!empty($post_id)) {
-                $post = $this->db->get_where('posts', ['id' => $post_id])->row_array();
-
-                if ($post) {
-                    $message = $post['post_content'];
-                    $file_path = $post['post_media_url'];
-                    $file_path = base_url($post['post_media_url']);
-                    $file_type = $post['media_type'];
+            // Check if a file has been uploaded
+            if (isset($_FILES['attached_file']) && !empty($_FILES['attached_file']['name'])) {
+                // Ensure the upload directory exists, if not, create it
+                $upload_path = 'assets/uploads/whatsapp_files/';
+                if (!is_dir($upload_path)) {
+                    mkdir($upload_path, 0755, true);
                 }
-            } else {
-                // Check if a file has been uploaded
-                if (isset($_FILES['attached_file']) && !empty($_FILES['attached_file']['name'])) {
-                    // Ensure the upload directory exists, if not, create it
-                    $upload_path = 'assets/uploads/whatsapp_files/';
-                    if (!is_dir($upload_path)) {
-                        mkdir($upload_path, 0755, true);
-                    }
 
-                    $config['upload_path'] = $upload_path; // Set your upload directory
-                    $config['allowed_types'] = 'jpg|png|gif|pdf|mp3|mp4'; // Allowed file types
-                    $config['max_size'] = 2048; // Maximum file size in KB (2MB)
-                    $config['file_name'] = time() . '_' . $_FILES['attached_file']['name']; // Rename file with timestamp
+                $config['upload_path'] = $upload_path; // Set your upload directory
+                $config['allowed_types'] = 'jpg|png|gif|pdf|mp3|mp4'; // Allowed file types
+                $config['max_size'] = 2048; // Maximum file size in KB (2MB)
+                $config['file_name'] = time() . '_' . $_FILES['attached_file']['name']; // Rename file with timestamp
 
-                    $this->upload->initialize($config);
+                $this->upload->initialize($config);
 
-                    // Attempt to upload the file
-                    if ($this->upload->do_upload('attached_file')) {
-                        // Upload success, get the uploaded file data
-                        $file_data = $this->upload->data();
-                        $file_path = base_url('assets/uploads/whatsapp_files/' . $file_data['file_name']);
-                        $file_type = $file_data['file_type'];
-                        $file_uploaded = true;
+                // Attempt to upload the file
+                if ($this->upload->do_upload('attached_file')) {
+                    // Upload success, get the uploaded file data
+                    $file_data = $this->upload->data();
+                    $file_path = base_url('assets/uploads/whatsapp_files/' . $file_data['file_name']);
+                    $file_type = $file_data['file_type'];
+                    $file_uploaded = true;
 
-                        // Determine the media type based on the file type
+                    // Determine the media type based on the file type
 
-                    } else {
-                        // Handle upload error, if necessary
-                        $upload_error = $this->upload->display_errors();
-                        $this->session->set_flashdata('error_message', 'File upload failed: ' . $upload_error);
-                        redirect('admin/wa');
-                        return;
-                    }
+                } else {
+                    // Handle upload error, if necessary
+                    $upload_error = $this->upload->display_errors();
+                    $this->session->set_flashdata('error_message', 'File upload failed: ' . $upload_error);
+                    redirect('admin/wa');
+                    return;
                 }
             }
-
-            $message_type = $file_uploaded || !empty($file_path) ? "file" : "text"; // Determine message type
-            $receiver_numbers = !empty($source_contacts) ? $source_contacts : explode(",", $sender_number);
-
-            if (!empty($receiver_numbers)) {
-                foreach ($receiver_numbers as $receiver_number) {
-                    if ($message_type === "file") {
-                        $media_type = ge_media_type($file_type);
-                        // Send message with the attached file
-                        $response = sendTextMsg($receiver_number, $message, $file_path, $media_type);
-                    } else {
-                        // Send message without any attachment
-                        $response = sendTextMsg($receiver_number, $message);
-                    }
-
-                    $decrypt_response = json_decode($response);
-                    $status = $decrypt_response->status;
-                    $res_msg = $decrypt_response->msg;
-                    $res_errors = isset($decrypt_response->errors) ? json_encode($decrypt_response->errors) : null;
-
-                    // Prepare data for database insertion
-                    $data = [
-                        'receiver_number' => $receiver_number,
-                        'message' => $message,
-                        'message_type' => $message_type,
-                        'file_path' => $file_uploaded || !empty($file_path) ? $file_path : null,
-                        'file_type' => $file_uploaded || !empty($file_type) ? $file_type : null,
-                        'msg_status' => $status,
-                        'response_msg' => $res_msg,
-                        'error_log' => $res_errors,
-                        'post_id' => !empty($post_id) ? $post_id : null, // Save post ID if used
-                        'created_at' => date('Y-m-d H:i:s')
-                    ];
-
-                    // Insert the message details into the database
-                    $this->db->insert('whatsapp_message', $data);
-                }
-            }
-
-            // Set flash message and redirect
-            $this->session->set_flashdata('message', 'Message sent successfully!');
-            redirect('admin/wa');
         }
+
+        $message_type = $file_uploaded || !empty($file_path) ? "file" : "text"; // Determine message type
+        $receiver_numbers = !empty($source_contacts) ? $source_contacts : explode(",", $sender_number);
+
+        if (!empty($receiver_numbers)) {
+            foreach ($receiver_numbers as $receiver_number) {
+                if ($message_type === "file") {
+                    $media_type = ge_media_type($file_type);
+                    // Send message with the attached file
+                    $response = sendTextMsg($receiver_number, $message, $file_path, $media_type);
+                } else {
+                    // Send message without any attachment
+                    $response = sendTextMsg($receiver_number, $message);
+                }
+
+                $decrypt_response = json_decode($response);
+                $status = $decrypt_response->status;
+                $res_msg = $decrypt_response->msg;
+                $res_errors = isset($decrypt_response->errors) ? json_encode($decrypt_response->errors) : null;
+
+                // Prepare data for database insertion
+                $data = [
+                    'receiver_number' => $receiver_number,
+                    'message' => $message,
+                    'message_type' => $message_type,
+                    'file_path' => $file_uploaded || !empty($file_path) ? $file_path : null,
+                    'file_type' => $file_uploaded || !empty($file_type) ? $file_type : null,
+                    'msg_status' => $status,
+                    'response_msg' => $res_msg,
+                    'error_log' => $res_errors,
+                    'post_id' => !empty($post_id) ? $post_id : null, // Save post ID if used
+                    'created_at' => date('Y-m-d H:i:s')
+                ];
+
+                // Insert the message details into the database
+                $this->db->insert('whatsapp_message', $data);
+            }
+        }
+
+        // Set flash message and redirect
+        $this->session->set_flashdata('message', 'Message sent successfully!');
+        redirect('admin/wa');
     }
 
 
@@ -276,7 +251,11 @@ class AdminController extends CI_Controller
     {
         $source = $this->input->post('source');
 
-        if ($source == 1) {
+        $this->load->model('ContactsModel');
+
+        $contacts = $this->ContactsModel->getContactsByGroupId($source);
+
+        /* if ($source == 1) {
             $this->db->select('id, full_name, mobile');
             $this->db->from('contacts_zenith');
             $this->db->where('user_role', 3); // Add condition for user_role = 3
@@ -288,7 +267,7 @@ class AdminController extends CI_Controller
             $query = $this->db->get();
         }
 
-        $contacts = $query->result_array();
+        $contacts = $query->result_array(); */
         echo json_encode($contacts);
     }
 

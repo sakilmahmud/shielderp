@@ -34,11 +34,15 @@
                             <div class="row">
                                 <div class="col-md-3">
                                     <div class="form-group">
-                                        <label for="number_source">Number Source:</label>
-                                        <select name="number_source" id="number_source">
-                                            <option value="">Select Source</option>
-                                            <option value="1">ZA</option>
-                                            <option value="2">PH</option>
+                                        <label>Group</label>
+                                        <select name="contacts_group_id" class="form-control" id="number_source" required>
+                                            <option value="">Select Group</option>
+                                            <?php foreach ($groups as $group): ?>
+                                                <option value="<?php echo $group['id']; ?>"
+                                                    <?php echo isset($contact) && $contact['contacts_group_id'] == $group['id'] ? 'selected' : ''; ?>>
+                                                    <?php echo $group['title']; ?>
+                                                </option>
+                                            <?php endforeach; ?>
                                         </select>
                                     </div>
                                 </div>
@@ -148,7 +152,7 @@
 
                         if (response.length > 0) {
                             $.each(response, function(index, contact) {
-                                $('#source_contacts').append('<option value="' + contact.mobile + '">' + contact.full_name + ' (' + contact.mobile + ')</option>');
+                                $('#source_contacts').append('<option value="' + contact.contact + '">' + contact.full_name + ' (' + contact.contact + ')</option>');
                             });
                             $('.allsource_contacts').show(); // Show the source_contacts dropdown
                             $("#source_contacts").chosen().trigger("chosen:updated");
