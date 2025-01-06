@@ -35,7 +35,7 @@
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         <label>Group</label>
-                                        <select name="contacts_group_id" class="form-control" id="number_source" required>
+                                        <select name="contacts_group_id" class="form-control" id="number_source">
                                             <option value="">Select Group</option>
                                             <?php foreach ($groups as $group): ?>
                                                 <option value="<?php echo $group['id']; ?>"
@@ -107,7 +107,7 @@
                                 </div>
                             </div>
 
-                            <button type="submit" class="btn btn-primary">Send Message</button>
+                            <button type="submit" class="btn btn-primary send-btn">Send Message</button>
                             <?php echo form_close(); ?>
                         </div>
                     </div>
@@ -118,6 +118,10 @@
 </div>
 
 <script>
+    $(document).on('click', '.send-btn', function() {
+        $(this).addClass('disabled');
+    });
+
     $(document).ready(function() {
         $('#posts_id').change(function() {
             if ($(this).val() !== "") {
