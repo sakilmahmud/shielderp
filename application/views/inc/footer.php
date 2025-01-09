@@ -13,28 +13,29 @@
                   </p> -->
                         <ul class="footer_address">
                             <li>
-                                Address: 142, Ward no - 4, Arambagh, Sadarghat, Hooghly. Pin - 712601. W.B. INDIA
+                                Address: Gholar More, Usthi, South 24 Parganas<br>
+                                West Bengal, India, 743375
                             </li>
-                            <li>Phone: (033) 2533 5333</li>
-                            <li>Whatsapp: 6290253600</li>
-                            <li>Email: shyambazar@nandonjewellers.com</li>
+                            <li>Phone: <a href="tel:+913369028204">(033) 6902 8204</a></li>
+                            <li>Whatsapp: <a href="https://wa.me/9732138374" target="_blank">9732138374</a></li>
+                            <li>Email: <a href="mailto:info@gcshop.in">info@gcshop.in</a>, <a href="mailto:globalcomputers19@gmail.com">globalcomputers19@gmail.com</a></li>
                         </ul>
                     </div>
                 </div>
                 <div class="col-lg-2">
                     <div class="footer_col footer_list">
-                        <h5>Contact Us</h5>
+                        <h5>Services</h5>
                         <ul>
-                            <li><a href="#">Shyambazar</a></li>
-                            <li><a href="#">Arambagh</a></li>
-                            <li><a href="#">Kamarpukur</a></li>
-                            <li><a href="#">Kotulpur</a></li>
+                            <li><a href="#">PC Services</a></li>
+                            <li><a href="#">Laptop Services</a></li>
+                            <li><a href="#">Printer Services</a></li>
+                            <li><a href="#">CCTV Services</a></li>
                         </ul>
                     </div>
                 </div>
                 <div class="col-lg-2">
                     <div class="footer_col footer_list">
-                        <h5>Service</h5>
+                        <h5>Important Links</h5>
                         <ul>
                             <li><a href="#"> Repair</a></li>
                             <li><a href="#"> HUID</a></li>

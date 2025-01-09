@@ -25,7 +25,7 @@
             <div class="col-lg-10 m-auto">
                 <div class="data_area_color">
                     <div class="data_area">
-                        <img class="overlay_img" src="https://nandon.softechplaza.com/assets/frontend/images/churi.png" class="img-fluid" alt="Nondan">
+                        <img class="overlay_img" src="<?php echo base_url('assets/frontend/images/ram.png'); ?>" class="img-fluid" alt="Nondan">
 
                         <div class="row">
                             <div class="col-lg-6">
