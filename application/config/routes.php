@@ -52,6 +52,7 @@ $route['admin/accounts/transfer_fund'] = 'admin/AccountsController/transfer_fund
 
 /** DTP Routes */
 $route['admin/dtp'] = 'admin/DtpController/index';
+$route['admin/dtp/fetch'] = 'admin/DtpController/fetchData';
 $route['admin/dtp/add'] = 'admin/DtpController/add';
 $route['admin/dtp/edit/(:num)'] = 'admin/DtpController/edit/$1';
 $route['admin/dtp/delete/(:num)'] = 'admin/DtpController/delete/$1';

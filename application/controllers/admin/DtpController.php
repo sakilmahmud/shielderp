@@ -21,7 +21,7 @@ class DtpController extends CI_Controller
     public function index()
     {
         $data['activePage'] = 'dtp';
-
+        $data['payment_methods'] = $this->PaymentMethodsModel->getAll(); // Load payment methods
         // Get filter inputs
         $from_date = $this->input->get('from_date', true);
         $to_date = $this->input->get('to_date', true);
@@ -55,7 +55,78 @@ class DtpController extends CI_Controller
         $this->load->view('admin/footer');
     }
 
+    public function fetchData()
+    {
+        $from_date = $this->input->post('from_date', true);
+        $to_date = $this->input->post('to_date', true);
+        $created_by = $this->input->post('created_by', true);
+        $category_id = $this->input->post('category', true);
+        $paid_status = $this->input->post('paid_status', true);
+        $payment_mode = $this->input->post('payment_mode', true);
+        $search_value = $this->input->post('search')['value'] ?? null; // Search term
+        $start = $this->input->post('start', true); // Offset for pagination
+        $length = $this->input->post('length', true); // Limit for pagination
+        $draw = $this->input->post('draw', true); // Draw number for DataTables
 
+        // Default to today's data if no date is selected
+        if (empty($from_date)) {
+            $from_date = date('Y-m-d');
+        }
+        if (empty($to_date)) {
+            $to_date = date('Y-m-d');
+        }
+
+        // Fetch filtered data with pagination and search
+        $result = $this->DtpModel->getFilteredData($from_date, $to_date, $created_by, $category_id, $paid_status, $payment_mode, $search_value, $start, $length);
+
+        // Totals calculation
+        $total_service_charge = 0;
+        $total_paid_amount = 0;
+
+        // Format data for DataTables
+        $data = [];
+        foreach ($result['data'] as $service) {
+            $status = ['Due', 'Full Paid', 'Partial'];
+
+            // Accumulate totals
+            $total_service_charge += $service['service_charge'];
+            $total_paid_amount += $service['paid_amount'];
+
+            // Role-based action buttons
+            $actions = '<a href="' . base_url('admin/dtp/edit/' . $service['id']) . '" class="btn btn-warning btn-sm">Edit</a>';
+            if ($this->session->userdata('role') == 1) {
+                $actions .= '
+                <a href="' . base_url('admin/dtp/delete/' . $service['id']) . '" class="btn btn-danger btn-sm" onclick="return confirm(\'Are you sure you want to delete this service?\');">Delete</a>
+                <button type="button" class="btn btn-info btn-sm" onclick="viewLog(' . $service['id'] . ')">View Log</button>';
+            }
+
+            $row = [
+                $service['id'],
+                $service['service_descriptions'],
+                $service['category_title'],
+                '₹' . number_format($service['service_charge'], 2),
+                '₹' . number_format($service['paid_amount'], 2),
+                $status[$service['paid_status']],
+                $service['payment_mode_title'],
+                date('d-m-Y', strtotime($service['service_date'])),
+                $service['created_by_name'],
+                $actions
+            ];
+            $data[] = $row;
+        }
+
+        // Prepare JSON response for DataTables
+        echo json_encode([
+            "draw" => intval($draw),
+            "recordsTotal" => $result['recordsTotal'], // Total records without filtering
+            "recordsFiltered" => $result['recordsFiltered'], // Total records after filtering
+            "data" => $data, // Processed data
+            "footer" => [
+                "total_service_charge" => '₹' . number_format($total_service_charge, 2),
+                "total_paid_amount" => '₹' . number_format($total_paid_amount, 2)
+            ]
+        ]);
+    }
 
     public function add()
     {
