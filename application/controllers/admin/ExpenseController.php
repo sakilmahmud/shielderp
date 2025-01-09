@@ -84,7 +84,7 @@ class ExpenseController extends CI_Controller
                 '₹' . number_format($expense['transaction_amount'], 2),
                 $expense['method_name'],
                 date('d-m-Y', strtotime($expense['transaction_date'])),
-                ($expense['status'] == 1) ? 'Active' : 'Inactive',
+                $expense['created_by_name'],
                 $actions
             ];
             $data[] = $row;
@@ -97,7 +97,7 @@ class ExpenseController extends CI_Controller
             "recordsFiltered" => $result['recordsFiltered'], // Total records after filtering
             "data" => $data, // Processed data
             "footer" => [
-                "total_transaction_amount" => '₹' . number_format($total_transaction_amount, 2),
+                "total_amount" => '₹' . number_format($total_transaction_amount, 2),
             ]
         ]);
     }

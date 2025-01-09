@@ -74,7 +74,7 @@
                                 <th>Amount</th>
                                 <th>Mode</th>
                                 <th>Date</th>
-                                <th>Status</th>
+                                <th>Made By</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
