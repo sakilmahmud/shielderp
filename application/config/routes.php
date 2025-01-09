@@ -76,6 +76,7 @@ $route['admin/income/head/delete/(:num)'] = 'admin/IncomeController/deleteHead/$
 
 /** Expense routes */
 $route['admin/expense'] = 'admin/ExpenseController/index';
+$route['admin/expense/fetch'] = 'admin/ExpenseController/fetchExpenses';
 $route['admin/expense/add'] = 'admin/ExpenseController/addExpense';
 $route['admin/expense/edit/(:num)'] = 'admin/ExpenseController/editExpense/$1';
 $route['admin/expense/delete/(:num)'] = 'admin/ExpenseController/deleteExpense/$1';

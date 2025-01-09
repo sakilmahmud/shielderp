@@ -14,7 +14,7 @@ class Home extends CI_Controller
     public function index()
     {
 
-        $data['title'] = "Nandon";
+        $data['title'] = "Global Computers";
 
         // Fetch the latest 8 products
         $data['latest_products'] = $this->ProductModel->get_products(6);
@@ -32,7 +32,7 @@ class Home extends CI_Controller
 
     public function contact()
     {
-        $data['title'] = "Contact :: Nandon";
+        $data['title'] = "Contact :: Global Computers";
 
         $this->load->view('inc/header', $data);
         $this->load->view('contact', $data);
@@ -41,7 +41,7 @@ class Home extends CI_Controller
 
     public function cart()
     {
-        $data['title'] = "Cart :: Nandon";
+        $data['title'] = "Cart :: Global Computers";
 
         $this->load->view('inc/header', $data);
         $this->load->view('cart', $data);
@@ -50,7 +50,7 @@ class Home extends CI_Controller
 
     public function checkout()
     {
-        $data['title'] = "Checkout :: Nandon";
+        $data['title'] = "Checkout :: Global Computers";
 
         $this->load->view('inc/header', $data);
         $this->load->view('checkout', $data);
@@ -79,7 +79,7 @@ class Home extends CI_Controller
 
     public function products()
     {
-        $data['title'] = "Products :: Nandon";
+        $data['title'] = "Products :: Global Computers";
 
         // Get sorting parameter from URL, default to 'name'
         $sort_by = $this->input->get('sort_by') ?: 'name';
@@ -126,7 +126,7 @@ class Home extends CI_Controller
 
     public function category_products($category_slug)
     {
-        $data['title'] = ucfirst($category_slug) . " :: Nandon"; // Dynamic page title
+        $data['title'] = ucfirst($category_slug) . " :: Global Computers"; // Dynamic page title
 
         // Get sorting parameter from URL, default to 'name'
         $sort_by = $this->input->get('sort_by') ?: 'name';
@@ -181,7 +181,7 @@ class Home extends CI_Controller
 
     public function product_type($type_slug)
     {
-        $data['title'] = ucfirst($type_slug) . " :: Nandon";
+        $data['title'] = ucfirst($type_slug) . " :: Global Computers";
 
         // Get sorting parameter from URL, default to 'name'
         $sort_by = $this->input->get('sort_by') ?: 'name';
@@ -236,8 +236,8 @@ class Home extends CI_Controller
 
     public function terms()
     {
-        $data['title'] = "Nandon :: Term & Conditions";
-        $data['meta_descriptions'] = "Nandon.com";
+        $data['title'] = "Global Computers :: Term & Conditions";
+        $data['meta_descriptions'] = "Global Computers";
         $data['canonical_url'] = base_url('terms');
 
         $this->load->view('inc/header', $data);
@@ -246,8 +246,8 @@ class Home extends CI_Controller
     }
     public function privacy()
     {
-        $data['title'] = "Nandon :: Privacy & Policy";
-        $data['meta_descriptions'] = "Nandon.com";
+        $data['title'] = "Global Computers :: Privacy & Policy";
+        $data['meta_descriptions'] = "Global Computers";
         $data['canonical_url'] = base_url('privacy');
 
         $this->load->view('inc/header', $data);

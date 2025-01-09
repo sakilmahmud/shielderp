@@ -1,4 +1,3 @@
-<!-- View for displaying expenses -->
 <div class="content-wrapper">
     <section class="content-header">
         <div class="container-fluid">
@@ -12,47 +11,146 @@
             </div>
         </div>
     </section>
+
     <section class="content">
         <div class="container-fluid">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="card">
-                        <div class="card-body">
-                            <table id="commonTable" class="table table-bordered table-striped">
-                                <thead>
-                                    <tr>
-                                        <th>#</th>
-                                        <th>Expense Head</th>
-                                        <th>Expense Title</th>
-                                        <th>Amount</th>
-                                        <th>Mode</th>
-                                        <th>Date</th>
-                                        <th>Status</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php foreach ($expenses as $expense): ?>
-                                        <tr>
-                                            <td><?php echo $expense['id']; ?></td>
-                                            <td><?php echo $expense['head_title']; ?></td>
-                                            <td><?php echo $expense['expense_title']; ?></td>
-                                            <td><?php echo $expense['transaction_amount']; ?></td>
-                                            <td><?php echo $expense['method_name']; ?></td>
-                                            <td><?php echo $expense['transaction_date']; ?></td>
-                                            <td><?php echo ($expense['status'] == 1) ? 'Active' : 'Inactive'; ?></td>
-                                            <td>
-                                                <a href="<?php echo base_url('admin/expense/edit/' . $expense['id']); ?>" class="btn btn-warning btn-sm">Edit</a>
-                                                <a href="<?php echo base_url('admin/expense/delete/' . $expense['id']); ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete?');">Delete</a>
-                                            </td>
-                                        </tr>
-                                    <?php endforeach; ?>
-                                </tbody>
-                            </table>
+            <div class="card">
+                <div class="card-body">
+                    <?php if (!empty($error)) : ?>
+                        <div class="alert alert-danger"><?php echo $error; ?></div>
+                    <?php endif; ?>
+                    <?php if ($this->session->flashdata('message')) : ?>
+                        <div class="alert alert-success">
+                            <?php echo $this->session->flashdata('message'); ?>
                         </div>
+                    <?php endif; ?>
+                    <?php if ($this->session->flashdata('payment')) : ?>
+                        <div class="alert alert-info">
+                            <?php echo $this->session->flashdata('payment'); ?>
+                        </div>
+                    <?php endif; ?>
+                    <div class="card_header">
+                        <form id="filterForm">
+                            <div class="row mb-3">
+                                <div class="col-md-2">
+                                    <input type="date" id="from_date" class="form-control filter-input" placeholder="From Date" value="<?php echo date('Y-m-d'); ?>">
+                                </div>
+                                <div class="col-md-2">
+                                    <input type="date" id="to_date" class="form-control filter-input" placeholder="To Date" value="<?php echo date('Y-m-d'); ?>">
+                                </div>
+                                <div class="col-md-2">
+                                    <select id="category" class="form-control filter-input">
+                                        <option value="">Expense Head</option>
+                                        <?php foreach ($categories as $category): ?>
+                                            <option value="<?php echo $category['id']; ?>"><?php echo $category['head_title']; ?></option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+                                <div class="col-md-2">
+                                    <select id="payment_method" class="form-control filter-input">
+                                        <option value="">Payment Method</option>
+                                        <?php foreach ($payment_methods as $method): ?>
+                                            <option value="<?php echo $method['id']; ?>"><?php echo $method['title']; ?></option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+                                <div class="col-md-2">
+                                    <select id="created_by" class="form-control filter-input">
+                                        <option value="">Created By</option>
+                                        <?php foreach ($users as $user): ?>
+                                            <option value="<?php echo $user['id']; ?>"><?php echo $user['full_name']; ?></option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+                            </div>
+                        </form>
                     </div>
+                    <table id="expensesTable" class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Expense Head</th>
+                                <th>Expense Title</th>
+                                <th>Amount</th>
+                                <th>Mode</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tfoot>
+                            <tr>
+                                <td colspan="3"><strong>Total</strong></td>
+                                <td id="total_amount"><strong>₹0.00</strong></td>
+                                <td colspan="4"></td>
+                            </tr>
+                        </tfoot>
+                    </table>
                 </div>
             </div>
         </div>
     </section>
 </div>
+<script>
+    $(document).ready(function() {
+        const table = $('#expensesTable').DataTable({
+            processing: true,
+            serverSide: true,
+            order: false,
+            pageLength: 100,
+            lengthMenu: [
+                [100, -1],
+                [100, "All"]
+            ],
+            ajax: {
+                url: "<?php echo base_url('admin/expense/fetch'); ?>",
+                type: "POST",
+                data: function(d) {
+                    d.from_date = $('#from_date').val();
+                    d.to_date = $('#to_date').val();
+                    d.category = $('#category').val();
+                    d.payment_method = $('#payment_method').val();
+                    d.created_by = $('#created_by').val();
+                },
+                dataSrc: function(json) {
+                    $('#total_amount').text(json.footer.total_amount);
+                    return json.data;
+                }
+            },
+            columns: [{
+                    data: 0
+                },
+                {
+                    data: 1
+                },
+                {
+                    data: 2
+                },
+                {
+                    data: 3
+                },
+                {
+                    data: 4
+                },
+                {
+                    data: 5
+                },
+                {
+                    data: 6
+                },
+                {
+                    data: 7
+                }
+            ]
+        });
+
+        $('.filter-input').on('change', function() {
+            table.ajax.reload();
+        });
+
+        $('#filterForm').on('submit', function(e) {
+            e.preventDefault();
+            table.ajax.reload();
+        });
+    });
+</script>

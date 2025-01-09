@@ -109,7 +109,6 @@
                                         </div>
                                     </div>
                                     <div class="col-md-6">
-
                                         <div class="form-group">
                                             <label for="service_date">Service Date</label>
                                             <input type="date" class="form-control" id="service_date" name="service_date" value="<?php echo set_value('service_date', isset($service['service_date']) ? $service['service_date'] : date('Y-m-d')); ?>">

@@ -5,6 +5,7 @@ class ExpenseController extends CI_Controller
     public function __construct()
     {
         parent::__construct();
+        $this->load->model('UserModel');
         $this->load->model('ExpenseModel');
         $this->load->model('TransactionModel');
         $this->load->model('PaymentMethodsModel');
@@ -14,15 +15,93 @@ class ExpenseController extends CI_Controller
         }
     }
 
-    /** Expenses */
-    public function index()
+    /** Expenses */ public function index()
     {
         $data['activePage'] = 'expense';
-        $data['expenses'] = $this->ExpenseModel->getAllExpenses();
+        $data['categories'] = $this->ExpenseModel->getExpenseHeads(); // For dropdown filters
+        $data['payment_methods'] = $this->PaymentMethodsModel->getAll(); // For dropdown filters
+        $data['users'] = $this->UserModel->getUsers(array(1, 2));
+
         $this->load->view('admin/header', $data);
         $this->load->view('admin/expense/index', $data);
         $this->load->view('admin/footer');
     }
+
+    public function fetchExpenses()
+    {
+        $from_date = $this->input->post('from_date', true);
+        $to_date = $this->input->post('to_date', true);
+        $created_by = $this->input->post('created_by', true);
+        $category_id = $this->input->post('category', true);
+        $paid_status = $this->input->post('paid_status', true);
+        $payment_method_id = $this->input->post('payment_method', true);
+        $search_value = $this->input->post('search')['value'] ?? null; // Search term
+        $start = $this->input->post('start', true); // Offset for pagination
+        $length = $this->input->post('length', true); // Limit for pagination
+        $draw = $this->input->post('draw', true); // Draw number for DataTables
+
+        // Default to today's data if no date is selected
+        if (empty($from_date)) {
+            $from_date = date('Y-m-d');
+        }
+        if (empty($to_date)) {
+            $to_date = date('Y-m-d');
+        }
+
+        // Fetch filtered data with pagination and search
+        $result = $this->ExpenseModel->getFilteredExpenses(
+            $from_date,
+            $to_date,
+            $created_by,
+            $category_id,
+            $paid_status,
+            $payment_method_id,
+            $search_value,
+            $start,
+            $length
+        );
+
+        // Totals calculation
+        $total_transaction_amount = 0;
+
+        // Format data for DataTables
+        $data = [];
+        foreach ($result['data'] as $expense) {
+            // Accumulate totals
+            $total_transaction_amount += $expense['transaction_amount'];
+
+            // Role-based action buttons
+            $actions = '<a href="' . base_url('admin/expense/edit/' . $expense['id']) . '" class="btn btn-warning btn-sm">Edit</a>';
+            if ($this->session->userdata('role') == 1) {
+                $actions .= '
+            <a href="' . base_url('admin/expense/delete/' . $expense['id']) . '" class="btn btn-danger btn-sm" onclick="return confirm(\'Are you sure you want to delete this expense?\');">Delete</a>';
+            }
+
+            $row = [
+                $expense['id'],
+                $expense['head_title'],
+                $expense['expense_title'],
+                '₹' . number_format($expense['transaction_amount'], 2),
+                $expense['method_name'],
+                date('d-m-Y', strtotime($expense['transaction_date'])),
+                ($expense['status'] == 1) ? 'Active' : 'Inactive',
+                $actions
+            ];
+            $data[] = $row;
+        }
+
+        // Prepare JSON response for DataTables
+        echo json_encode([
+            "draw" => intval($draw),
+            "recordsTotal" => $result['recordsTotal'], // Total records without filtering
+            "recordsFiltered" => $result['recordsFiltered'], // Total records after filtering
+            "data" => $data, // Processed data
+            "footer" => [
+                "total_transaction_amount" => '₹' . number_format($total_transaction_amount, 2),
+            ]
+        ]);
+    }
+
 
     public function addExpense()
     {
