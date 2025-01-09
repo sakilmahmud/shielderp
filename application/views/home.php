@@ -1,11 +1,7 @@
 <div class="home_banner">
     <div class="home_banner_all owl-carousel owl-theme">
-        <div
-            class="home_banner_Single"
-            style="
-            background: url('<?php echo base_url('assets/frontend/images/b1.jpg'); ?>') no-repeat center center;
-          "></div>
-        <div
+        <div class="home_banner_Single" style="background: url('<?php echo base_url('assets/frontend/images/banner_1.jpg'); ?>') no-repeat center center;"></div>
+        <!-- <div
             class="home_banner_Single"
             style="
             background: url('<?php echo base_url('assets/frontend/images/b2.jpg'); ?>') no-repeat center center;
@@ -19,7 +15,7 @@
             class="home_banner_Single"
             style="
             background: url('<?php echo base_url('assets/frontend/images/b4.jpg'); ?>') no-repeat center center;
-          "></div>
+          "></div> -->
     </div>
 </div>
 
@@ -190,12 +186,7 @@
 </section>
 
 <div class="weading_collection_poster">
-    <div
-        class="container"
-        style="
-          background: url('<?php echo base_url('assets/frontend/images/wedding_collection_poster.jpg'); ?>')
-            no-repeat center center;
-        "></div>
+    <div class="container" style="background: url('<?php echo base_url('assets/frontend/images/highlight.jpg'); ?>') no-repeat center center;"></div>
 </div>
 
 <div class="branches_sec">

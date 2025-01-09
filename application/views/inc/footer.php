@@ -4,10 +4,8 @@
             <div class="row">
                 <div class="col-lg-4">
                     <div class="footer_col footer_about">
-                        <img
-                            src="<?php echo base_url('assets/frontend/images/logo.png') ?>"
-                            class="img-fluid"
-                            alt="logo" />
+                        <a href="<?php echo base_url(); ?>">
+                            <img src="<?php echo getSetting('admin_logo') ? base_url(getSetting('admin_logo')) : base_url('assets/frontend/images/logo.png') ?>" class="img-fluid" alt="GC Footer Logo" /></a>
                         <!-- <p>
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
                     do eiusmod tempor incididunt ut labore et dolore magna
@@ -15,8 +13,7 @@
                   </p> -->
                         <ul class="footer_address">
                             <li>
-                                Address: 128/12A, Bidhan Sarani,Shyambazar Panch Matha More,
-                                Kolkata, West Bengal, 700029
+                                Address: 142, Ward no - 4, Arambagh, Sadarghat, Hooghly. Pin - 712601. W.B. INDIA
                             </li>
                             <li>Phone: (033) 2533 5333</li>
                             <li>Whatsapp: 6290253600</li>
@@ -82,9 +79,9 @@
                 </div>
                 <div class="col-lg-6">
                     <ul>
-                        <li><a href="#">Trams & Condition</a></li>
-                        <li><a href="#">Privacy Policy</a></li>
-                        <li><a href="#">Contact Us</a></li>
+                        <li><a href="https://nandon.softechplaza.com/terms">Trams & Condition</a></li>
+                        <li><a href="https://nandon.softechplaza.com/privacy">Privacy Policy</a></li>
+                        <li><a href="https://nandon.softechplaza.com/contact">Contact Us</a></li>
                     </ul>
                 </div>
             </div>

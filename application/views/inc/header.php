@@ -20,36 +20,27 @@
 </head>
 
 <body>
-    <header class="fixed-top">
+    <header>
         <nav class="navbar navbar-expand-lg bg-body-tertiary">
             <div class="row">
                 <div class="col-lg-12">
                     <div class="header_top">
                         <div class="container">
-                            <a class="navbar-brand" href="<?php echo base_url(); ?>"><img
-                                    src="<?php echo base_url('assets/frontend/images/logo.png') ?>"
-                                    class="img-fluid"
-                                    alt="logo" /></a>
+                            <a class="navbar-brand" href="<?php echo base_url(); ?>">
+                                <img src="<?php echo getSetting('admin_logo') ? base_url(getSetting('admin_logo')) : base_url('assets/frontend/images/logo.png') ?>" class="img-fluid" alt="logo" /></a>
                             <div class="header_search">
                                 <input type="text" placeholder="Search here..." />
                                 <div class="header_search_btn">
-                                    <img
-                                        src="<?php echo base_url('assets/frontend/images/search.png') ?>"
-                                        class="img-fluid"
-                                        alt="search" />
+                                    <img src="<?php echo base_url('assets/frontend/images/search.png') ?>" class="img-fluid" alt="search" />
                                 </div>
                             </div>
                             <div class="header_links">
                                 <ul>
                                     <li>
-                                        <a href="<?php echo base_url('login'); ?>"><img
-                                                src="<?php echo base_url('assets/frontend/images/user.png') ?>"
-                                                alt="user" />Account</a>
+                                        <a href="<?php echo base_url('login'); ?>"><img src="<?php echo base_url('assets/frontend/images/user.png') ?>" alt="user" />Account</a>
                                     </li>
                                     <li>
-                                        <a href="#"><img
-                                                src="<?php echo base_url('assets/frontend/images/heart.png') ?>"
-                                                alt="heart" />Wihlist</a>
+                                        <a href="#"><img src="<?php echo base_url('assets/frontend/images/heart.png') ?>" alt="heart" />Wihlist</a>
                                     </li>
                                     <li>
                                         <a href="#"><img src="<?php echo base_url('assets/frontend/images/cart.png') ?>" alt="cart" />Cart</a>
@@ -66,6 +57,7 @@
                                 aria-label="Toggle navigation">
                                 <span class="navbar-toggler-icon"></span>
                             </button>
+                            <img class="since_img" src="<?php echo base_url('assets/frontend/images/trusted_seller.png') ?>" class="img-fluid" alt="Nondan">
                         </div>
                     </div>
                 </div>
@@ -123,6 +115,7 @@
                                         <a href="<?php echo base_url('contact'); ?>" class="nav-link <?php echo ($this->uri->segment(1) == 'contact') ? 'active' : ''; ?>">Contact Us</a>
                                     </li>
                                 </ul>
+
                             </div>
                         </div>
                     </div>
