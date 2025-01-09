@@ -16,6 +16,7 @@ class ExpenseModel extends CI_Model
     public function saveExpense($data)
     {
         $this->db->insert('expenses', $data);
+        return $this->db->insert_id(); // Return the ID of the newly inserted record
     }
 
     public function getExpense($id)

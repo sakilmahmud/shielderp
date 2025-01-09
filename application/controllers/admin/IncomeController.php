@@ -7,6 +7,7 @@ class IncomeController extends CI_Controller
     {
         parent::__construct();
         $this->load->model('IncomeModel');
+        $this->load->model('TransactionModel');
         $this->load->model('PaymentMethodsModel');
         $this->load->library('form_validation');
         if (!$this->session->userdata('user_id')) {
@@ -57,7 +58,27 @@ class IncomeController extends CI_Controller
                 'status' => 1,
             ];
 
-            $this->IncomeModel->saveIncome($saveData);
+            $incomeId = $this->IncomeModel->saveIncome($saveData);
+
+            if ($postData['transaction_amount'] > 0) {
+                $transaction_data = [
+                    'amount' => $postData['transaction_amount'],
+                    'trans_type' => 1, // Credit
+                    'payment_method_id' => $postData['payment_method_id'],
+                    'descriptions' => 'Payment for others income',
+                    'transaction_for_table' => 'incomes',
+                    'table_id' => $incomeId,
+                    'trans_by' => $this->session->userdata('user_id'), // User ID
+                    'trans_date' => $postData['transaction_date'],
+                    'created_at' => date('Y-m-d H:i:s')
+                ];
+
+                $last_insert_id = $this->TransactionModel->insert_transaction($transaction_data);
+                if ($last_insert_id > 0) {
+                    $this->session->set_flashdata('payment', 'Payment added successfully');
+                }
+            }
+
             $this->session->set_flashdata('message', 'Income added successfully');
             redirect('admin/income');
         }
@@ -88,10 +109,51 @@ class IncomeController extends CI_Controller
                 'transaction_amount' => $postData['transaction_amount'],
                 'payment_method_id' => $postData['payment_method_id'],
                 'note' => $postData['note'],
-                'documents' => $postData['documents'], // Assume file upload is handled
+                //'documents' => $postData['documents'], // Assume file upload is handled
             ];
 
+            // Update income
             $this->IncomeModel->updateIncome($id, $updateData);
+
+            // Manage transaction
+            $transaction_amount = $postData['transaction_amount'];
+
+            if ($transaction_amount > 0) {
+                // Check if a transaction exists for the income
+                $existingTransaction = $this->TransactionModel->get_transaction_by_table_and_id('incomes', $id);
+
+                $transaction_data = [
+                    'amount' => $transaction_amount,
+                    'trans_type' => 1, // Credit
+                    'payment_method_id' => $postData['payment_method_id'],
+                    'descriptions' => 'Payment for others income',
+                    'transaction_for_table' => 'incomes',
+                    'table_id' => $id,
+                    'trans_by' => $this->session->userdata('user_id'),
+                    'trans_date' => $postData['transaction_date'],
+                    'created_at' => date('Y-m-d H:i:s')
+                ];
+
+                if ($existingTransaction) {
+                    // Update the existing transaction
+                    $this->TransactionModel->update_transaction($existingTransaction['id'], $transaction_data);
+                    $this->session->set_flashdata('payment', 'Transaction updated successfully');
+                } else {
+                    // Insert a new transaction
+                    $last_insert_id = $this->TransactionModel->insert_transaction($transaction_data);
+                    if ($last_insert_id > 0) {
+                        $this->session->set_flashdata('payment', 'Transaction added successfully');
+                    }
+                }
+            } else {
+                // Delete transaction if amount is 0 and a transaction exists
+                $existingTransaction = $this->TransactionModel->get_transaction_by_table_and_id('incomes', $id);
+                if ($existingTransaction) {
+                    $this->TransactionModel->delete_transaction($existingTransaction['id']);
+                    $this->session->set_flashdata('payment', 'Transaction deleted successfully');
+                }
+            }
+
             $this->session->set_flashdata('message', 'Income updated successfully');
             redirect('admin/income');
         }
@@ -118,7 +180,7 @@ class IncomeController extends CI_Controller
     {
         $data['activePage'] = 'income_head';
         $data['isUpdate'] = false;
-        $this->form_validation->set_rules('head_title', 'Head Title', 'required|is_unique[income_head.head_title]');
+        $this->form_validation->set_rules('head_title', 'Head Title', 'required|is_unique[income_heads.head_title]');
 
         if ($this->form_validation->run() === FALSE) {
             $this->load->view('admin/header', $data);

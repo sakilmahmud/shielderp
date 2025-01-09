@@ -7,6 +7,7 @@
                 </div>
                 <div class="col-sm-6 text-right">
                     <a href="<?php echo base_url('admin/invoices'); ?>" class="btn btn-secondary">Back to Invoices</a>
+                    <a href="<?php echo base_url('admin/invoices/edit/' . $invoice['id']); ?>" class="btn btn-info">Edit Invoice</a>
                     <a href="<?php echo base_url('admin/invoices/print/' . $invoice['id']); ?>" target="_blank" class="btn btn-primary">Print Invoice</a>
                 </div>
             </div>

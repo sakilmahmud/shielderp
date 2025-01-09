@@ -22,6 +22,11 @@
                                     <?php echo $this->session->flashdata('message'); ?>
                                 </div>
                             <?php endif; ?>
+                            <?php if ($this->session->flashdata('error_message')) : ?>
+                                <div class="alert alert-danger">
+                                    <?php echo $this->session->flashdata('error_message'); ?>
+                                </div>
+                            <?php endif; ?>
 
                             <?php if (!empty($invoices)) : ?>
                                 <div class="table-responsive">
@@ -62,7 +67,9 @@
                                                     <td>
                                                         <a href="<?php echo base_url('admin/invoices/view/' . $invoice['id']); ?>" class="btn btn-info btn-sm">View</a>
                                                         <a href="<?php echo base_url('admin/invoices/edit/' . $invoice['id']); ?>" class="btn btn-warning btn-sm">Edit</a>
-                                                        <a href="<?php echo base_url('admin/invoices/delete/' . $invoice['id']); ?>" class="btn btn-danger btn-sm">Delete</a>
+                                                        <a href="<?php echo base_url('admin/invoices/delete/' . $invoice['id']); ?>"
+                                                            class="btn btn-danger btn-sm"
+                                                            onclick="return confirm('Are you sure you want to delete this invoice? This action cannot be undone.');">Delete</a>
                                                         <a href="<?php echo base_url('admin/invoices/print/' . $invoice['id']); ?>" target="_blank" class="btn btn-primary btn-sm">Print</a>
                                                     </td>
                                                 </tr>

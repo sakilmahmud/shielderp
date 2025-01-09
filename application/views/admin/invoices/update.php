@@ -192,20 +192,32 @@
                                                 <th>Discount</th>
                                                 <th>GST</th>
                                                 <th>Total</th>
-                                                <th width="5%"></th>
+                                                <th width="10%"></th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <?php foreach ($invoice_details as $product) : ?>
                                                 <tr>
-                                                    <td><?php echo $product['product_name']; ?> x <b><?php echo $product['quantity']; ?></b></td>
-                                                    <td>₹<?php echo $product['price']; ?></td>
-                                                    <td><?php echo ($product['discount_type'] == 1) ? "₹" . $product['discount'] : $product['discount'] . "%"; ?></td>
-                                                    <td>₹<?php echo $product['gst_amount']; ?> (<?php echo $product['gst_rate']; ?>%)</td>
+                                                    <td>
+                                                        <?php echo $product['product_name']; ?> x <b><?php echo $product['quantity']; ?></b>
+
+                                                        <input type="hidden" name='qnt[]' value="<?php echo $product['quantity']; ?>">
+                                                    </td>
+                                                    <td>
+                                                        <p>₹<?php echo $product['price']; ?></p>
+                                                    </td>
+                                                    <td>
+                                                        <?php echo ($product['discount_type'] == 1) ? "₹" . $product['discount'] : $product['discount'] . "%"; ?>
+                                                    </td>
+                                                    <td>
+                                                        <p>₹<?php echo $product['gst_amount']; ?> (<?php echo $product['gst_rate']; ?>%)</p>
+                                                    </td>
                                                     <td>₹<?php echo $product['final_price']; ?></td>
-                                                    <td width="5%" class="text-center"><button type="button" class="btn btn-danger btn-sm remove-item">X</button></td>
+                                                    <td width="5%" class="text-center">
+                                                        <button type="button" class="btn btn-info btn-sm edit-item">Edit</button>
+                                                        <button type="button" class="btn btn-danger btn-sm remove-item">X</button>
+                                                    </td>
                                                     <input type="hidden" name="product_id[]" value="<?php echo $product['product_id']; ?>">
-                                                    <input type="hidden" name='qnt[]' value="<?php echo $product['quantity']; ?>">
                                                     <input type="hidden" name="purchase_price[]" value="<?php echo $product['price']; ?>">
                                                     <input type="hidden" name="discount_type[]" value="<?php echo $product['discount_type']; ?>">
                                                     <input type="hidden" name="discount[]" value="<?php echo $product['discount']; ?>">
@@ -325,6 +337,126 @@
         </div>
     </section>
 </div>
+
+<!-- Edit Product Modal -->
+<div class="modal fade" id="editProductModal" tabindex="-1" role="dialog" aria-labelledby="editProductModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editProductModalLabel">Edit Product</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="editProductForm">
+                    <div class="form-group">
+                        <label for="editProductName">Product</label>
+                        <input type="text" class="form-control" id="editProductName" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="editProductQuantity">Quantity</label>
+                        <input type="number" class="form-control" id="editProductQuantity" min="1">
+                    </div>
+                    <div class="form-group">
+                        <label for="editProductPrice">Price</label>
+                        <input type="text" class="form-control" id="editProductPrice">
+                    </div>
+                    <div class="form-group">
+                        <label for="editProductDiscount">Discount</label>
+                        <input type="text" class="form-control" id="editProductDiscount">
+                    </div>
+                    <div class="form-group">
+                        <label for="editProductGst">GST Rate</label>
+                        <input type="text" class="form-control" id="editProductGst" readonly>
+                    </div>
+                    <input type="hidden" id="editProductRowIndex">
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="saveProductChanges">Update</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).on('click', '.edit-item', function() {
+        const row = $(this).closest('tr'); // Get the row of the clicked button
+        const productName = row.find('td:first-child').text().trim();
+        const quantity = row.find('input[name="qnt[]"]').val();
+        const price = row.find('input[name="purchase_price[]"]').val();
+        const discount = row.find('input[name="discount[]"]').val();
+        const gst = row.find('input[name="gst_rate[]"]').val();
+
+        // Populate modal fields
+        $('#editProductName').val(productName);
+        $('#editProductQuantity').val(quantity);
+        $('#editProductPrice').val(price);
+        $('#editProductDiscount').val(discount);
+        $('#editProductGst').val(gst);
+
+        // Store the row index for later use
+        const rowIndex = row.index();
+        $('#editProductRowIndex').val(rowIndex);
+
+        // Show the modal
+        $('#editProductModal').modal('show');
+    });
+    $(document).on('click', '#saveProductChanges', function() {
+        const rowIndex = $('#editProductRowIndex').val();
+        const quantity = $('#editProductQuantity').val();
+        const price = $('#editProductPrice').val();
+        const discount = $('#editProductDiscount').val();
+
+        const tableRow = $('table tbody tr').eq(rowIndex);
+
+        // Update table row with new values
+        tableRow.find('input[name="qnt[]"]').val(quantity);
+        tableRow.find('input[name="purchase_price[]"]').val(price);
+        tableRow.find('input[name="discount[]"]').val(discount);
+
+        // Calculate updated totals (optional)
+        const gstRate = parseFloat(tableRow.find('input[name="gst_rate[]"]').val());
+        const discountAmount = (discount.includes('%') ? (price * quantity * (parseFloat(discount) / 100)) : parseFloat(discount));
+        const gstAmount = ((price * quantity - discountAmount) * (gstRate / 100)).toFixed(2);
+        const finalPrice = (price * quantity - discountAmount + parseFloat(gstAmount)).toFixed(2);
+
+        tableRow.find('input[name="gst_amount[]"]').val(gstAmount);
+        tableRow.find('input[name="final_price[]"]').val(finalPrice);
+        tableRow.find('td:nth-child(5)').text('₹' + finalPrice);
+
+        // Save changes via AJAX
+        const data = {
+            id: tableRow.find('input[name="product_id[]"]').val(),
+            quantity,
+            price,
+            discount,
+            gst_rate: gstRate,
+            gst_amount: gstAmount,
+            final_price: finalPrice,
+        };
+
+        $.ajax({
+            url: '/path-to-update-product', // Replace with your API endpoint
+            method: 'POST',
+            data: data,
+            success: function(response) {
+                // Handle success response
+                alert('Product updated successfully!');
+            },
+            error: function() {
+                // Handle error response
+                alert('Failed to update product.');
+            },
+        });
+
+        // Hide the modal
+        $('#editProductModal').modal('hide');
+    });
+</script>
+
 
 <!-- Quick Edit Modal -->
 <div class="modal fade" id="quickEditModal" tabindex="-1" aria-labelledby="quickEditModalLabel" aria-hidden="true">

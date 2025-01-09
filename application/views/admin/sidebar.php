@@ -17,6 +17,38 @@
             <p>Dashboard</p>
           </a>
         </li>
+
+        <li class="nav-item <?php if ($activePage === 'accounts' || $activePage === 'transfer_fund' || $activePage === 'payment_methods') echo 'menu-open'; ?>">
+          <a href="#" class="nav-link <?php if ($activePage === 'accounts' || $activePage === 'transfer_fund' || $activePage === 'payment_methods') echo 'active'; ?>">
+            <i class="nav-icon fas fa-wallet"></i>
+            <p>
+              Accounts
+              <i class="fas fa-angle-left right"></i>
+            </p>
+          </a>
+          <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a href="<?php echo base_url('admin/accounts/account_balance'); ?>" class="nav-link <?php if ($activePage === 'accounts') echo 'active'; ?>">
+                <i class="nav-icon fas fa-calendar-alt"></i>
+                <p>Account Balances</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="<?php echo base_url('admin/accounts/transfer_fund'); ?>" class="nav-link <?php if ($activePage === 'transfer_fund') echo 'active'; ?>">
+                <i class="nav-icon fas fa-tags"></i>
+                <p>Transfer Fund</p>
+              </a>
+            </li>
+
+            <li class="nav-item">
+              <a href="<?php echo base_url('admin/PaymentMethods'); ?>" class="nav-link <?php if ($activePage === 'payment_methods') echo 'active'; ?>">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Payment Methods</p>
+              </a>
+            </li>
+          </ul>
+        </li>
+
         <li class="nav-item <?php if ($activePage === 'dtp' || $activePage === 'dtp_categories') echo 'menu-open'; ?>">
           <a href="#" class="nav-link <?php if ($activePage === 'dtp' || $activePage === 'dtp_categories') echo 'active'; ?>">
             <i class="nav-icon fas fa-file-invoice"></i>
@@ -41,82 +73,6 @@
           </ul>
         </li>
 
-        <li class="nav-item <?php if ($activePage === 'income_head' || $activePage === 'income') echo 'menu-open'; ?>">
-          <a href="#" class="nav-link <?php if ($activePage === 'income' || $activePage === 'income_head') echo 'active'; ?>">
-            <i class="nav-icon fas fa-wallet"></i>
-            <p>
-              Income
-              <i class="fas fa-angle-left right"></i>
-            </p>
-          </a>
-          <ul class="nav nav-treeview">
-            <li class="nav-item">
-              <a href="<?php echo base_url('admin/income'); ?>" class="nav-link <?php if ($activePage === 'income') echo 'active'; ?>">
-                <i class="fas fa-list nav-icon"></i>
-                <p>All Incomes</p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="<?php echo base_url('admin/income/head'); ?>" class="nav-link <?php if ($activePage === 'income_head') echo 'active'; ?>">
-                <i class="nav-icon fas fa-tags"></i>
-                <p>Income Heads</p>
-              </a>
-            </li>
-          </ul>
-        </li>
-
-        <li class="nav-item <?php if ($activePage === 'expense_head' || $activePage === 'expense') echo 'menu-open'; ?>">
-          <a href="#" class="nav-link <?php if ($activePage === 'expense' || $activePage === 'expense_head') echo 'active'; ?>">
-            <i class="nav-icon fas fa-wallet"></i>
-            <p>
-              Expenses
-              <i class="fas fa-angle-left right"></i>
-            </p>
-          </a>
-          <ul class="nav nav-treeview">
-            <li class="nav-item">
-              <a href="<?php echo base_url('admin/expense'); ?>" class="nav-link <?php if ($activePage === 'expense') echo 'active'; ?>">
-                <i class="fas fa-list nav-icon"></i>
-                <p>All Expenses</p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="<?php echo base_url('admin/expense/head'); ?>" class="nav-link <?php if ($activePage === 'expense_head') echo 'active'; ?>">
-                <i class="nav-icon fas fa-tags"></i>
-                <p>Expense Heads</p>
-              </a>
-            </li>
-          </ul>
-        </li>
-
-
-        <li class="nav-item <?php if ($activePage === 'tasks' || $activePage === 'clients' || $activePage === 'doers') echo 'menu-open'; ?>">
-          <a href="#" class="nav-link <?php if ($activePage === 'tasks' || $activePage === 'clients' || $activePage === 'doers') echo 'active'; ?>">
-            <i class="nav-icon fas fa-file-invoice"></i>
-            <p>Tasks <i class="fas fa-angle-left right"></i></p>
-          </a>
-          <ul class="nav nav-treeview">
-            <li class="nav-item">
-              <a href="<?php echo base_url('admin/tasks'); ?>" class="nav-link <?php if ($activePage === 'tasks') echo 'active'; ?>">
-                <i class="nav-icon fas fa-calendar-alt"></i>
-                <p>All Tasks</p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="<?php echo base_url('admin/clients'); ?>" class="nav-link <?php if ($activePage === 'clients') echo 'active'; ?>">
-                <i class="nav-icon fas fa-users"></i>
-                <p>Clients</p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="<?php echo base_url('admin/doers'); ?>" class="nav-link <?php if ($activePage === 'doers') echo 'active'; ?>">
-                <i class="nav-icon fas fa-users"></i>
-                <p>Doers</p>
-              </a>
-            </li>
-          </ul>
-        </li>
-
         <li class="nav-item <?php if ($activePage === 'invoices' || $activePage === 'customers') echo 'menu-open'; ?>">
           <a href="#" class="nav-link <?php if ($activePage === 'invoices' || $activePage === 'customers') echo 'active'; ?>">
             <i class="nav-icon fas fa-file-invoice"></i>
@@ -133,27 +89,6 @@
               <a href="<?php echo base_url('admin/customers'); ?>" class="nav-link <?php if ($activePage === 'customers') echo 'active'; ?>">
                 <i class="nav-icon fas fa-users"></i>
                 <p>Customers</p>
-              </a>
-            </li>
-          </ul>
-        </li>
-
-        <li class="nav-item <?php if ($activePage === 'purchase_entries' || $activePage === 'suppliers') echo 'menu-open'; ?>">
-          <a href="#" class="nav-link <?php if ($activePage === 'purchase_entries' || $activePage === 'suppliers') echo 'active'; ?>">
-            <i class="nav-icon fas fa-shopping-cart"></i>
-            <p>Purchases <i class="fas fa-angle-left right"></i></p>
-          </a>
-          <ul class="nav nav-treeview">
-            <li class="nav-item">
-              <a href="<?php echo base_url('admin/purchase_entries'); ?>" class="nav-link <?php if ($activePage === 'purchase_entries') echo 'active'; ?>">
-                <i class="nav-icon fas fa-cart-plus"></i>
-                <p>Purchase Entries</p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="<?php echo base_url('admin/suppliers'); ?>" class="nav-link <?php if ($activePage === 'suppliers') echo 'active'; ?>">
-                <i class="nav-icon fas fa-truck"></i>
-                <p>Suppliers</p>
               </a>
             </li>
           </ul>
@@ -207,6 +142,101 @@
           </ul>
         </li>
 
+        <li class="nav-item <?php if ($activePage === 'purchase_entries' || $activePage === 'suppliers') echo 'menu-open'; ?>">
+          <a href="#" class="nav-link <?php if ($activePage === 'purchase_entries' || $activePage === 'suppliers') echo 'active'; ?>">
+            <i class="nav-icon fas fa-shopping-cart"></i>
+            <p>Purchases <i class="fas fa-angle-left right"></i></p>
+          </a>
+          <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a href="<?php echo base_url('admin/purchase_entries'); ?>" class="nav-link <?php if ($activePage === 'purchase_entries') echo 'active'; ?>">
+                <i class="nav-icon fas fa-cart-plus"></i>
+                <p>Purchase Entries</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="<?php echo base_url('admin/suppliers'); ?>" class="nav-link <?php if ($activePage === 'suppliers') echo 'active'; ?>">
+                <i class="nav-icon fas fa-truck"></i>
+                <p>Suppliers</p>
+              </a>
+            </li>
+          </ul>
+        </li>
+
+        <li class="nav-item <?php if ($activePage === 'income_head' || $activePage === 'income') echo 'menu-open'; ?>">
+          <a href="#" class="nav-link <?php if ($activePage === 'income' || $activePage === 'income_head') echo 'active'; ?>">
+            <i class="nav-icon fas fa-wallet"></i>
+            <p>
+              Income
+              <i class="fas fa-angle-left right"></i>
+            </p>
+          </a>
+          <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a href="<?php echo base_url('admin/income'); ?>" class="nav-link <?php if ($activePage === 'income') echo 'active'; ?>">
+                <i class="fas fa-list nav-icon"></i>
+                <p>All Incomes</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="<?php echo base_url('admin/income/head'); ?>" class="nav-link <?php if ($activePage === 'income_head') echo 'active'; ?>">
+                <i class="nav-icon fas fa-tags"></i>
+                <p>Income Heads</p>
+              </a>
+            </li>
+          </ul>
+        </li>
+
+        <li class="nav-item <?php if ($activePage === 'expense_head' || $activePage === 'expense') echo 'menu-open'; ?>">
+          <a href="#" class="nav-link <?php if ($activePage === 'expense' || $activePage === 'expense_head') echo 'active'; ?>">
+            <i class="nav-icon fas fa-wallet"></i>
+            <p>
+              Expenses
+              <i class="fas fa-angle-left right"></i>
+            </p>
+          </a>
+          <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a href="<?php echo base_url('admin/expense'); ?>" class="nav-link <?php if ($activePage === 'expense') echo 'active'; ?>">
+                <i class="fas fa-list nav-icon"></i>
+                <p>All Expenses</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="<?php echo base_url('admin/expense/head'); ?>" class="nav-link <?php if ($activePage === 'expense_head') echo 'active'; ?>">
+                <i class="nav-icon fas fa-tags"></i>
+                <p>Expense Heads</p>
+              </a>
+            </li>
+          </ul>
+        </li>
+
+        <li class="nav-item <?php if ($activePage === 'tasks' || $activePage === 'clients' || $activePage === 'doers') echo 'menu-open'; ?>">
+          <a href="#" class="nav-link <?php if ($activePage === 'tasks' || $activePage === 'clients' || $activePage === 'doers') echo 'active'; ?>">
+            <i class="nav-icon fas fa-file-invoice"></i>
+            <p>Tasks <i class="fas fa-angle-left right"></i></p>
+          </a>
+          <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a href="<?php echo base_url('admin/tasks'); ?>" class="nav-link <?php if ($activePage === 'tasks') echo 'active'; ?>">
+                <i class="nav-icon fas fa-calendar-alt"></i>
+                <p>All Tasks</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="<?php echo base_url('admin/clients'); ?>" class="nav-link <?php if ($activePage === 'clients') echo 'active'; ?>">
+                <i class="nav-icon fas fa-users"></i>
+                <p>Clients</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="<?php echo base_url('admin/doers'); ?>" class="nav-link <?php if ($activePage === 'doers') echo 'active'; ?>">
+                <i class="nav-icon fas fa-users"></i>
+                <p>Doers</p>
+              </a>
+            </li>
+          </ul>
+        </li>
 
         <!-- Other Menu Items -->
 
@@ -259,12 +289,6 @@
               </a>
             </li>
             <li class="nav-item">
-              <a href="<?php echo base_url('admin/PaymentMethods'); ?>" class="nav-link <?php if ($activePage === 'payment_methods') echo 'active'; ?>">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Payment Methods</p>
-              </a>
-            </li>
-            <li class="nav-item">
               <a href="<?php echo base_url('admin/settings/company_details'); ?>" class="nav-link <?php if ($activePage === 'company_details') echo 'active'; ?>">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Company Details</p>
@@ -279,18 +303,37 @@
           </ul>
         </li>
 
-        <li class="nav-item">
-          <a href="<?php echo base_url('admin/posts'); ?>" class="nav-link <?php if ($activePage === 'posts') echo 'active'; ?>">
+        <li class="nav-item has-treeview <?php if ($activePage === 'posts' || $activePage === 'wa' || $activePage === 'contacts') echo 'menu-open'; ?>">
+          <a href="#" class="nav-link <?php if ($activePage === 'posts' || $activePage === 'wa' || $activePage === 'contacts') echo 'active'; ?>">
             <i class="nav-icon fab fa-whatsapp"></i>
-            <p>Social Media Posts</p>
+            <p>
+              Social Media
+              <i class="right fas fa-angle-left"></i>
+            </p>
           </a>
+          <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a href="<?php echo base_url('admin/posts'); ?>" class="nav-link <?php if ($activePage === 'posts') echo 'active'; ?>">
+                <i class="nav-icon fab fa-whatsapp"></i>
+                <p>Social Media Posts</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="<?php echo base_url('admin/wa'); ?>" class="nav-link <?php if ($activePage === 'wa') echo 'active'; ?>">
+                <i class="nav-icon fab fa-whatsapp"></i>
+                <p>WhatsApp Promotions</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="<?php echo base_url('admin/contacts'); ?>" class="nav-link <?php if ($activePage === 'contacts') echo 'active'; ?>">
+                <i class="nav-icon fab fa-whatsapp"></i>
+                <p>Contact DB</p>
+              </a>
+            </li>
+          </ul>
         </li>
-        <li class="nav-item">
-          <a href="<?php echo base_url('admin/wa'); ?>" class="nav-link <?php if ($activePage === 'wa') echo 'active'; ?>">
-            <i class="nav-icon fab fa-whatsapp"></i>
-            <p>WhatsApp Promotions</p>
-          </a>
-        </li>
+
+
         <li class="nav-item">
           <a href="<?php echo base_url('logout'); ?>" class="nav-link">
             <i class="nav-icon fas fa-power-off"></i>

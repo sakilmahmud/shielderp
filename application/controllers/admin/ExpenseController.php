@@ -6,6 +6,7 @@ class ExpenseController extends CI_Controller
     {
         parent::__construct();
         $this->load->model('ExpenseModel');
+        $this->load->model('TransactionModel');
         $this->load->model('PaymentMethodsModel');
         $this->load->library('form_validation');
         if (!$this->session->userdata('user_id')) {
@@ -31,7 +32,7 @@ class ExpenseController extends CI_Controller
         $data['paymentMethods'] = $this->PaymentMethodsModel->getAll();
 
         $this->form_validation->set_rules('expense_title', 'Expense Title', 'required');
-        $this->form_validation->set_rules('transaction_amount', 'Transaction Amount', 'required');
+        $this->form_validation->set_rules('transaction_amount', 'Transaction Amount', 'required|numeric');
 
         if ($this->form_validation->run() === FALSE) {
             $this->load->view('admin/header', $data);
@@ -48,14 +49,34 @@ class ExpenseController extends CI_Controller
                 'payment_method_id' => $postData['payment_method_id'],
                 'note' => $postData['note'],
                 'created_by' => $this->session->userdata('user_id'),
-                'documents' => $postData['documents'],
-                'is_refunded' => $postData['is_refunded']
+                'created_at' => date('Y-m-d H:i:s'),
+                'status' => 1
             ];
-            $this->ExpenseModel->saveExpense($saveData);
+
+            $expenseId = $this->ExpenseModel->saveExpense($saveData);
+
+            if ($postData['transaction_amount'] > 0) {
+                $transaction_data = [
+                    'amount' => $postData['transaction_amount'],
+                    'trans_type' => 2, // Debit
+                    'payment_method_id' => $postData['payment_method_id'],
+                    'descriptions' => 'Payment for expense',
+                    'transaction_for_table' => 'expenses',
+                    'table_id' => $expenseId,
+                    'trans_by' => $this->session->userdata('user_id'),
+                    'trans_date' => $postData['transaction_date'],
+                    'created_at' => date('Y-m-d H:i:s')
+                ];
+
+                $this->TransactionModel->insert_transaction($transaction_data);
+                $this->session->set_flashdata('payment', 'Transaction added successfully');
+            }
+
             $this->session->set_flashdata('message', 'Expense added successfully');
             redirect('admin/expense');
         }
     }
+
 
     public function editExpense($id)
     {
@@ -66,7 +87,7 @@ class ExpenseController extends CI_Controller
         $data['paymentMethods'] = $this->PaymentMethodsModel->getAll();
 
         $this->form_validation->set_rules('expense_title', 'Expense Title', 'required');
-        $this->form_validation->set_rules('transaction_amount', 'Transaction Amount', 'required');
+        $this->form_validation->set_rules('transaction_amount', 'Transaction Amount', 'required|numeric');
 
         if ($this->form_validation->run() === FALSE) {
             $this->load->view('admin/header', $data);
@@ -81,15 +102,52 @@ class ExpenseController extends CI_Controller
                 'transaction_date' => $postData['transaction_date'],
                 'transaction_amount' => $postData['transaction_amount'],
                 'payment_method_id' => $postData['payment_method_id'],
-                'note' => $postData['note'],
-                'documents' => $postData['documents'],
-                'is_refunded' => $postData['is_refunded']
+                'note' => $postData['note']
             ];
+
             $this->ExpenseModel->updateExpense($id, $updateData);
+
+            $transaction_amount = $postData['transaction_amount'];
+
+            if ($transaction_amount > 0) {
+                // Check if a transaction exists for the expense
+                $existingTransaction = $this->TransactionModel->get_transaction_by_table_and_id('expenses', $id);
+
+                $transaction_data = [
+                    'amount' => $transaction_amount,
+                    'trans_type' => 2, // Debit
+                    'payment_method_id' => $postData['payment_method_id'],
+                    'descriptions' => 'Payment for expense',
+                    'transaction_for_table' => 'expenses',
+                    'table_id' => $id,
+                    'trans_by' => $this->session->userdata('user_id'),
+                    'trans_date' => $postData['transaction_date'],
+                    'created_at' => date('Y-m-d H:i:s')
+                ];
+
+                if ($existingTransaction) {
+                    // Update the existing transaction
+                    $this->TransactionModel->update_transaction($existingTransaction['id'], $transaction_data);
+                    $this->session->set_flashdata('payment', 'Transaction updated successfully');
+                } else {
+                    // Insert a new transaction
+                    $this->TransactionModel->insert_transaction($transaction_data);
+                    $this->session->set_flashdata('payment', 'Transaction added successfully');
+                }
+            } else {
+                // Delete transaction if amount is 0 and a transaction exists
+                $existingTransaction = $this->TransactionModel->get_transaction_by_table_and_id('expenses', $id);
+                if ($existingTransaction) {
+                    $this->TransactionModel->delete_transaction($existingTransaction['id']);
+                    $this->session->set_flashdata('payment', 'Transaction deleted successfully');
+                }
+            }
+
             $this->session->set_flashdata('message', 'Expense updated successfully');
             redirect('admin/expense');
         }
     }
+
 
     public function deleteExpense($id)
     {

@@ -12,6 +12,7 @@ class TransactionModel extends CI_Model
     {
         $this->db->where('id', $id);
         $this->db->update('transactions', $data);
+        return $this->db->affected_rows();
     }
 
     // Method to get a specific transactions by ID
@@ -53,5 +54,20 @@ class TransactionModel extends CI_Model
     public function get_payment_method_name($payment_method_id)
     {
         return $this->db->where('id', $payment_method_id)->get('payment_methods')->row()->title;
+    }
+
+    public function get_transaction_by_table_and_id($table, $table_id)
+    {
+        $this->db->where('transaction_for_table', $table);
+        $this->db->where('table_id', $table_id);
+        $query = $this->db->get('transactions');
+        return $query->row_array();
+    }
+
+    public function delete_transaction($id)
+    {
+        $this->db->where('id', $id);
+        $this->db->delete('transactions');
+        return $this->db->affected_rows();
     }
 }
