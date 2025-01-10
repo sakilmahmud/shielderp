@@ -83,4 +83,59 @@ class AccountsModel extends CI_Model
             return true;
         }
     }
+
+    public function get_filtered_fund_transfers($from_date = null, $to_date = null, $search_value = null, $start = 0, $length = 10)
+    {
+        // Base query
+        $this->db->select('t.id,
+        pm.title as payment_method,
+        t.amount,
+        t.trans_type,
+        t.descriptions,
+        t.trans_date,
+        t.created_at,
+        u.full_name as transferred_by');
+        $this->db->from('transactions t');
+        $this->db->join('payment_methods pm', 'pm.id = t.payment_method_id', 'left');
+        $this->db->join('users u', 'u.id = t.trans_by', 'left');
+        $this->db->where('t.transaction_for_table', 'fund_transfer');
+
+        // Apply date filters
+        if (!empty($from_date)) {
+            $this->db->where('t.trans_date >=', $from_date);
+        }
+        if (!empty($to_date)) {
+            $this->db->where('t.trans_date <=', $to_date);
+        }
+
+        // Apply search filter
+        if (!empty($search_value)) {
+            $this->db->group_start();
+            $this->db->like('pm.title', $search_value);
+            $this->db->or_like('u.full_name', $search_value);
+            $this->db->or_like('t.descriptions', $search_value);
+            $this->db->group_end();
+        }
+
+        // Get total records before pagination and filtering
+        $recordsTotal = $this->db->count_all_results('', false);
+
+        // Limit and offset for pagination
+        if ($length != -1) {
+            $this->db->limit($length, $start);
+        }
+
+        // Execute query
+        $query = $this->db->get();
+
+        // Get total records after filtering
+        $recordsFiltered = $this->db->query('SELECT FOUND_ROWS() as count')->row()->count;
+
+        // Return results
+        return [
+            'recordsTotal' => $recordsTotal,
+            'recordsFiltered' => $recordsFiltered,
+            'data' => $query->result_array()
+        ];
+    }
 }

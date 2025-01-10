@@ -49,6 +49,9 @@ $route['admin/contacts/get-contacts'] = 'admin/ContactsController/getContacts';
 /** Account Routes */
 $route['admin/accounts/account_balance'] = 'admin/AccountsController/account_balance';
 $route['admin/accounts/transfer_fund'] = 'admin/AccountsController/transfer_fund';
+$route['admin/accounts/list_fund_transfers'] = 'admin/AccountsController/list_fund_transfers';
+$route['admin/accounts/fetch_fund_transfers'] = 'admin/AccountsController/fetch_fund_transfers';
+
 
 /** DTP Routes */
 $route['admin/dtp'] = 'admin/DtpController/index';

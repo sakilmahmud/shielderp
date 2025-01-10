@@ -68,8 +68,6 @@ class AccountsController extends CI_Controller
                 'transferred_by' => $this->session->userdata('user_id'),
             ];
 
-            // Call model to handle the transaction
-            $this->load->model('AccountsModel');
             $result = $this->AccountsModel->transfer_fund($transferData);
 
             if ($result) {
@@ -80,5 +78,51 @@ class AccountsController extends CI_Controller
 
             redirect('admin/accounts/transfer_fund');
         }
+    }
+
+    public function list_fund_transfers()
+    {
+        $data['activePage'] = 'list_fund_transfers';
+        $this->load->view('admin/header', $data);
+        $this->load->view('admin/accounts/list_fund_transfers', $data);
+        $this->load->view('admin/footer');
+    }
+
+    public function fetch_fund_transfers()
+    {
+        // Retrieve search, pagination, and filtering inputs from DataTables
+        $from_date = $this->input->post('from_date', true);
+        $to_date = $this->input->post('to_date', true);
+        $search_value = $this->input->post('search')['value'] ?? null; // Search term
+        $start = $this->input->post('start', true); // Offset for pagination
+        $length = $this->input->post('length', true); // Limit for pagination
+        $draw = $this->input->post('draw', true); // Draw number for DataTables
+
+        // Fetch filtered data with pagination
+        $result = $this->AccountsModel->get_filtered_fund_transfers($from_date, $to_date, $search_value, $start, $length);
+
+        // Prepare data for DataTables
+        $data = [];
+        foreach ($result['data'] as $transfer) {
+            $row = [
+                $transfer['id'],
+                $transfer['payment_method'],
+                ($transfer['trans_type'] == 1) ? "Credit" : "Debit",
+                '₹' . number_format($transfer['amount'], 2),
+                $transfer['descriptions'] ?? 'N/A',
+                $transfer['transferred_by'],
+                date('d-m-Y', strtotime($transfer['trans_date'])),
+                date('d-m-Y H:i', strtotime($transfer['created_at']))
+            ];
+            $data[] = $row;
+        }
+
+        // Return JSON response
+        echo json_encode([
+            "draw" => intval($draw),
+            "recordsTotal" => $result['recordsTotal'], // Total records without filtering
+            "recordsFiltered" => $result['recordsFiltered'], // Total records after filtering
+            "data" => $data // Processed data
+        ]);
     }
 }
