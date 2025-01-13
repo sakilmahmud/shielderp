@@ -158,7 +158,7 @@ class InvoiceController extends CI_Controller
                     'created_at' => $current_date_time
                 ];
                 // Reduce the stock for each product
-                $this->StockModel->reduceStock($product_id, $quantities[$index]);
+                //$this->StockModel->reduceStock($product_id, $quantities[$index]);
             }
 
             $this->db->insert_batch('invoice_details', $invoiceDetailsData);
@@ -171,11 +171,13 @@ class InvoiceController extends CI_Controller
                 $paid_amount = 0;
                 foreach ($payment_modes as $index => $payment_mode) {
                     if (!empty($payment_mode)) {
-                        $paid_amount += $payment_amounts[$index];
+                        $this_paid_amount = (float)$payment_amounts[$index] ?? 0;
+
+                        $paid_amount += $this_paid_amount;
 
                         // Insert into 'transactions' table
                         $transactionData = [
-                            'amount' => $payment_amounts[$index],
+                            'amount' => $this_paid_amount,
                             'trans_type' => 1, // Credit
                             'payment_method_id' => $payment_mode,
                             'descriptions' => 'Payment for Invoice #' . $invoice_no,
