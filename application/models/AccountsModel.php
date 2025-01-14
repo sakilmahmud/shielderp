@@ -18,7 +18,7 @@ class AccountsModel extends CI_Model
             $this->db->where('DATE(t.trans_date) >=', $from_date);
             $this->db->where('DATE(t.trans_date) <=', $to_date);
         }
-
+        $this->db->where('t.status', 1);
         $this->db->group_by('t.payment_method_id');
         $query = $this->db->get();
         return $query->result_array();
