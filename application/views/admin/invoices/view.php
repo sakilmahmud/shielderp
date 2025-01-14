@@ -35,7 +35,7 @@
                                 </tr>
                                 <tr>
                                     <th>Total Amount:</th>
-                                    <td><?php echo $invoice['total_amount']; ?></td>
+                                    <td>₹<?php echo number_format(round($invoice['total_amount']), 2); ?></td>
                                 </tr>
                                 <tr>
                                     <th>Payment Status:</th>
@@ -72,10 +72,10 @@
                                                 <p><?php echo $detail['product_descriptions']; ?></p>
                                             </td>
                                             <td><?php echo $detail['quantity']; ?></td>
-                                            <td><?php echo $detail['price']; ?></td>
+                                            <td>₹<?php echo $detail['price']; ?></td>
                                             <td><?php echo $detail['discount']; ?></td>
                                             <td><?php echo $detail['gst_amount']; ?></td>
-                                            <td><?php echo $detail['final_price']; ?></td>
+                                            <td>₹<?php echo number_format(round($detail['final_price']), 2); ?></td>
                                         </tr>
                                     <?php endforeach; ?>
                                 </tbody>

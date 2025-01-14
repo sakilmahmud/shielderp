@@ -7,22 +7,132 @@ $(document).ready(function () {
   });
 
   // Event: Add product to table
+  // Event: Add product to table
   $(".add-product").on("click", function () {
     let total_stocks = parseFloat($("#total_stocks").val());
+    let productRow = $(".product-row");
+    let quantity = parseFloat(productRow.find(".quantity").val());
 
-    var productRow = $(".product-row");
-    var quantity = parseFloat(productRow.find(".quantity").val());
-    /* alert(total_stocks);
-		alert(quantity); */
     if (quantity > total_stocks) {
-      alert(`You choosen ${quantity} but current stocks is ${total_stocks}`);
-      return false;
+      alert(`You chose ${quantity}, but current stock is ${total_stocks}`);
+      return; // Stop the function if quantity exceeds stock
     }
 
-    addProductToTable();
+    addOrUpdateProductInTable(); // Update the product logic
     $(".product_id").chosen().trigger("chosen:updated");
     $(".product_details").hide(); // Hide if no product is selected
   });
+
+  // Function to add or update a product in the table
+  function addOrUpdateProductInTable() {
+    let productRow = $(".product-row");
+
+    // Get data from the form fields
+    let product_id = productRow.find(".product_id").val();
+    let product = productRow.find(".product_id option:selected").text();
+    let quantity = parseFloat(productRow.find(".quantity").val());
+    let price = parseFloat(productRow.find(".price").val());
+    let discountType = productRow.find(".discount_type").val();
+    let discountAmount =
+      parseFloat(productRow.find(".discount_amount").val()) || 0;
+    let gstRate = parseFloat(productRow.find(".gst_rate").val()) || 0;
+    let gst_amount = parseFloat(productRow.find(".gst_amount").val()) || 0;
+    let total = parseFloat(productRow.find(".total").val());
+    let product_descriptions = productRow.find(".product_descriptions").val();
+
+    let discountText =
+      discountType === "1" ? "₹" + discountAmount : discountAmount + "%";
+
+    // Hidden fields for the product
+    let hiddenFields =
+      '<input type="hidden" name="product_id[]" value="' +
+      product_id +
+      '">' +
+      '<input type="hidden" name="product_descriptions[]" value="' +
+      product_descriptions +
+      '">' +
+      '<input type="hidden" name="qnt[]" value="' +
+      quantity +
+      '">' +
+      '<input type="hidden" name="purchase_price[]" value="' +
+      price +
+      '">' +
+      '<input type="hidden" name="discount_type[]" value="' +
+      discountType +
+      '">' +
+      '<input type="hidden" name="discount[]" value="' +
+      discountAmount +
+      '">' +
+      '<input type="hidden" name="gst_rate[]" value="' +
+      gstRate +
+      '">' +
+      '<input type="hidden" name="gst_amount[]" value="' +
+      gst_amount +
+      '">' +
+      '<input type="hidden" name="final_price[]" value="' +
+      total +
+      '">';
+
+    // Create the table row
+    let newRow =
+      "<tr data-product-id='" +
+      product_id +
+      "'>" +
+      "<td><b>" +
+      product +
+      " x " +
+      quantity +
+      " </b><p>" +
+      product_descriptions +
+      "</p></td>" +
+      "<td>₹" +
+      price.toFixed(2) +
+      "</td>" +
+      "<td>" +
+      discountText +
+      "</td>" +
+      "<td>₹" +
+      gst_amount +
+      " (" +
+      gstRate +
+      "%)</td>" +
+      "<td>₹" +
+      total.toFixed(2) +
+      "</td>" +
+      "<td class='text-center'><button type='button' class='btn btn-danger btn-sm remove-item'>X</button></td>" +
+      hiddenFields +
+      "</tr>";
+
+    // Check if the product already exists in the table
+    let existingRow = $("#product-rows tbody").find(
+      "tr[data-product-id='" + product_id + "']"
+    );
+
+    if (existingRow.length > 0) {
+      // If the product exists, replace the row with updated data
+      existingRow.replaceWith(newRow);
+    } else {
+      // If the product doesn't exist, append the new row
+      $("#product-rows tbody").append(newRow);
+    }
+
+    // Update totals
+    updateTotals();
+
+    // Reset the form fields
+    productRow.find("input, select").val("");
+    productRow.find(".quantity").val("1");
+
+    let is_gst = $("#is_gst").val();
+    if (is_gst == 0) {
+      productRow.find(".gst_rate").val("0");
+    } else {
+      productRow.find(".gst_rate").val("18");
+    }
+
+    productRow.find(".discount_amount").attr("readonly", "readonly").val("0");
+    productRow.find(".net_price_section").hide();
+  }
 
   // Event: Remove product from table
   $(document).on("click", ".remove-item", function () {
@@ -102,13 +212,8 @@ function calculateTotalForRow(row) {
 function addProductToTable() {
   var productRow = $(".product-row");
   var product_id = productRow.find(".product_id").val();
-  console.log(product_id);
-  /* if (product_id === "NAN") {
-    alert("Please add an product");
-    return false;
-  } else {
-    return true;
-  } */
+  ///console.log(product_id);
+
   var product = productRow.find(".product_id option:selected").text();
   var quantity = parseFloat(productRow.find(".quantity").val());
   var price = parseFloat(productRow.find(".price").val());
@@ -118,13 +223,6 @@ function addProductToTable() {
   var gstRate = parseFloat(productRow.find(".gst_rate").val()) || 0;
 
   var gst_amount = parseFloat(productRow.find(".gst_amount").val()) || 0;
-
-  /* var totalBeforeGST = price - discountAmount;
-
-	var gstAmount = (discountedPrice * gstRate) / 100;
-
-	// Calculate GST amount
-	var gst_amount = (totalBeforeGST * gstRate) / 100; */
 
   var total = parseFloat(productRow.find(".total").val());
 

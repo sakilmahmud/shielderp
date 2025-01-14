@@ -113,7 +113,7 @@
                                         <div class="form-group">
                                             <label for="discount_type">Disc Type</label>
                                             <select class="form-control discount_type">
-                                                <option value="">No</option>
+                                                <option value="0">No</option>
                                                 <option value="1">Flat</option>
                                                 <option value="2">Percent</option>
                                             </select>
@@ -197,7 +197,7 @@
                                         </thead>
                                         <tbody>
                                             <?php foreach ($invoice_details as $product) : ?>
-                                                <tr>
+                                                <tr data-product-id="<?php echo $product['product_id']; ?>">
                                                     <td>
                                                         <?php echo $product['product_name']; ?> x <b><?php echo $product['quantity']; ?></b>
 
@@ -218,6 +218,7 @@
                                                         <button type="button" class="btn btn-danger btn-sm remove-item">X</button>
                                                     </td>
                                                     <input type="hidden" name="product_id[]" value="<?php echo $product['product_id']; ?>">
+                                                    <input type="hidden" name="product_descriptions[]" value="<?php echo $product['product_descriptions']; ?>">
                                                     <input type="hidden" name="purchase_price[]" value="<?php echo $product['price']; ?>">
                                                     <input type="hidden" name="discount_type[]" value="<?php echo $product['discount_type']; ?>">
                                                     <input type="hidden" name="discount[]" value="<?php echo $product['discount']; ?>">
@@ -338,6 +339,37 @@
     </section>
 </div>
 
+<script>
+    $(document).on('click', '.edit-item', function() {
+        // Find the parent row of the clicked button
+        var $row = $(this).closest('tr');
+
+        // Get the product ID from the hidden input
+        var productId = $row.find('input[name="product_id[]"]').val();
+
+        // Update the dropdown with the selected product
+        $('.product_id').val(productId).chosen().trigger("chosen:updated").trigger('change');
+
+        // Get other fields from the hidden inputs
+        var quantity = $row.find('input[name="qnt[]"]').val();
+        var price = $row.find('input[name="purchase_price[]"]').val();
+        var discountType = $row.find('input[name="discount_type[]"]').val();
+        var discount = $row.find('input[name="discount[]"]').val();
+        var gstRate = $row.find('input[name="gst_rate[]"]').val();
+
+        // Update the respective input fields with a delay for price
+        setTimeout(function() {
+            $('.price').val(price).trigger('change');
+        }, 100); // Delay of 500ms
+
+        // Update other fields immediately
+        $('.quantity').val(quantity);
+        $('.discount_type').val(discountType).trigger('change');
+        $('.discount_amount').val(discount);
+        $('.gst_rate').val(gstRate).trigger('change');
+    });
+</script>
+<?php /*
 <!-- Edit Product Modal -->
 <div class="modal fade" id="editProductModal" tabindex="-1" role="dialog" aria-labelledby="editProductModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
@@ -456,6 +488,8 @@
         $('#editProductModal').modal('hide');
     });
 </script>
+
+*/ ?>
 
 
 <!-- Quick Edit Modal -->

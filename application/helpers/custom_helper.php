@@ -59,8 +59,8 @@ function numberTowords($num)
             $rettxt .= $tens[substr($i, 0, 1)];
             $rettxt .= " " . $ones[substr($i, 1, 1)];
         } else {
-            $rettxt .= $ones[substr($i, 0, 1)] . " " . $hundreds[0];
-            $rettxt .= " " . $tens[substr($i, 1, 1)];
+            @$rettxt .= $ones[substr($i, 0, 1)] . " " . $hundreds[0];
+            @$rettxt .= " " . $tens[substr($i, 1, 1)];
             @$rettxt .= " " . $ones[substr($i, 2, 1)];
         }
         if ($key > 0) {
