@@ -33,7 +33,7 @@
                         <form id="filterForm">
                             <div class="row mb-3">
                                 <div class="col-md-2">
-                                    <input type="date" id="from_date" class="form-control filter-input" placeholder="From Date" value="<?php echo date('Y-m-d'); ?>">
+                                    <input type="date" id="from_date" class="form-control filter-input" placeholder="From Date" value="<?php echo date('Y-m-d', strtotime('-7 days')); ?>">
                                 </div>
                                 <div class="col-md-2">
                                     <input type="date" id="to_date" class="form-control filter-input" placeholder="To Date" value="<?php echo date('Y-m-d'); ?>">
@@ -62,6 +62,9 @@
                                         <?php endforeach; ?>
                                     </select>
                                 </div>
+                                <div class="col-md-2">
+                                    <button type="button" id="resetFilter" class="btn btn-secondary">Reset</button>
+                                </div>
                             </div>
                         </form>
                     </div>
@@ -80,9 +83,9 @@
                         </thead>
                         <tfoot>
                             <tr>
-                                <td colspan="3"><strong>Total</strong></td>
-                                <td id="total_amount"><strong>₹0.00</strong></td>
-                                <td colspan="4"></td>
+                                <th colspan="3">Total:</th>
+                                <th id="total_amount"></th>
+                                <th colspan="4"></th>
                             </tr>
                         </tfoot>
                     </table>
@@ -148,8 +151,8 @@
             table.ajax.reload();
         });
 
-        $('#filterForm').on('submit', function(e) {
-            e.preventDefault();
+        $('#resetFilter').on('click', function() {
+            $('#filterForm')[0].reset();
             table.ajax.reload();
         });
     });

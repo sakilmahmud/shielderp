@@ -68,6 +68,7 @@ $route['admin/dtp/categories/delete/(:num)'] = 'admin/DtpController/deleteCatego
 
 /** Income routes */
 $route['admin/income'] = 'admin/IncomeController/index';
+$route['admin/income/fetch'] = 'admin/IncomeController/fetchIncomes';
 $route['admin/income/add'] = 'admin/IncomeController/addIncome';
 $route['admin/income/edit/(:num)'] = 'admin/IncomeController/editIncome/$1';
 $route['admin/income/delete/(:num)'] = 'admin/IncomeController/deleteIncome/$1';
@@ -159,7 +160,8 @@ $route['admin/purchase_entries/add']        = 'admin/PurchaseEntryController/add
 $route['admin/purchase_entries/edit/(:num)'] = 'admin/PurchaseEntryController/edit/$1';
 $route['admin/purchase_entries/delete/(:num)'] = 'admin/PurchaseEntryController/delete/$1';
 
-$route['admin/invoices']                    = 'admin/InvoiceController/index';
+$route['admin/invoices'] = 'admin/InvoiceController/index';
+$route['admin/invoices/fetch'] = 'admin/InvoiceController/fetchInvoices';
 $route['admin/invoices/create']             = 'admin/InvoiceController/createInvoice';
 $route['admin/invoices/edit/(:num)']        = 'admin/InvoiceController/updateInvoice/$1';
 $route['admin/invoices/view/(:num)']        = 'admin/InvoiceController/view/$1';

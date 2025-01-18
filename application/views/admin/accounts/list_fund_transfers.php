@@ -36,6 +36,12 @@
         $('#fundTransfersTable').DataTable({
             processing: true,
             serverSide: true,
+            order: false,
+            pageLength: 100,
+            lengthMenu: [
+                [100, -1],
+                [100, "All"]
+            ],
             ajax: {
                 url: '<?php echo base_url("admin/accounts/fetch_fund_transfers"); ?>',
                 type: 'POST',

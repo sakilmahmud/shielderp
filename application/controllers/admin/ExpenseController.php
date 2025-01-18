@@ -15,7 +15,7 @@ class ExpenseController extends CI_Controller
         }
     }
 
-    /** Expenses */ public function index()
+    public function index()
     {
         $data['activePage'] = 'expense';
         $data['categories'] = $this->ExpenseModel->getExpenseHeads(); // For dropdown filters
@@ -40,9 +40,9 @@ class ExpenseController extends CI_Controller
         $length = $this->input->post('length', true); // Limit for pagination
         $draw = $this->input->post('draw', true); // Draw number for DataTables
 
-        // Default to today's data if no date is selected
+        // Default to the last 7 days if no date is selected
         if (empty($from_date)) {
-            $from_date = date('Y-m-d');
+            $from_date = date('Y-m-d', strtotime('-7 days'));
         }
         if (empty($to_date)) {
             $to_date = date('Y-m-d');

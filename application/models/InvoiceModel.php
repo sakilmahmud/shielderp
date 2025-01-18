@@ -34,6 +34,88 @@ class InvoiceModel extends CI_Model
         return $query->result_array();
     }
 
+    public function getFilteredInvoices($from_date, $to_date, $payment_status, $created_by, $search_value, $start, $length)
+    {
+        // Select columns including calculated paid_amount and due_amount
+        $this->db->select('
+        invoices.*,
+        users.full_name as created_by_name,
+        invoices.total_amount,
+        IFNULL(SUM(transactions.amount), 0) as paid_amount,
+        (invoices.total_amount - IFNULL(SUM(transactions.amount), 0)) as due_amount
+    ');
+        $this->db->from('invoices');
+        $this->db->join('users', 'invoices.created_by = users.id', 'left');
+        $this->db->join('transactions', 'transactions.table_id = invoices.id AND transactions.transaction_for_table = "invoices" AND transactions.trans_type = 1 AND transactions.status = 1', 'left');
+        $this->db->where('DATE(invoices.invoice_date) >=', $from_date);
+        $this->db->where('DATE(invoices.invoice_date) <=', $to_date);
+
+        // Apply payment status filter if provided
+        if (!empty($payment_status)) {
+            $this->db->where('invoices.payment_status', $payment_status);
+        }
+
+        // Apply created_by filter if provided
+        if (!empty($created_by)) {
+            $this->db->where('invoices.created_by', $created_by);
+        }
+
+        // Apply search filter if provided
+        if (!empty($search_value)) {
+            $this->db->group_start();
+            $this->db->like('invoices.invoice_no', $search_value);
+            $this->db->or_like('invoices.customer_name', $search_value);
+            $this->db->or_like('users.full_name', $search_value);
+            $this->db->group_end();
+        }
+
+        // Group by invoice ID to calculate the sum of transactions for each invoice
+        $this->db->group_by('invoices.id');
+
+        // Pagination
+        if ($length != -1) {
+            $this->db->limit($length, $start);
+        }
+
+        // Ordering
+        $this->db->order_by('invoices.created_at', 'DESC');
+
+        $query = $this->db->get();
+
+        // Fetch filtered data count for DataTables
+        $this->db->select('COUNT(DISTINCT invoices.id) as count');
+        $this->db->from('invoices');
+        $this->db->join('users', 'invoices.created_by = users.id', 'left');
+        $this->db->join('transactions', 'transactions.table_id = invoices.id AND transactions.transaction_for_table = "invoices" AND transactions.trans_type = 1 AND transactions.status = 1', 'left');
+        $this->db->where('DATE(invoices.invoice_date) >=', $from_date);
+        $this->db->where('DATE(invoices.invoice_date) <=', $to_date);
+
+        if (!empty($payment_status)) {
+            $this->db->where('invoices.payment_status', $payment_status);
+        }
+
+        if (!empty($created_by)) {
+            $this->db->where('invoices.created_by', $created_by);
+        }
+
+        if (!empty($search_value)) {
+            $this->db->group_start();
+            $this->db->like('invoices.invoice_no', $search_value);
+            $this->db->or_like('invoices.customer_name', $search_value);
+            $this->db->or_like('users.full_name', $search_value);
+            $this->db->group_end();
+        }
+
+        $count_query = $this->db->get();
+        $count_result = $count_query->row_array();
+
+        return [
+            'data' => $query->result_array(),
+            'recordsTotal' => $count_result['count'],
+            'recordsFiltered' => $count_result['count'],
+        ];
+    }
+
 
     // Method to get a specific invoice by ID
     public function get_invoice_by_id($invoice_id)

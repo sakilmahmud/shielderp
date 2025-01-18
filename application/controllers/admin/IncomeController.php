@@ -25,6 +25,67 @@ class IncomeController extends CI_Controller
         $this->load->view('admin/footer');
     }
 
+    public function fetchIncomes()
+    {
+        $from_date = $this->input->post('from_date', true);
+        $to_date = $this->input->post('to_date', true);
+        $category_id = $this->input->post('category', true);
+        $payment_method_id = $this->input->post('payment_method', true);
+        $search_value = $this->input->post('search')['value'] ?? null;
+        $start = $this->input->post('start', true);
+        $length = $this->input->post('length', true);
+        $draw = $this->input->post('draw', true);
+
+        // Default date range to the last 7 days
+        if (empty($from_date)) {
+            $from_date = date('Y-m-d', strtotime('-7 days'));
+        }
+        if (empty($to_date)) {
+            $to_date = date('Y-m-d');
+        }
+
+        $result = $this->IncomeModel->getFilteredIncomes(
+            $from_date,
+            $to_date,
+            $category_id,
+            $payment_method_id,
+            $search_value,
+            $start,
+            $length
+        );
+
+        $total_transaction_amount = 0;
+        $data = [];
+
+        foreach ($result['data'] as $income) {
+            $total_transaction_amount += $income['transaction_amount'];
+
+            $actions = '<a href="' . base_url('admin/income/edit/' . $income['id']) . '" class="btn btn-warning btn-sm">Edit</a>';
+            $actions .= '<a href="' . base_url('admin/income/delete/' . $income['id']) . '" class="btn btn-danger btn-sm" onclick="return confirm(\'Are you sure you want to delete this income?\');">Delete</a>';
+
+            $data[] = [
+                $income['id'],
+                $income['head_title'],
+                $income['income_title'],
+                '₹' . number_format($income['transaction_amount'], 2),
+                $income['method_name'],
+                $income['invoice_no'],
+                date('d-m-Y', strtotime($income['transaction_date'])),
+                $actions
+            ];
+        }
+
+        echo json_encode([
+            "draw" => intval($draw),
+            "recordsTotal" => $result['recordsTotal'],
+            "recordsFiltered" => $result['recordsFiltered'],
+            "data" => $data,
+            "footer" => [
+                "total_amount" => '₹' . number_format($total_transaction_amount, 2),
+            ]
+        ]);
+    }
+
     public function addIncome()
     {
         $data['activePage'] = 'income';

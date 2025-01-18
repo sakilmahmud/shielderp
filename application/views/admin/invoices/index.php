@@ -13,75 +13,63 @@
     </section>
     <section class="content">
         <div class="container-fluid">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="card">
-                        <div class="card-body">
-                            <?php if ($this->session->flashdata('message')) : ?>
-                                <div class="alert alert-success">
-                                    <?php echo $this->session->flashdata('message'); ?>
-                                </div>
-                            <?php endif; ?>
-                            <?php if ($this->session->flashdata('error_message')) : ?>
-                                <div class="alert alert-danger">
-                                    <?php echo $this->session->flashdata('error_message'); ?>
-                                </div>
-                            <?php endif; ?>
-
-                            <?php if (!empty($invoices)) : ?>
-                                <div class="table-responsive">
-                                    <table id="invoicesTable" class="table table-sm table-striped table-bordered">
-                                        <thead>
-                                            <tr>
-                                                <th>ID</th>
-                                                <th>Invoice No</th>
-                                                <th>Customer Name</th>
-                                                <th>Invoice Date</th>
-                                                <th>Total Amount</th>
-                                                <th>Created by</th>
-                                                <th>Status</th>
-                                                <th>Actions</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <?php foreach ($invoices as $invoice) : ?>
-                                                <tr>
-                                                    <td><?php echo $invoice['id']; ?></td>
-                                                    <td><?php echo $invoice['invoice_no']; ?></td>
-                                                    <td><?php echo $invoice['customer_name']; ?></td>
-                                                    <td><?php echo date('Y-m-d', strtotime($invoice['invoice_date'])); ?></td>
-                                                    <td>₹<?php echo number_format($invoice['total_amount'], 2); ?></td>
-                                                    <td><?php echo $invoice['created_by_name']; ?></td>
-                                                    <td>
-                                                        <?php if ($invoice['payment_status'] == '1') : ?>
-                                                            <span class="badge badge-success">Paid</span>
-                                                        <?php elseif ($invoice['payment_status'] == '0') : ?>
-                                                            <span class="badge badge-warning">Pending</span>
-                                                        <?php elseif ($invoice['payment_status'] == '2') : ?>
-                                                            <span class="badge badge-info">Partial</span>
-                                                        <?php elseif ($invoice['payment_status'] == '3') : ?>
-                                                            <span class="badge badge-danger">Return</span>
-                                                        <?php endif; ?>
-                                                    </td>
-
-                                                    <td>
-                                                        <a href="<?php echo base_url('admin/invoices/view/' . $invoice['id']); ?>" class="btn btn-info btn-sm">View</a>
-                                                        <a href="<?php echo base_url('admin/invoices/edit/' . $invoice['id']); ?>" class="btn btn-warning btn-sm">Edit</a>
-                                                        <a href="<?php echo base_url('admin/invoices/delete/' . $invoice['id']); ?>"
-                                                            class="btn btn-danger btn-sm"
-                                                            onclick="return confirm('Are you sure you want to delete this invoice? This action cannot be undone.');">Delete</a>
-                                                        <a href="<?php echo base_url('admin/invoices/print/' . $invoice['id']); ?>" target="_blank" class="btn btn-primary btn-sm">Print</a>
-                                                    </td>
-                                                </tr>
-                                            <?php endforeach; ?>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            <?php else : ?>
-                                <div class="alert alert-info">No invoices found.</div>
-                            <?php endif; ?>
+            <div class="card">
+                <div class="card-body">
+                    <form id="filterForm">
+                        <div class="row mb-3">
+                            <div class="col-md-3">
+                                <input type="date" id="from_date" class="form-control filter-input" value="<?php echo date('Y-m-d', strtotime('-15 days')); ?>">
+                            </div>
+                            <div class="col-md-3">
+                                <input type="date" id="to_date" class="form-control filter-input" value="<?php echo date('Y-m-d'); ?>">
+                            </div>
+                            <div class="col-md-2">
+                                <select id="payment_status" class="form-control filter-input">
+                                    <option value="">Payment Status</option>
+                                    <option value="0">Pending</option>
+                                    <option value="1">Paid</option>
+                                    <option value="2">Partial</option>
+                                    <option value="3">Return</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <select id="created_by" class="form-control filter-input">
+                                    <option value="">Created By</option>
+                                    <?php foreach ($users as $user): ?>
+                                        <option value="<?php echo $user['id']; ?>"><?php echo $user['full_name']; ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <button type="button" id="resetFilter" class="btn btn-secondary">Reset</button>
+                            </div>
                         </div>
-                    </div>
+                    </form>
+                    <table id="invoiceTable" class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Invoice No</th>
+                                <th>Customer</th>
+                                <th>Date</th>
+                                <th>Total</th>
+                                <th>Paid</th>
+                                <th>Due</th>
+                                <th>MadeBy</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tfoot>
+                            <tr>
+                                <th colspan="4" class="text-right">Total:</th>
+                                <th id="totalAmount">₹0.00</th>
+                                <th id="totalPaid">₹0.00</th>
+                                <th id="totalDue">₹0.00</th>
+                                <th colspan="3"></th>
+                            </tr>
+                        </tfoot>
+                    </table>
                 </div>
             </div>
         </div>
@@ -89,15 +77,71 @@
 </div>
 
 <script>
-    $(document).ready(function() {
-        $('#invoicesTable').DataTable({
-            "paging": true,
-            "lengthChange": true,
-            "searching": true,
-            "ordering": false,
-            "info": true,
-            "autoWidth": false,
-            "responsive": true
-        });
+    const table = $('#invoiceTable').DataTable({
+        processing: true,
+        serverSide: true,
+        order: false,
+        pageLength: 50,
+        lengthMenu: [
+            [50, -1],
+            [50, 100, "All"]
+        ],
+        ajax: {
+            url: '<?php echo base_url("admin/invoices/fetch"); ?>',
+            type: 'POST',
+            data: function(d) {
+                d.from_date = $('#from_date').val();
+                d.to_date = $('#to_date').val();
+                d.payment_status = $('#payment_status').val();
+                d.created_by = $('#created_by').val();
+            },
+            dataSrc: function(json) {
+                // Update the totals in the footer
+                $('#totalAmount').text(json.totals.total_amount);
+                $('#totalPaid').text(json.totals.total_paid);
+                $('#totalDue').text(json.totals.total_due);
+                return json.data;
+            }
+        },
+        columns: [{
+                data: 0
+            },
+            {
+                data: 1
+            },
+            {
+                data: 2
+            },
+            {
+                data: 3
+            },
+            {
+                data: 4
+            },
+            {
+                data: 5
+            },
+            {
+                data: 6
+            },
+            {
+                data: 7
+            },
+            {
+                data: 8
+            },
+            {
+                data: 9
+            }
+        ]
+    });
+
+    $('.filter-input').on('change', function() {
+        table.ajax.reload();
+    });
+
+    $('#resetFilter').on('click', function() {
+        $('#filterForm')[0].reset();
+        table.ajax.reload();
     });
 </script>

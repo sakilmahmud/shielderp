@@ -7,6 +7,7 @@ class InvoiceController extends CI_Controller
     {
         parent::__construct();
         // Load any required models, helpers, libraries, etc.
+        $this->load->model('UserModel');
         $this->load->model('InvoiceModel');
         $this->load->model('ProductModel');
         $this->load->model('CustomerModel');
@@ -23,10 +24,88 @@ class InvoiceController extends CI_Controller
     public function index()
     {
         $data['activePage'] = 'invoices';
-        $data['invoices'] = $this->InvoiceModel->get_all_invoices();
+        $data['users'] = $this->UserModel->getUsers(array(1, 2));
         $this->load->view('admin/header', $data);
         $this->load->view('admin/invoices/index', $data);
         $this->load->view('admin/footer');
+    }
+
+    public function fetchInvoices()
+    {
+        $from_date = $this->input->post('from_date', true);
+        $to_date = $this->input->post('to_date', true);
+        $payment_status = $this->input->post('payment_status', true);
+        $created_by = $this->input->post('created_by', true);
+        $search_value = $this->input->post('search')['value'] ?? null;
+        $start = $this->input->post('start', true);
+        $length = $this->input->post('length', true);
+        $draw = $this->input->post('draw', true);
+
+        if (empty($from_date)) {
+            $from_date = date('Y-m-d', strtotime('-15 days'));
+        }
+        if (empty($to_date)) {
+            $to_date = date('Y-m-d');
+        }
+
+        $result = $this->InvoiceModel->getFilteredInvoices(
+            $from_date,
+            $to_date,
+            $payment_status,
+            $created_by,
+            $search_value,
+            $start,
+            $length
+        );
+
+        $data = [];
+        $totalAmount = 0;
+        $totalPaid = 0;
+        $totalDue = 0;
+
+        foreach ($result['data'] as $invoice) {
+            $totalAmount += $invoice['total_amount'];
+            $totalPaid += $invoice['paid_amount'];
+            $totalDue += $invoice['due_amount'];
+
+            $actions = '<a href="' . base_url('admin/invoices/view/' . $invoice['id']) . '" class="btn btn-info btn-sm">View</a>';
+            $actions .= '<a href="' . base_url('admin/invoices/edit/' . $invoice['id']) . '" class="btn btn-warning btn-sm">Edit</a>';
+            $actions .= '<a href="' . base_url('admin/invoices/delete/' . $invoice['id']) . '" class="btn btn-danger btn-sm" onclick="return confirm(\'Are you sure you want to delete this invoice?\');">Delete</a>';
+            $actions .= '<a href="' . base_url('admin/invoices/print/' . $invoice['id']) . '" target="_blank" class="btn btn-primary btn-sm">Print</a>';
+
+            $status_badge = match ($invoice['payment_status']) {
+                '1' => '<span class="badge badge-success">Paid</span>',
+                '0' => '<span class="badge badge-warning">Pending</span>',
+                '2' => '<span class="badge badge-info">Partial</span>',
+                '3' => '<span class="badge badge-danger">Return</span>',
+                default => '<span class="badge badge-secondary">Unknown</span>',
+            };
+
+            $data[] = [
+                $invoice['id'],
+                $invoice['invoice_no'],
+                $invoice['customer_name'],
+                date('d-m-Y', strtotime($invoice['invoice_date'])),
+                '₹' . number_format($invoice['total_amount'], 2),
+                '₹' . number_format($invoice['paid_amount'], 2),
+                '₹' . number_format($invoice['due_amount'], 2),
+                $invoice['created_by_name'],
+                $status_badge,
+                $actions,
+            ];
+        }
+
+        echo json_encode([
+            "draw" => intval($draw),
+            "recordsTotal" => $result['recordsTotal'],
+            "recordsFiltered" => $result['recordsFiltered'],
+            "data" => $data,
+            "totals" => [
+                'total_amount' => '₹' . number_format($totalAmount, 2),
+                'total_paid' => '₹' . number_format($totalPaid, 2),
+                'total_due' => '₹' . number_format($totalDue, 2),
+            ],
+        ]);
     }
 
     public function createInvoice()
