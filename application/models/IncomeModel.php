@@ -140,4 +140,12 @@ class IncomeModel extends CI_Model
     {
         return $this->db->where('id', $id)->delete('income_heads');
     }
+
+    public function isIncomeHeadUsed($head_id)
+    {
+        $this->db->from('incomes');
+        $this->db->where('income_head_id', $head_id);
+        $count = $this->db->count_all_results();
+        return $count > 0; // Return true if the head is in use
+    }
 }

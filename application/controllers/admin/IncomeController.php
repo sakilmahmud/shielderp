@@ -222,10 +222,38 @@ class IncomeController extends CI_Controller
 
     public function deleteIncome($id)
     {
+        $current_date_time = date('Y-m-d H:i:s');
+
+        // Fetch the income to check if it exists
+        $income = $this->IncomeModel->getIncome($id);
+        if (!$income) {
+            $this->session->set_flashdata('error', 'Income not found.');
+            redirect('admin/income');
+        }
+
+        // Log the deletion for audit purposes
+        $logIncomeData = [
+            'income_id' => $id,
+            'income_data' => json_encode($income), // Save the deleted income data
+            'action' => 3, // Delete action
+            'made_by' => $this->session->userdata('user_id'),
+            'device_data' => $this->input->user_agent(),
+            'ip_address' => $this->input->ip_address(),
+            'created_at' => $current_date_time
+        ];
+        $this->db->insert('log_incomes', $logIncomeData);
+
+        // Delete related transactions from 'transactions'
+        $this->db->delete('transactions', ['table_id' => $id, 'transaction_for_table' => 'income']);
+
+        // Delete the income
         $this->IncomeModel->deleteIncome($id);
-        $this->session->set_flashdata('message', 'Income deleted successfully');
+
+        // Set a success message and redirect
+        $this->session->set_flashdata('message', 'Income deleted successfully.');
         redirect('admin/income');
     }
+
 
     public function head()
     {
@@ -288,9 +316,18 @@ class IncomeController extends CI_Controller
 
     public function deleteHead($id)
     {
+        // Check if the income head is in use
+        $isUsed = $this->IncomeModel->isIncomeHeadUsed($id);
+        if ($isUsed) {
+            $this->session->set_flashdata('error', 'Income Head cannot be deleted as it is already in use.');
+            redirect('admin/income/head');
+        }
+
+        // Delete the income head
         $this->IncomeModel->deleteIncomeHead($id);
 
-        $this->session->set_flashdata('message', 'Income Head deleted successfully');
+        // Set a success message and redirect
+        $this->session->set_flashdata('message', 'Income Head deleted successfully.');
         redirect('admin/income/head');
     }
 }
