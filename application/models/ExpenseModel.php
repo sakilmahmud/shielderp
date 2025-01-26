@@ -160,4 +160,12 @@ class ExpenseModel extends CI_Model
     {
         $this->db->delete('expense_heads', ['id' => $id]);
     }
+
+    public function isExpenseHeadUsed($head_id)
+    {
+        $this->db->from('expenses');
+        $this->db->where('expense_head_id', $head_id);
+        $count = $this->db->count_all_results();
+        return $count > 0; // Return true if the head is in use
+    }
 }

@@ -18,6 +18,19 @@
                 <div class="col-md-12">
                     <div class="card">
                         <div class="card-body">
+                            <?php if (!empty($error)) : ?>
+                                <div class="alert alert-danger"><?php echo $error; ?></div>
+                            <?php endif; ?>
+                            <?php if ($this->session->flashdata('message')) : ?>
+                                <div class="alert alert-success">
+                                    <?php echo $this->session->flashdata('message'); ?>
+                                </div>
+                            <?php endif; ?>
+                            <?php if ($this->session->flashdata('error')) : ?>
+                                <div class="alert alert-danger">
+                                    <?php echo $this->session->flashdata('error'); ?>
+                                </div>
+                            <?php endif; ?>
                             <table id="commonTable" class="table table-bordered table-striped">
                                 <thead>
                                     <tr>

@@ -230,10 +230,38 @@ class ExpenseController extends CI_Controller
 
     public function deleteExpense($id)
     {
+        $current_date_time = date('Y-m-d H:i:s');
+
+        // Fetch the expense to check if it exists
+        $expense = $this->ExpenseModel->getExpense($id);
+        if (!$expense) {
+            $this->session->set_flashdata('error', 'Expense not found.');
+            redirect('admin/expense');
+        }
+
+        // Log the deletion for audit purposes
+        $logExpenseData = [
+            'expense_id' => $id,
+            'expense_data' => json_encode($expense), // Save the deleted expense data
+            'action' => 3, // Delete action
+            'made_by' => $this->session->userdata('user_id'),
+            'device_data' => $this->input->user_agent(),
+            'ip_address' => $this->input->ip_address(),
+            'created_at' => $current_date_time
+        ];
+        $this->db->insert('log_expenses', $logExpenseData);
+
+        // Delete related transactions from 'transactions'
+        $this->db->delete('transactions', ['table_id' => $id, 'transaction_for_table' => 'expenses']);
+
+        // Delete the expense
         $this->ExpenseModel->deleteExpense($id);
-        $this->session->set_flashdata('message', 'Expense deleted successfully');
+
+        // Set a success message and redirect
+        $this->session->set_flashdata('message', 'Expense deleted successfully.');
         redirect('admin/expense');
     }
+
 
 
 
@@ -294,8 +322,18 @@ class ExpenseController extends CI_Controller
 
     public function deleteHead($id)
     {
+        // Check if the expense head is in use
+        $isUsed = $this->ExpenseModel->isExpenseHeadUsed($id);
+        if ($isUsed) {
+            $this->session->set_flashdata('error', 'Expense Head cannot be deleted as it is already in use.');
+            redirect('admin/expense/head');
+        }
+
+        // Delete the expense head
         $this->ExpenseModel->deleteExpenseHead($id);
-        $this->session->set_flashdata('message', 'Expense Head deleted successfully');
+
+        // Set a success message and redirect
+        $this->session->set_flashdata('message', 'Expense Head deleted successfully.');
         redirect('admin/expense/head');
     }
 }
