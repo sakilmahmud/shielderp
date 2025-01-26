@@ -19,6 +19,7 @@
 
   <!-- Custom style -->
   <link rel="stylesheet" href="<?php echo base_url('assets/admin/dist/css/styles.css') ?>">
+  <link rel="stylesheet" href="<?php echo base_url('assets/admin/dist/css/calc.css') ?>">
 
   <!-- DataTables -->
   <link rel="stylesheet" href="<?php echo base_url('assets/admin/plugins/') ?>datatables-bs4/css/dataTables.bootstrap4.min.css">
@@ -33,6 +34,7 @@
   <script src="<?php echo base_url('assets/admin/plugins/jquery-ui/jquery-ui.min.js') ?>"></script>
   <!-- AdminLTE App -->
   <script src="<?php echo base_url('assets/admin/dist/js/adminlte.min.js') ?>"></script>
+  <script src="<?php echo base_url('assets/admin/dist/js/calc.js') ?>"></script>
   <!-- DataTables  & Plugins -->
   <script src="<?php echo base_url('assets/admin/plugins/') ?>datatables/jquery.dataTables.min.js"></script>
   <script src="<?php echo base_url('assets/admin/plugins/') ?>datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
@@ -118,9 +120,74 @@
         </li>
       </ul>
 
+      <div class="mr-2">
+        <!-- Calculator Icon -->
+        <a href="javascript:void(0);" id="openCalculator" class="nav-link">
+          <i class="nav-icon fas fa-calculator"></i> <!-- Calculator Icon -->
+        </a>
+      </div>
       <div class="mr-2"><b><?php echo date("h:i A, jS F, Y"); ?></b></div>
     </nav>
     <!-- /.navbar -->
+    <div class="modal fade" id="calculatorModal" tabindex="-1" aria-labelledby="calculatorModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-body p-0">
+            <div class="calculator">
+              <div class="display">
+                <input type="text" id="expression" readonly />
+                <input type="text" id="display" readonly />
+              </div>
+              <div class="calc_buttons">
+                <button class="clear">C</button>
+                <button class="operator">%</button>
+                <button class="operator">/</button>
+                <button class="delete">⌫</button>
+
+                <button class="number">7</button>
+                <button class="number">8</button>
+                <button class="number">9</button>
+                <button class="operator">*</button>
+
+                <button class="number">4</button>
+                <button class="number">5</button>
+                <button class="number">6</button>
+                <button class="operator">-</button>
+
+                <button class="number">1</button>
+                <button class="number">2</button>
+                <button class="number">3</button>
+                <button class="operator">+</button>
+
+                <button class="number zero">0</button>
+                <button class="number">.</button>
+                <button class="equals">=</button>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+      $(document).ready(function() {
+        // Open the modal on clicking the calculator icon
+        $('#openCalculator').on('click', function() {
+          $('#calculatorModal').modal('show');
+        });
+
+        // Bind the F3 key to open the modal
+        $(document).on('keydown', function(event) {
+          if (event.key === 'F3') {
+            event.preventDefault(); // Prevent default browser behavior
+            $('#calculatorModal').modal('show');
+          }
+        });
+      });
+    </script>
+
 
     <?php
     if ($this->session->userdata('role') == 1 || $this->session->userdata('role') == 2) :

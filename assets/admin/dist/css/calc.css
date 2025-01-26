@@ -1,0 +1,156 @@
+.calculator {
+  background-color: rgba(45, 55, 72, 0.95);
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  /* width: min(90vw, 300px); */
+  width: 100%;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.display {
+  margin-bottom: 25px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+#expression,
+#display {
+  width: 100%;
+  background-color: rgba(26, 32, 44, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  color: white;
+  text-align: right;
+  padding: 15px;
+  box-sizing: border-box;
+  font-family: "Roboto Mono", monospace;
+  transition: all 0.3s ease;
+}
+
+#expression {
+  height: 50px;
+  font-size: 1.3em;
+  color: #a0aec0;
+}
+
+#display {
+  height: 70px;
+  font-size: 2.2em;
+  font-weight: 500;
+}
+
+#expression:focus,
+#display:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.4);
+}
+
+.calc_buttons {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+.calc_buttons button {
+  border: none;
+  border-radius: 12px;
+  padding: min(6vw, 20px);
+  font-size: 1.3em;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+button:active {
+  transform: scale(0.95);
+}
+
+.number {
+  background-color: rgba(74, 85, 104, 0.9);
+  color: white;
+}
+
+.number:hover {
+  background-color: rgba(113, 128, 150, 0.9);
+}
+
+.operator {
+  background-color: rgba(79, 70, 229, 0.9);
+  color: white;
+}
+
+.operator:hover {
+  background-color: rgba(67, 56, 202, 0.9);
+}
+
+.equals {
+  background-color: rgba(72, 187, 120, 0.9);
+  color: white;
+}
+
+.equals:hover {
+  background-color: rgba(56, 161, 105, 0.9);
+}
+
+.clear,
+.delete {
+  background-color: rgba(229, 62, 62, 0.9);
+  color: white;
+}
+
+.clear:hover,
+.delete:hover {
+  background-color: rgba(197, 48, 48, 0.9);
+}
+
+.zero {
+  grid-column: span 2;
+}
+
+/* Mobile Optimization */
+@media (max-width: 480px) {
+  .calculator {
+    padding: 20px;
+    width: 95vw;
+  }
+
+  .buttons {
+    gap: 8px;
+  }
+
+  button {
+    padding: 15px 0;
+    font-size: 1.2em;
+  }
+
+  #expression {
+    height: 45px;
+    font-size: 1.2em;
+  }
+
+  #display {
+    height: 60px;
+    font-size: 1.8em;
+  }
+}
+
+/* Larger Screens */
+@media (min-width: 1024px) {
+  .calculator {
+    transform: scale(0.75);
+  }
+
+  button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  }
+
+  button:active {
+    transform: translateY(0);
+  }
+}

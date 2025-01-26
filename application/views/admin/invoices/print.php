@@ -372,6 +372,9 @@
                     <h5>GST: <span style="font-family: DejaVu Sans; sans-serif;">&#8377;</span><?php echo number_format(($invoice['total_gst']), 2); ?></h5>
                 <?php endif; ?>
                 <h5>Discount <span style="font-family: DejaVu Sans; sans-serif;">&#8377;</span><?php echo number_format($invoice['total_discount'], 2); ?></h5>
+                <?php if ($invoice['round_off'] != 0): ?>
+                    <h5>Round Off: <?php echo $invoice['round_off']; ?></h5>
+                <?php endif; ?>
                 <h4>TOTAL AMOUNT <span style="font-family: DejaVu Sans; sans-serif;">&#8377;</span><?php echo number_format(round($invoice['total_amount']), 2); ?></h4>
                 <?php if (!empty($transactions)) : ?>
                     <?php
