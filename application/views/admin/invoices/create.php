@@ -190,76 +190,19 @@
                                     </table>
                                 </div>
 
-                                <div id="product-rows">
-                                    <h4>All Items</h4>
-                                    <table class="table table-hover table-bordered table-sm">
-                                        <thead>
-                                            <tr>
-                                                <th>Product</th>
-                                                <th>Price</th>
-                                                <th>Discount</th>
-                                                <th>GST</th>
-                                                <th class="text-right">Total</th>
-                                                <th width="5%"></th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <!-- Rows will be dynamically added here -->
-                                        </tbody>
-                                    </table>
-                                </div>
+                                <!-- All added items -->
+                                <?php $this->load->view('admin/invoices/inc/items'); ?>
 
                                 <div class="total_amount_section">
-                                    <div class="d-flex gap-3 justify-content-end">
-                                        <div class="form-group">
-                                            <label for="sub_total">Sub Total</label>
-                                        </div>
-                                        <div class="form-group">
-                                            <input type="text" class="form-control" id="sub_total" name="sub_total" readonly>
-                                        </div>
-                                    </div>
-
-                                    <div class="d-flex gap-3 justify-content-end">
-                                        <div class="form-group">
-                                            <label for="total_discount">Total Discount</label>
-                                        </div>
-                                        <div class="form-group">
-                                            <input type="text" class="form-control" id="total_discount" name="total_discount" readonly>
-                                        </div>
-                                    </div>
-
-                                    <div class="d-flex gap-3 justify-content-end">
-                                        <div class="form-group">
-                                            <label for="total_gst">Total GST Amount</label>
-                                        </div>
-                                        <div class="form-group">
-                                            <input type="text" class="form-control" id="total_gst" name="total_gst" readonly>
-                                        </div>
-                                    </div>
-                                    <div class="d-flex gap-3 justify-content-end">
-                                        <div class="form-group">
-                                            <label for="round_off">Round Off</label>
-                                        </div>
-                                        <div class="form-group">
-                                            <input type="text" id="round_off" class="form-control" readonly>
-                                        </div>
-                                    </div>
-
-                                    <div class="d-flex gap-3 justify-content-end">
-                                        <div class="form-group">
-                                            <label for="total_amount">Grand Total</label>
-                                        </div>
-                                        <div class="form-group">
-                                            <input type="text" class="form-control" id="total_amount" name="total_amount" readonly>
-                                        </div>
-                                    </div>
+                                    <!-- Amount Section -->
+                                    <?php $this->load->view('admin/invoices/inc/amount_section'); ?>
 
                                     <!-- Payment Section -->
                                     <div id="payment-section">
                                         <div class="payment-row">
                                             <div class="d-flex gap-3 justify-content-end">
                                                 <div class="form-group payment_method_section">
-                                                    <select class="form-control payment_method_id" name="payment_mode[]">
+                                                    <select class="form-control" name="payment_mode[]">
                                                         <?php if (!empty($paymentModes)) :
                                                             foreach ($paymentModes as $index => $paymentMode) :
                                                                 echo '<option value="' . $paymentMode['id'] . '">' . $paymentMode['title'] . '</option>';

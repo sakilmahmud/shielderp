@@ -13,10 +13,10 @@ $(document).ready(function () {
     let productRow = $(".product-row");
     let quantity = parseFloat(productRow.find(".quantity").val());
 
-    if (quantity > total_stocks) {
+    /* if (quantity > total_stocks) {
       alert(`You chose ${quantity}, but current stock is ${total_stocks}`);
       return; // Stop the function if quantity exceeds stock
-    }
+    } */
 
     addOrUpdateProductInTable(); // Update the product logic
     $(".product_id").chosen().trigger("chosen:updated");
@@ -438,7 +438,7 @@ $(document).ready(function () {
 
     // Reset the cloned row's input values
     newPaymentRow.find("input").val("");
-    newPaymentRow.find("select").val("");
+    //newPaymentRow.find("select").val("");
 
     // Change the plus button to a minus button for removing
     newPaymentRow

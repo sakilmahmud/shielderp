@@ -65,16 +65,18 @@
                                     <div class="col-md-6">
                                         <!-- New Payment Mode Field -->
                                         <div class="form-group payment_method_section">
-                                            <label for="service_charge">Payment Mode</label>
+                                            <label for="payment_mode">Payment Mode</label>
                                             <select class="form-control payment_method_id" name="payment_mode">
                                                 <?php if (!empty($payment_methods)) :
                                                     foreach ($payment_methods as $index => $paymentMode) :
-                                                        echo '<option value="' . $paymentMode['id'] . '">' . $paymentMode['title'] . '</option>';
+                                                        $selected = (isset($service['payment_mode']) && $service['payment_mode'] == $paymentMode['id']) ? 'selected' : '';
+                                                        echo '<option value="' . $paymentMode['id'] . '" ' . $selected . '>' . $paymentMode['title'] . '</option>';
                                                     endforeach;
                                                 endif; ?>
                                             </select>
                                         </div>
                                     </div>
+
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="paid_status">Paid Status</label><br>

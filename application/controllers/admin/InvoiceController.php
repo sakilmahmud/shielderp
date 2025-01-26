@@ -188,6 +188,7 @@ class InvoiceController extends CI_Controller
                 'mobile' => $customer_phone,
                 'address' => $customer_address,
                 'gst' => $customer_gst,
+                'round_off' => $this->input->post('round_off'),
                 'note' => $this->input->post('note'),
                 'created_by' => $this->session->userdata('user_id'),
                 'created_at' => $current_date_time
@@ -355,6 +356,8 @@ class InvoiceController extends CI_Controller
             print_r($_POST);
             die; */
             $current_date_time = date('Y-m-d H:i:s');
+            $round_off = $this->input->post('round_off');
+            $total_amount = array_sum($this->input->post('final_price'));
             // Prepare updated invoice data
             $invoiceData = [
                 'invoice_date' => $this->input->post('invoice_date'),
@@ -363,7 +366,8 @@ class InvoiceController extends CI_Controller
                 'sub_total' => $this->input->post('sub_total'),
                 'total_discount' => $this->input->post('total_discount'),
                 'total_gst' => $this->input->post('total_gst'),
-                'total_amount' => array_sum($this->input->post('final_price')),
+                'round_off' => $this->input->post('round_off'),
+                'total_amount' => ($total_amount + $round_off),
                 'customer_name' => $this->input->post('customer_name'),
                 'mobile' => $this->input->post('mobile'),
                 'address' => $this->input->post('address'),
