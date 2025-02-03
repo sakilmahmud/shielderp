@@ -3,11 +3,12 @@
     <table class="table table-hover table-bordered table-sm">
         <thead>
             <tr>
-                <th>Product</th>
-                <th>Price</th>
-                <th>Discount</th>
-                <th>GST</th>
-                <th>Total</th>
+                <th width="45%">Product</th>
+                <th width="5%">QNT</th>
+                <th width="10%">Price</th>
+                <th width="10%">Discount</th>
+                <th width="10%">GST</th>
+                <th width="10%">Total</th>
                 <th width="10%"></th>
             </tr>
         </thead>
@@ -16,8 +17,12 @@
                 <?php foreach ($invoice_details as $product) : ?>
                     <tr data-product-id="<?php echo $product['product_id']; ?>">
                         <td>
-                            <?php echo $product['product_name']; ?> x <b><?php echo $product['quantity']; ?></b>
-
+                            <b><?php echo $product['product_name']; ?></b>
+                            <br>
+                            <?php echo $product['product_descriptions']; ?>
+                        </td>
+                        <td>
+                            <p><?php echo $product['quantity']; ?></p>
                             <input type="hidden" name='qnt[]' value="<?php echo $product['quantity']; ?>">
                         </td>
                         <td>

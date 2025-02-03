@@ -258,6 +258,34 @@
     </section>
 </div>
 
+<!-- Quick Edit Modal -->
+<div class="modal fade" id="quickEditModal" tabindex="-1" aria-labelledby="quickEditModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="quickEditModalLabel">Quick Edit</h5>
+                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label for="modal_price">Price</label>
+                        <input type="text" class="form-control" id="modal_price">
+                    </div>
+                    <div class="form-group">
+                        <label for="modal_net_price">Net Price</label>
+                        <input type="text" class="form-control" id="modal_net_price">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary save-quick-edit">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
     $(document).on('click', '.edit-item', function() {
         // Find the parent row of the clicked button
@@ -265,9 +293,10 @@
 
         // Get the product ID from the hidden input
         var productId = $row.find('input[name="product_id[]"]').val();
+        var productDescriptions = $row.find('input[name="product_descriptions[]"]').val();
 
         // Update the dropdown with the selected product
-        $('.product_id').val(productId).chosen().trigger("chosen:updated").trigger('change');
+        $('.product_id').val(productId).chosen().trigger("chosen:updated");
 
         // Get other fields from the hidden inputs
         var quantity = $row.find('input[name="qnt[]"]').val();
@@ -277,11 +306,13 @@
         var gstRate = $row.find('input[name="gst_rate[]"]').val();
 
         // Update the respective input fields with a delay for price
-        setTimeout(function() {
+        /* setTimeout(function() {
             $('.price').val(price).trigger('change');
-        }, 100); // Delay of 500ms
+        }, 500); // Delay of 500ms */
+        $('.price').val(price).trigger('change');
 
         // Update other fields immediately
+        $('.product_descriptions').val(productDescriptions);
         $('.quantity').val(quantity);
         $('.discount_type').val(discountType).trigger('change');
         $('.discount_amount').val(discount);

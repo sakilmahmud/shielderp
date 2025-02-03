@@ -80,11 +80,11 @@ $(document).ready(function () {
       "'>" +
       "<td><b>" +
       product +
-      " x " +
-      quantity +
-      " </b><p>" +
+      "</b><p>" +
       product_descriptions +
-      "</p></td>" +
+      "</p></td><td>" +
+      quantity +
+      "</td>" +
       "<td>₹" +
       price.toFixed(2) +
       "</td>" +
