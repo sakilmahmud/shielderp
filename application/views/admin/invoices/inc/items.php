@@ -3,11 +3,12 @@
     <table class="table table-hover table-bordered table-sm">
         <thead>
             <tr>
-                <th width="45%">Product</th>
+                <th width="42%">Product</th>
+                <th width="8%">Price</th>
+                <th width="8%">Discount</th>
+                <th width="9%">GST</th>
+                <th width="8%">Unit Price</th>
                 <th width="5%">QNT</th>
-                <th width="10%">Price</th>
-                <th width="10%">Discount</th>
-                <th width="10%">GST</th>
                 <th width="10%">Total</th>
                 <th width="10%"></th>
             </tr>
@@ -22,10 +23,6 @@
                             <?php echo $product['product_descriptions']; ?>
                         </td>
                         <td>
-                            <p><?php echo $product['quantity']; ?></p>
-                            <input type="hidden" name='qnt[]' value="<?php echo $product['quantity']; ?>">
-                        </td>
-                        <td>
                             <p>₹<?php echo $product['price']; ?></p>
                         </td>
                         <td>
@@ -33,6 +30,13 @@
                         </td>
                         <td>
                             <p>₹<?php echo $product['gst_amount']; ?> (<?php echo $product['gst_rate']; ?>%)</p>
+                        </td>
+                        <td>
+                            <b>₹<?php echo number_format((($product['price'] + $product['gst_amount']) * $product['quantity']), 2); ?></b>
+                        </td>
+                        <td>
+                            <p><?php echo $product['quantity']; ?></p>
+                            <input type="hidden" name='qnt[]' value="<?php echo $product['quantity']; ?>">
                         </td>
                         <td>₹<?php echo $product['final_price']; ?></td>
                         <td width="5%" class="text-center">

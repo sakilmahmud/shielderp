@@ -82,9 +82,7 @@ $(document).ready(function () {
       product +
       "</b><p>" +
       product_descriptions +
-      "</p></td><td>" +
-      quantity +
-      "</td>" +
+      "</p></td>" +
       "<td>₹" +
       price.toFixed(2) +
       "</td>" +
@@ -95,7 +93,11 @@ $(document).ready(function () {
       gst_amount +
       " (" +
       gstRate +
-      "%)</td>" +
+      "%)</td><td><b>₹" +
+      formatNumber(parseFloat(price + gst_amount)) +
+      "</b></td><td>" +
+      quantity +
+      "</td>" +
       "<td>₹" +
       total.toFixed(2) +
       "</td>" +
@@ -501,3 +503,10 @@ $("#total_amount, #payment-section").on(
 $(document).ready(function () {
   updateTotalBalance();
 });
+
+function formatNumber(num) {
+  return Number(num).toLocaleString("en-US", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+}
