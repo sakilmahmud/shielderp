@@ -32,7 +32,7 @@
                             <p>₹<?php echo $product['gst_amount']; ?> (<?php echo $product['gst_rate']; ?>%)</p>
                         </td>
                         <td>
-                            <b>₹<?php echo number_format((($product['price'] + $product['gst_amount']) * $product['quantity']), 2); ?></b>
+                            <b>₹<?php echo number_format(($product['price'] + $product['gst_amount']), 2); ?></b>
                         </td>
                         <td>
                             <p><?php echo $product['quantity']; ?></p>

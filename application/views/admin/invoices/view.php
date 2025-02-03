@@ -76,7 +76,7 @@
                                             <td><?php echo $detail['discount']; ?></td>
                                             <td><?php echo $detail['gst_amount']; ?></td>
                                             <td>
-                                                <b>₹<?php echo number_format((($detail['price'] + $detail['gst_amount']) * $detail['quantity']), 2); ?></b>
+                                                <b>₹<?php echo number_format(($detail['price'] + $detail['gst_amount']), 2); ?></b>
                                             </td>
                                             <td><?php echo $detail['quantity']; ?></td>
                                             <td>₹<?php echo number_format(round($detail['final_price']), 2); ?></td>
