@@ -21,6 +21,7 @@ $(document).ready(function () {
     addOrUpdateProductInTable(); // Update the product logic
     $(".product_id").chosen().trigger("chosen:updated");
     $(".product_details").hide(); // Hide if no product is selected
+    $(".last_purchase_prices").html(""); // Hide if no product is selected
   });
 
   // Function to add or update a product in the table
@@ -369,6 +370,44 @@ $(document).on("click", ".show_details", function () {
 $(document).ready(function () {
   $(".product_id").on("change", function () {
     let product_id = $(this).val();
+    let customer_id = $(".customer_id").val();
+    //let product_id = $(this).val();
+    console.log(product_id, customer_id);
+
+    //get data from ajax with customer_id and product_id for last purchase price from invoice_details table
+    if (customer_id && product_id) {
+      $.ajax({
+        url: getLastPurchasePricesUrl, // Set the correct URL
+        type: "POST",
+        data: { customer_id: customer_id, product_id: product_id },
+        dataType: "json",
+        success: function (response) {
+          if (response.status === "success") {
+            let lastPurchaseList = $(".last_purchase_prices");
+            lastPurchaseList.empty(); // Clear previous entries
+
+            let ul = $("<ul>");
+
+            $.each(response.data, function (index, purchase) {
+              let li = $("<li>").text(
+                `₹${parseFloat(
+                  (purchase.final_price / purchase.quantity).toFixed(2)
+                )} (${purchase.invoice_date})`
+              );
+
+              ul.append(li);
+            });
+
+            lastPurchaseList.html("<h4>Last Purchase Prices: </h4>").append(ul);
+          } else {
+            $(".last_purchase_prices").html(
+              "<span style='color: red;'>No previous purchases found</span>"
+            );
+          }
+        },
+      });
+    }
+
     if (product_id) {
       $.ajax({
         url: getLastestStocksUrl,

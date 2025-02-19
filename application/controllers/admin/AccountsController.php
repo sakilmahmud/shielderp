@@ -36,6 +36,21 @@ class AccountsController extends CI_Controller
         $this->load->view('admin/footer');
     }
 
+    public function get_payment_method_balance()
+    {
+        $payment_method_id = $this->input->post('payment_method_id');
+        if (!$payment_method_id) {
+            echo json_encode(['error' => 'Invalid request']);
+            return;
+        }
+
+        $this->load->model('AccountsModel');
+        $balance = $this->AccountsModel->get_payment_method_balance($payment_method_id);
+
+        echo json_encode(['balance' => $balance]);
+    }
+
+
     public function transfer_fund()
     {
         $data['activePage'] = 'transfer_fund';
@@ -57,6 +72,16 @@ class AccountsController extends CI_Controller
         } else {
             // Get form input
             $postData = $this->input->post();
+            $from_payment_method = $postData['from_payment_method'];
+            $amount = $postData['amount'];
+            // Get the current balance
+            $current_balance = $this->AccountsModel->get_payment_method_balance($from_payment_method);
+
+            if ($amount > $current_balance) {
+                $this->session->set_flashdata('error', 'Insufficient balance for transfer!');
+                redirect('admin/accounts/transfer_fund');
+                return;
+            }
 
             // Process the fund transfer
             $transferData = [

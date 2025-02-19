@@ -5,11 +5,10 @@ class AccountsModel extends CI_Model
 {
     public function get_balances_by_payment_methods($from_date = null, $to_date = null)
     {
-        $this->db->select('
-        pm.title AS payment_method_title, 
+        $this->db->select('pm.title AS payment_method_title, 
         SUM(CASE WHEN t.trans_type = 1 THEN t.amount ELSE 0 END) AS credit, 
         SUM(CASE WHEN t.trans_type = 2 THEN t.amount ELSE 0 END) AS debit
-    ');
+        ');
         $this->db->from('transactions t');
         $this->db->join('payment_methods pm', 'pm.id = t.payment_method_id', 'left');
 
@@ -23,6 +22,22 @@ class AccountsModel extends CI_Model
         $query = $this->db->get();
         return $query->result_array();
     }
+
+    public function get_payment_method_balance($payment_method_id)
+    {
+        $this->db->select('
+        SUM(CASE WHEN trans_type = 1 THEN amount ELSE 0 END) 
+        - SUM(CASE WHEN trans_type = 2 THEN amount ELSE 0 END) AS balance
+    ');
+        $this->db->from('transactions');
+        $this->db->where('payment_method_id', $payment_method_id);
+        $this->db->where('status', 1); // Only active transactions
+        $query = $this->db->get();
+        $result = $query->row_array();
+
+        return $result['balance'] ?? 0; // Return balance, or 0 if null
+    }
+
 
     public function get_total_balance($from_date = null, $to_date = null)
     {
@@ -124,7 +139,7 @@ class AccountsModel extends CI_Model
         if ($length != -1) {
             $this->db->limit($length, $start);
         }
-
+        $this->db->order_by('t.trans_date', 'DESC');
         // Execute query
         $query = $this->db->get();
 

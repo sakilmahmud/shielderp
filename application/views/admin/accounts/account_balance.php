@@ -43,8 +43,10 @@
                         <thead>
                             <tr>
                                 <th>Payment Method</th>
-                                <th>Total Credit</th>
-                                <th>Total Debit</th>
+                                <?php if ($this->session->userdata('role') == 1) : ?>
+                                    <th>Total Credit</th>
+                                    <th>Total Debit</th>
+                                <?php endif; ?>
                                 <th>Net Balance</th>
                             </tr>
                         </thead>
@@ -52,8 +54,10 @@
                             <?php foreach ($balances as $balance): ?>
                                 <tr>
                                     <td><?php echo $balance['payment_method_title']; ?></td>
-                                    <td><?php echo number_format($balance['credit'], 2); ?></td>
-                                    <td><?php echo number_format($balance['debit'], 2); ?></td>
+                                    <?php if ($this->session->userdata('role') == 1) : ?>
+                                        <td><?php echo number_format($balance['credit'], 2); ?></td>
+                                        <td><?php echo number_format($balance['debit'], 2); ?></td>
+                                    <?php endif; ?>
                                     <td><?php echo number_format($balance['credit'] - $balance['debit'], 2); ?></td>
                                 </tr>
                             <?php endforeach; ?>

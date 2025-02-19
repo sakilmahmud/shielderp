@@ -26,7 +26,7 @@
                             <div class="col-md-2">
                                 <select id="payment_status" class="form-control filter-input">
                                     <option value="">Payment Status</option>
-                                    <option value="0">Pending</option>
+                                    <option value="0">Due</option>
                                     <option value="1">Paid</option>
                                     <option value="2">Partial</option>
                                     <option value="3">Return</option>
@@ -81,10 +81,10 @@
         processing: true,
         serverSide: true,
         order: false,
-        pageLength: 50,
+        pageLength: 40,
         lengthMenu: [
-            [50, -1],
-            [50, 100, "All"]
+            [40, 100, -1], // Options for number of items per page
+            [40, 100, "All"] // Labels for those options
         ],
         ajax: {
             url: '<?php echo base_url("admin/invoices/fetch"); ?>',

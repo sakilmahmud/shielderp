@@ -17,6 +17,29 @@
         left: 6px;
         top: 70px;
     }
+
+    .last_purchase_prices {
+        padding: 10px;
+    }
+
+    .last_purchase_prices ul {
+        list-style: none;
+        padding: 0px;
+        margin: 0px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .last_purchase_prices ul li {
+        display: inline-block;
+        background: rgb(245, 245, 245);
+        padding: 3px 5px;
+        border-radius: 4px;
+        border: 1px solid rgb(221, 221, 221);
+        margin-bottom: -10px;
+        font-size: 13px;
+    }
 </style>
 <div class="content-wrapper">
     <section class="content-header">
@@ -112,8 +135,7 @@
                                         <div class="form-group">
                                             <label for="price">Price</label>
                                             <input type="text" class="form-control price" value="0">
-                                            <div class="text-sm net_price_section" style="display: none;">Net Price: <span class="net_price"></span> <a href="javascript:void(0);"
-                                                    class="quick-edit"> <i class="fa fa-edit"></i></a></div>
+                                            <div class="text-sm net_price_section" style="display: none;">Net Price: <span class="net_price"></span> <a href="javascript:void(0);" class="quick-edit"> <i class="fa fa-edit"></i></a></div>
                                         </div>
                                     </div>
                                     <div class="col-md-1">
@@ -158,6 +180,7 @@
                                     <div class="col-md-12 product_descriptions_section">
                                         <input type="text" class="form-control product_descriptions" placeholder="Write Product Details">
                                     </div>
+                                    <div class="col-md-12 last_purchase_prices"></div>
                                 </div>
 
                                 <div class="no_stocks p-2 mb-3 border rounded-3" style="display: none;">
@@ -266,6 +289,7 @@
 
 <script>
     let getLastestStocksUrl = "<?php echo base_url('admin/invoices/getLastestStocks'); ?>";
+    let getLastPurchasePricesUrl = "<?php echo base_url('admin/invoices/getLastPurchasePrices'); ?>";
 
     $(document).ready(function() {
         // Variables to store the current target element

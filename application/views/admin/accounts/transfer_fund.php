@@ -39,6 +39,7 @@
                                             <option value="<?php echo $method['id']; ?>"><?php echo $method['title']; ?></option>
                                         <?php endforeach; ?>
                                     </select>
+                                    <p id="current_balance" class="text-success font-weight-bold">0.00</p>
                                 </div>
                             </div>
                             <div class="col-md-6">
@@ -56,10 +57,11 @@
                                 <div class="form-group">
                                     <label for="amount">Amount</label>
                                     <input type="number" id="amount" name="amount" class="form-control" required>
+                                    <span id="balance_error" class="text-danger" style="display: none;">Insufficient balance!</span>
                                 </div>
                                 <div class="form-group">
                                     <label for="transfer_date">Transfer Date</label>
-                                    <input type="date" id="transfer_date" name="transfer_date" class="form-control" required>
+                                    <input type="date" id="transfer_date" name="transfer_date" class="form-control" value="<?php echo date("Y-m-d"); ?>" required>
                                 </div>
                             </div>
                             <div class="col-md-6">
@@ -76,3 +78,53 @@
         </div>
     </div>
 </div>
+<script>
+    $(document).ready(function() {
+        var currentBalance = 0;
+
+        // Fetch balance when payment method changes
+        $('#from_payment_method').change(function() {
+            var paymentMethodId = $(this).val();
+
+            if (paymentMethodId) {
+                $.ajax({
+                    url: "<?php echo base_url('admin/accounts/get_payment_method_balance'); ?>",
+                    type: "POST",
+                    data: {
+                        payment_method_id: paymentMethodId
+                    },
+                    dataType: "json",
+                    success: function(response) {
+                        if (response.balance !== undefined) {
+                            currentBalance = parseFloat(response.balance);
+                            $('#current_balance').text('₹' + currentBalance.toFixed(2));
+                        } else {
+                            currentBalance = 0;
+                            $('#current_balance').text('0.00');
+                        }
+                    },
+                    error: function() {
+                        currentBalance = 0;
+                        $('#current_balance').text('Error fetching balance');
+                    }
+                });
+            } else {
+                currentBalance = 0;
+                $('#current_balance').text('0.00');
+            }
+        });
+
+        // Validate amount before form submission
+        $('#amount').on('input', function() {
+            var enteredAmount = parseFloat($(this).val());
+
+            if (enteredAmount > currentBalance) {
+                $('#balance_error').show();
+                $('button[type="submit"]').prop('disabled', true);
+            } else {
+                $('#balance_error').hide();
+                $('button[type="submit"]').prop('disabled', false);
+            }
+        });
+    });
+</script>

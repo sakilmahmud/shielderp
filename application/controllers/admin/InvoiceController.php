@@ -829,4 +829,30 @@ class InvoiceController extends CI_Controller
         $this->session->set_flashdata('error_message', 'Invoice deleted successfully.');
         redirect('admin/invoices');
     }
+
+    public function getLastPurchasePrices()
+    {
+        $customer_id = $this->input->post('customer_id');
+        $product_id = $this->input->post('product_id');
+
+        if (!empty($customer_id) && !empty($product_id)) {
+            $this->db->select('final_price, quantity, invoice_date');
+            $this->db->from('invoice_details');
+            $this->db->where('customer_id', $customer_id);
+            $this->db->where('product_id', $product_id);
+            $this->db->order_by('invoice_date', 'DESC');
+            $this->db->limit(5); // Get last 5 purchases
+
+            $query = $this->db->get();
+            $result = $query->result_array();
+
+            if (!empty($result)) {
+                echo json_encode(['status' => 'success', 'data' => $result]);
+            } else {
+                echo json_encode(['status' => 'error', 'message' => 'No previous purchases found']);
+            }
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Invalid input']);
+        }
+    }
 }

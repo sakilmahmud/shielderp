@@ -77,7 +77,7 @@
 
             // Loop through the results and create a list of suggestions
             customers.forEach(function(customer) {
-              suggestions += `<li class="list-group-item customer-suggestion" data-phone="${customer.phone}" data-name="${customer.customer_name}" data-address="${customer.address}" data-gst="${customer.gst_number}">${customer.customer_name} (${customer.phone})</li>`;
+              suggestions += `<li class="list-group-item customer-suggestion" data-cid="${customer.id}" data-phone="${customer.phone}" data-name="${customer.customer_name}" data-address="${customer.address}" data-gst="${customer.gst_number}">${customer.customer_name} (${customer.phone})</li>`;
             });
 
             // Show the suggestions in a dropdown
@@ -91,12 +91,14 @@
 
     // When a customer is selected from the suggestions
     $(document).on('click', '.customer-suggestion', function() {
+      let cid = $(this).data('cid');
       let phone = $(this).data('phone');
       let name = $(this).data('name');
       let address = $(this).data('address');
       let gst = $(this).data('gst');
 
       // Fill the form fields with the selected customer data
+      $('.customer_id').val(cid);
       $('#customer_phone').val(phone);
       $('#customer_name').val(name);
       $('#customer_address').val(address);

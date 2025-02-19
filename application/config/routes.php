@@ -51,6 +51,7 @@ $route['admin/accounts/account_balance'] = 'admin/AccountsController/account_bal
 $route['admin/accounts/transfer_fund'] = 'admin/AccountsController/transfer_fund';
 $route['admin/accounts/list_fund_transfers'] = 'admin/AccountsController/list_fund_transfers';
 $route['admin/accounts/fetch_fund_transfers'] = 'admin/AccountsController/fetch_fund_transfers';
+$route['admin/accounts/get_payment_method_balance'] = 'admin/AccountsController/get_payment_method_balance';
 
 
 /** DTP Routes */
@@ -169,6 +170,7 @@ $route['admin/invoices/print/(:num)']       = 'admin/InvoiceController/print/$1'
 $route['admin/invoices/delete/(:num)'] = 'admin/InvoiceController/delete/$1';
 
 $route['admin/invoices/getLastestStocks']   = 'admin/InvoiceController/getLastestStocks';
+$route['admin/invoices/getLastPurchasePrices']   = 'admin/InvoiceController/getLastPurchasePrices';
 $route['admin/invoices/addPayment']         = 'admin/InvoiceController/addPayment';
 $route['admin/invoices/updatePayment']   = 'admin/InvoiceController/updatePayment';
 $route['admin/invoices/getPaymentDetails/(:num)']   = 'admin/InvoiceController/getPaymentDetails/$1';

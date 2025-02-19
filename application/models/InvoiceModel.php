@@ -41,17 +41,31 @@ class InvoiceModel extends CI_Model
         invoices.*,
         users.full_name as created_by_name,
         invoices.total_amount,
-        IFNULL(SUM(transactions.amount), 0) as paid_amount,
-        (invoices.total_amount - IFNULL(SUM(transactions.amount), 0)) as due_amount
-    ');
+        IFNULL(transactions_summary.paid_amount, 0) as paid_amount,
+        (invoices.total_amount - IFNULL(transactions_summary.paid_amount, 0)) as due_amount,
+        GROUP_CONCAT(products.name SEPARATOR ", ") as product_names
+        ');
         $this->db->from('invoices');
         $this->db->join('users', 'invoices.created_by = users.id', 'left');
-        $this->db->join('transactions', 'transactions.table_id = invoices.id AND transactions.transaction_for_table = "invoices" AND transactions.trans_type = 1 AND transactions.status = 1', 'left');
+
+        // Subquery for transactions total amount
+        $this->db->join(
+            '(SELECT table_id, SUM(amount) as paid_amount FROM transactions 
+                      WHERE transaction_for_table = "invoices" AND trans_type = 1 AND status = 1 
+                      GROUP BY table_id) as transactions_summary',
+            'transactions_summary.table_id = invoices.id',
+            'left'
+        );
+
+        // Join invoice_details and products for product search
+        $this->db->join('invoice_details', 'invoice_details.invoice_id = invoices.id', 'left');
+        $this->db->join('products', 'products.id = invoice_details.product_id', 'left');
+
         $this->db->where('DATE(invoices.invoice_date) >=', $from_date);
         $this->db->where('DATE(invoices.invoice_date) <=', $to_date);
 
         // Apply payment status filter if provided
-        if (!empty($payment_status)) {
+        if ($payment_status !== '' && $payment_status !== null) {
             $this->db->where('invoices.payment_status', $payment_status);
         }
 
@@ -60,16 +74,17 @@ class InvoiceModel extends CI_Model
             $this->db->where('invoices.created_by', $created_by);
         }
 
-        // Apply search filter if provided
+        // Apply search filter
         if (!empty($search_value)) {
             $this->db->group_start();
             $this->db->like('invoices.invoice_no', $search_value);
             $this->db->or_like('invoices.customer_name', $search_value);
             $this->db->or_like('users.full_name', $search_value);
+            $this->db->or_like('products.name', $search_value); // Search by product name
             $this->db->group_end();
         }
 
-        // Group by invoice ID to calculate the sum of transactions for each invoice
+        // Group by invoice ID
         $this->db->group_by('invoices.id');
 
         // Pagination
@@ -86,11 +101,23 @@ class InvoiceModel extends CI_Model
         $this->db->select('COUNT(DISTINCT invoices.id) as count');
         $this->db->from('invoices');
         $this->db->join('users', 'invoices.created_by = users.id', 'left');
-        $this->db->join('transactions', 'transactions.table_id = invoices.id AND transactions.transaction_for_table = "invoices" AND transactions.trans_type = 1 AND transactions.status = 1', 'left');
+
+        // Use the same transactions subquery
+        $this->db->join(
+            '(SELECT table_id, SUM(amount) as paid_amount FROM transactions 
+                      WHERE transaction_for_table = "invoices" AND trans_type = 1 AND status = 1 
+                      GROUP BY table_id) as transactions_summary',
+            'transactions_summary.table_id = invoices.id',
+            'left'
+        );
+
+        $this->db->join('invoice_details', 'invoice_details.invoice_id = invoices.id', 'left');
+        $this->db->join('products', 'products.id = invoice_details.product_id', 'left');
+
         $this->db->where('DATE(invoices.invoice_date) >=', $from_date);
         $this->db->where('DATE(invoices.invoice_date) <=', $to_date);
 
-        if (!empty($payment_status)) {
+        if ($payment_status !== '' && $payment_status !== null) {
             $this->db->where('invoices.payment_status', $payment_status);
         }
 
@@ -103,6 +130,7 @@ class InvoiceModel extends CI_Model
             $this->db->like('invoices.invoice_no', $search_value);
             $this->db->or_like('invoices.customer_name', $search_value);
             $this->db->or_like('users.full_name', $search_value);
+            $this->db->or_like('products.name', $search_value); // Search by product name
             $this->db->group_end();
         }
 

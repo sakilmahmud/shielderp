@@ -37,10 +37,10 @@
             processing: true,
             serverSide: true,
             order: false,
-            pageLength: 100,
+            pageLength: 40,
             lengthMenu: [
-                [100, -1],
-                [100, "All"]
+                [40, 100, -1], // Options for number of items per page
+                [40, 100, "All"] // Labels for those options
             ],
             ajax: {
                 url: '<?php echo base_url("admin/accounts/fetch_fund_transfers"); ?>',
