@@ -8,7 +8,7 @@ class PurchaseOrderModel extends CI_Model
         $this->db->select('po.*, s.supplier_name');
         $this->db->from('purchase_orders po');
         $this->db->join('suppliers s', 'po.supplier_id = s.id');
-        $this->db->order_by('po.id', 'DESC');
+        $this->db->order_by('po.purchase_date', 'DESC');
         $query = $this->db->get();
         return $query->result_array();
     }
