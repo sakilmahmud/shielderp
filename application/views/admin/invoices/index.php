@@ -1,3 +1,10 @@
+<style>
+    .btn-group-sm>.btn,
+    .btn-sm {
+        padding: .15rem .25rem;
+        font-size: .675rem;
+    }
+</style>
 <div class="content-wrapper">
     <section class="content-header">
         <div class="container-fluid">
@@ -17,10 +24,10 @@
                 <div class="card-body">
                     <form id="filterForm">
                         <div class="row mb-3">
-                            <div class="col-md-3">
+                            <div class="col-md-2">
                                 <input type="date" id="from_date" class="form-control filter-input" value="<?php echo date('Y-m-d', strtotime('-15 days')); ?>">
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-2">
                                 <input type="date" id="to_date" class="form-control filter-input" value="<?php echo date('Y-m-d'); ?>">
                             </div>
                             <div class="col-md-2">
@@ -30,6 +37,13 @@
                                     <option value="1">Paid</option>
                                     <option value="2">Partial</option>
                                     <option value="3">Return</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <select id="type" class="form-control filter-input">
+                                    <option value="">Type</option>
+                                    <option value="0">NON-GST</option>
+                                    <option value="1">GST</option>
                                 </select>
                             </div>
                             <div class="col-md-2">
@@ -49,24 +63,24 @@
                         <thead>
                             <tr>
                                 <th>ID</th>
+                                <th>Status</th>
+                                <th>Type</th>
                                 <th>Invoice No</th>
                                 <th>Customer</th>
                                 <th>Date</th>
                                 <th>Total</th>
                                 <th>Paid</th>
                                 <th>Due</th>
-                                <th>MadeBy</th>
-                                <th>Status</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
                         <tfoot>
                             <tr>
-                                <th colspan="4" class="text-right">Total:</th>
+                                <th colspan="6" class="text-right">Total:</th>
                                 <th id="totalAmount">₹0.00</th>
                                 <th id="totalPaid">₹0.00</th>
                                 <th id="totalDue">₹0.00</th>
-                                <th colspan="3"></th>
+                                <th></th>
                             </tr>
                         </tfoot>
                     </table>
@@ -93,6 +107,7 @@
                 d.from_date = $('#from_date').val();
                 d.to_date = $('#to_date').val();
                 d.payment_status = $('#payment_status').val();
+                d.type = $('#type').val();
                 d.created_by = $('#created_by').val();
             },
             dataSrc: function(json) {
@@ -132,7 +147,7 @@
             },
             {
                 data: 9
-            }
+            },
         ]
     });
 

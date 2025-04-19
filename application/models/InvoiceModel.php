@@ -34,7 +34,7 @@ class InvoiceModel extends CI_Model
         return $query->result_array();
     }
 
-    public function getFilteredInvoices($from_date, $to_date, $payment_status, $created_by, $search_value, $start, $length)
+    public function getFilteredInvoices($from_date, $to_date, $payment_status, $type, $created_by, $search_value, $start, $length)
     {
         // Select columns including calculated paid_amount and due_amount
         $this->db->select('
@@ -64,6 +64,10 @@ class InvoiceModel extends CI_Model
         $this->db->where('DATE(invoices.invoice_date) >=', $from_date);
         $this->db->where('DATE(invoices.invoice_date) <=', $to_date);
 
+        // Apply payment status filter if provided
+        if ($type !== '' && $type !== null) {
+            $this->db->where('invoices.is_gst', $type);
+        }
         // Apply payment status filter if provided
         if ($payment_status !== '' && $payment_status !== null) {
             $this->db->where('invoices.payment_status', $payment_status);

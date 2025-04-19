@@ -42,6 +42,100 @@ class ProductModel extends CI_Model
         return $query->result_array();
     }
 
+    public function get_filtered_products($category_id = null, $brand_id = null, $product_type_id = null, $search_value, $start, $length)
+    {
+        $this->db->select('products.*, categories.name as category_name, brands.brand_name');
+        $this->db->from('products');
+        $this->db->join('categories', 'products.category_id = categories.id', 'left');
+        $this->db->join('brands', 'products.brand_id = brands.id', 'left');
+
+        // Apply filters if set
+        if ($category_id) {
+            $this->db->where('products.category_id', $category_id);
+        }
+        if ($brand_id) {
+            $this->db->where('products.brand_id', $brand_id);
+        }
+        if ($product_type_id) {
+            $this->db->where('products.product_type_id', $product_type_id);
+        }
+
+        // Apply search filter
+        if (!empty($search_value)) {
+            $this->db->group_start();
+            $this->db->like('products.name', $search_value);
+            $this->db->or_like('products.description', $search_value);
+            $this->db->or_like('categories.name', $search_value);
+            $this->db->or_like('brands.brand_name', $search_value);
+            $this->db->group_end();
+        }
+        // Pagination
+        if ($length != -1) {
+            $this->db->limit($length, $start);
+        }
+
+        // Ordering
+        $this->db->order_by('products.name', 'ASC');
+
+        $query = $this->db->get();
+        $products = $query->result_array();
+
+        // Iterate over products and calculate stock data for each product
+        foreach ($products as &$product) {
+            $product_id = $product['id'];
+
+            // Get the total product quantity from stock_management
+            $this->db->select('SUM(quantity) as total_quantity');
+            $this->db->from('stock_management');
+            $this->db->where('product_id', $product_id);
+            $product_query = $this->db->get();
+            $product_data = $product_query->row_array();
+
+            $total_quantity = $product_data['total_quantity'] ?? 0; // Total quantity added to stock
+
+            // Get the total sold quantity from invoice_details
+            $this->db->select('SUM(quantity) as sold_quantity');
+            $this->db->from('invoice_details');
+            $this->db->where('product_id', $product_id);
+            $this->db->where('status', 1); // Optional: filter only active or completed invoices
+            $sold_query = $this->db->get();
+            $sold_data = $sold_query->row_array();
+
+            $total_sold_quantity = $sold_data['sold_quantity'] ?? 0; // Total quantity sold
+
+            // Calculate final stock
+            $final_stock = $total_quantity - $total_sold_quantity;
+
+            // Add stock data to the product array
+            $product['total_quantity'] = $total_quantity;
+            $product['total_sold_quantity'] = $total_sold_quantity;
+            $product['total_available_stocks'] = $final_stock;
+        }
+
+        // Fetch filtered data count for DataTables
+        $this->db->select('COUNT(DISTINCT products.id) as count');
+        $this->db->from('products');
+        $this->db->join('categories', 'products.category_id = categories.id', 'left');
+        $this->db->join('brands', 'products.brand_id = brands.id', 'left');
+
+        if (!empty($search_value)) {
+            $this->db->group_start();
+            $this->db->like('products.name', $search_value);
+            $this->db->or_like('products.description', $search_value);
+            $this->db->or_like('categories.name', $search_value);
+            $this->db->or_like('brands.brand_name', $search_value);
+            $this->db->group_end();
+        }
+
+        $count_query = $this->db->get();
+        $count_result = $count_query->row_array();
+
+        return [
+            'data' => $products,
+            'recordsTotal' => $count_result['count'],
+            'recordsFiltered' => $count_result['count'],
+        ];
+    }
 
 
     public function get_product($id)
@@ -54,7 +148,6 @@ class ProductModel extends CI_Model
         $query = $this->db->get();
         return $query->row_array();
     }
-
 
     public function insert_product($data)
     {
@@ -82,6 +175,7 @@ class ProductModel extends CI_Model
         $query = $this->db->get();
         return $query->result_array();
     }
+
     public function get_product_prices($product_id)
     {
         $getLastPurchasePrice = $this->getLastPurchasePrice($product_id);
@@ -99,6 +193,7 @@ class ProductModel extends CI_Model
             return 0; // Default price if none found
         }
     }
+
     public function getLastPurchasePrice($product_id)
     {
         $this->db->select('purchase_price');
@@ -235,86 +330,5 @@ class ProductModel extends CI_Model
     {
         $this->db->where('name', $name);
         return $this->db->update('products', $data);
-    }
-
-    /* public function get_filtered_products($category_id = null, $brand_id = null, $product_type_id = null)
-    {
-
-        // Select fields including the joined category and brand names
-        $this->db->select('products.*, categories.name as category_name, brands.brand_name');
-        $this->db->from('products');
-        $this->db->join('categories', 'products.category_id = categories.id', 'left');
-        $this->db->join('brands', 'products.brand_id = brands.id', 'left');
-
-
-        // Apply filters if set
-        if ($category_id) {
-            $this->db->where('category_id', $category_id);
-        }
-        if ($brand_id) {
-            $this->db->where('brand_id', $brand_id);
-        }
-        if ($product_type_id) {
-            $this->db->where('product_type_id', $product_type_id);
-        }
-
-        $query = $this->db->get();
-        return $query->result_array();
-    } */
-
-    public function get_filtered_products($category_id = null, $brand_id = null, $product_type_id = null)
-    {
-        $this->db->select('products.*, categories.name as category_name, brands.brand_name');
-        $this->db->from('products');
-        $this->db->join('categories', 'products.category_id = categories.id', 'left');
-        $this->db->join('brands', 'products.brand_id = brands.id', 'left');
-
-        // Apply filters if set
-        if ($category_id) {
-            $this->db->where('products.category_id', $category_id);
-        }
-        if ($brand_id) {
-            $this->db->where('products.brand_id', $brand_id);
-        }
-        if ($product_type_id) {
-            $this->db->where('products.product_type_id', $product_type_id);
-        }
-
-        $query = $this->db->get();
-        $products = $query->result_array();
-
-        // Iterate over products and calculate stock data for each product
-        foreach ($products as &$product) {
-            $product_id = $product['id'];
-
-            // Get the total product quantity from stock_management
-            $this->db->select('SUM(quantity) as total_quantity');
-            $this->db->from('stock_management');
-            $this->db->where('product_id', $product_id);
-            $product_query = $this->db->get();
-            $product_data = $product_query->row_array();
-
-            $total_quantity = $product_data['total_quantity'] ?? 0; // Total quantity added to stock
-
-            // Get the total sold quantity from invoice_details
-            $this->db->select('SUM(quantity) as sold_quantity');
-            $this->db->from('invoice_details');
-            $this->db->where('product_id', $product_id);
-            $this->db->where('status', 1); // Optional: filter only active or completed invoices
-            $sold_query = $this->db->get();
-            $sold_data = $sold_query->row_array();
-
-            $total_sold_quantity = $sold_data['sold_quantity'] ?? 0; // Total quantity sold
-
-            // Calculate final stock
-            $final_stock = $total_quantity - $total_sold_quantity;
-
-            // Add stock data to the product array
-            $product['total_quantity'] = $total_quantity;
-            $product['total_sold_quantity'] = $total_sold_quantity;
-            $product['total_available_stocks'] = $final_stock;
-        }
-
-        return $products;
     }
 }

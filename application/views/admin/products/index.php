@@ -52,11 +52,11 @@
                                 </div>
                             <?php endif; ?>
                             <div class="card_header">
-                                <form method="get" action="<?php echo base_url('admin/products'); ?>">
+                                <form id="filterForm">
                                     <div class="row mb-3">
                                         <div class="col-md-3">
                                             <label for="category_id">Category</label>
-                                            <select class="form-control category_id" id="category_id" name="category_id">
+                                            <select class="form-control filter-input category_id" id="category_id">
                                                 <option value="">All</option>
                                                 <?php foreach ($categories as $category): ?>
                                                     <option value="<?php echo $category['id']; ?>" <?php echo ($this->input->get('category_id') == $category['id']) ? 'selected' : ''; ?>>
@@ -67,7 +67,7 @@
                                         </div>
                                         <div class="col-md-3">
                                             <label for="brand_id">Brand</label>
-                                            <select class="form-control brand_id" id="brand_id" name="brand_id">
+                                            <select class="form-control filter-input brand_id" id="brand_id">
                                                 <option value="">All</option>
                                                 <?php foreach ($brands as $brand): ?>
                                                     <option value="<?php echo $brand['id']; ?>" <?php echo ($this->input->get('brand_id') == $brand['id']) ? 'selected' : ''; ?>>
@@ -78,7 +78,7 @@
                                         </div>
                                         <div class="col-md-3">
                                             <label for="product_type_id">Product Type</label>
-                                            <select class="form-control" id="product_type_id" name="product_type_id">
+                                            <select class="form-control filter-input" id="product_type_id">
                                                 <option value="">All</option>
                                                 <?php foreach ($product_types as $product_type): ?>
                                                     <option value="<?php echo $product_type['id']; ?>" <?php echo ($this->input->get('product_type_id') == $product_type['id']) ? 'selected' : ''; ?>>
@@ -88,91 +88,26 @@
                                             </select>
                                         </div>
                                         <div class="col-md-3 mt-4">
-                                            <button type="submit" class="btn btn-primary">Filter</button>
+                                            <button type="button" id="resetFilter" class="btn btn-secondary">Reset</button>
                                         </div>
                                     </div>
                                 </form>
                             </div>
 
-                            <?php if (!empty($products)) : ?>
-                                <table class="table table-sm table-striped table-bordered" id="commonTable">
-
-                                    <thead>
-                                        <tr>
-                                            <th>ID</th>
-                                            <th></th>
-                                            <th>Name</th>
-                                            <th>Category</th>
-                                            <th>Brand</th>
-                                            <th>Price</th>
-                                            <th>Stocks</th>
-                                            <th>Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <?php foreach ($products as $product) :
-
-                                            $total_quantity = $product['total_quantity'];
-                                            $total_available_stocks = $product['total_available_stocks'];
-
-                                            $endpoint = ($product['slug'] != "") ? $product['slug'] : $product['id'];
-                                        ?>
-                                            <tr>
-                                                <td><?php echo $product['id']; ?></td>
-                                                <td>
-                                                    <div class="d-flex justify-content-center">
-                                                        <img src="<?php echo base_url('uploads/products/' . $product['featured_image']); ?>" alt="Featured Image" style="max-width: 50px;">
-                                                    </div>
-                                                </td>
-                                                <td><a href="<?php echo base_url('products/' . $endpoint); ?>" target="_blank"><?php echo $product['name']; ?></a></td>
-                                                <td><?php echo $product['category_name']; ?></td>
-                                                <td><?php echo $product['brand_name']; ?></td>
-                                                <td>
-                                                    <p>MRP: ₹<?php echo number_format($product['regular_price'], 2); ?></p>
-                                                    <p>Sale: ₹<?php echo number_format($product['sale_price'], 2); ?></p>
-                                                    <p>
-                                                        Purchase:
-                                                        <span class="purchase-price" data-product-id="<?php echo $product['id']; ?>" style="display: none;">
-                                                            ₹<?php echo number_format($product['purchase_price'], 2); ?>
-                                                        </span>
-                                                        <a href="javascript:void(0);"
-                                                            class="show_pp"
-                                                            data-product-id="<?php echo $product['id']; ?>"
-                                                            data-purchase-price="₹<?php echo number_format($product['purchase_price'], 2); ?>">
-                                                            Show
-                                                        </a>
-                                                    </p>
-                                                    <a href="javascript:void(0);"
-                                                        class="quick-edit"
-                                                        data-product-id="<?php echo $product['id']; ?>"
-                                                        data-product-name="<?php echo $product['name']; ?>">
-                                                        <i class="fa fa-edit"></i> Quick Edit
-                                                    </a>
-                                                </td>
-
-                                                <td>
-                                                    In stocks: <?php echo $total_available_stocks; ?><br>
-                                                    <a href="javascript:void(0);"
-                                                        class="quick-stock-update"
-                                                        data-product-id="<?php echo $product['id']; ?>"
-                                                        data-product-name="<?php echo $product['name']; ?>"
-                                                        data-total-purchased="<?php echo $total_quantity; ?>"
-                                                        data-current-stocks="<?php echo $total_available_stocks; ?>">
-                                                        <i class="fa fa-plus-circle"></i> Quick Stock Update
-                                                    </a>
-                                                </td>
-
-                                                <td>
-                                                    <a href="<?php echo base_url('admin/products/edit/') . $product['id']; ?>" class="btn btn-warning btn-sm">Edit</a>
-                                                    <a href="<?php echo base_url('admin/products/delete/') . $product['id']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this product?')">Delete</a>
-                                                </td>
-                                            </tr>
-                                        <?php endforeach; ?>
-                                    </tbody>
-                                </table>
-                            <?php else : ?>
-                                <p>No products found.</p>
-                            <?php endif; ?>
+                            <table class="table table-sm table-striped table-bordered" id="productsTable">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th></th>
+                                        <th>Name</th>
+                                        <th>Category</th>
+                                        <th>Brand</th>
+                                        <th>Price</th>
+                                        <th>Stocks</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                            </table>
                         </div>
                     </div>
                 </div>
@@ -180,6 +115,65 @@
         </div>
     </section>
 </div>
+<script>
+    const table = $('#productsTable').DataTable({
+        processing: true,
+        serverSide: true,
+        order: false,
+        pageLength: 40,
+        lengthMenu: [
+            [40, 100, -1], // Options for number of items per page
+            [40, 100, "All"] // Labels for those options
+        ],
+        ajax: {
+            url: '<?php echo base_url("admin/products/ajax_list"); ?>',
+            type: 'POST',
+            data: function(d) {
+                d.category_id = $('#category_id').val();
+                d.brand_id = $('#brand_id').val();
+                d.product_type_id = $('#product_type_id').val();
+            },
+            dataSrc: function(json) {
+                return json.data;
+            }
+        },
+        columns: [{
+                data: 0
+            },
+            {
+                data: 1
+            },
+            {
+                data: 2
+            },
+            {
+                data: 3
+            },
+            {
+                data: 4
+            },
+            {
+                data: 5
+            },
+            {
+                data: 6
+            },
+            {
+                data: 7
+            }
+        ]
+    });
+
+    $('.filter-input').on('change', function() {
+        table.ajax.reload();
+    });
+
+    $('#resetFilter').on('click', function() {
+        $('#filterForm')[0].reset();
+        table.ajax.reload();
+    });
+</script>
+
 
 <!-- Stock Update Modal -->
 <div class="modal fade" id="stockUpdateModal" tabindex="-1" role="dialog" aria-labelledby="stockUpdateModalLabel" aria-hidden="true">

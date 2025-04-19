@@ -18,11 +18,7 @@ $route['categories'] = 'Home/categories';
 $route['categories/(:any)'] = 'Home/category_products/$1';
 $route['product-type/(:any)'] = 'Home/product_type/$1';
 
-
-
 /** End of Frontend Routes */
-
-
 
 /** Admin Routes */
 $route['admin'] = 'AdminController/index';
@@ -126,6 +122,7 @@ $route['admin/brands/delete/(:num)'] = 'admin/BrandsController/delete/$1';
 /** end of brands */
 
 $route['admin/products'] = 'admin/ProductsController/index';
+$route['admin/products/ajax_list'] = 'admin/ProductsController/ajax_list';
 $route['admin/products/add'] = 'admin/ProductsController/add';
 $route['admin/products/add-ajax'] = 'admin/ProductsController/addAjax';
 $route['admin/products/edit/(:num)'] = 'admin/ProductsController/edit/$1';
@@ -175,8 +172,6 @@ $route['admin/invoices/addPayment']         = 'admin/InvoiceController/addPaymen
 $route['admin/invoices/updatePayment']   = 'admin/InvoiceController/updatePayment';
 $route['admin/invoices/getPaymentDetails/(:num)']   = 'admin/InvoiceController/getPaymentDetails/$1';
 $route['admin/invoices/deletePayment']      = 'admin/InvoiceController/deletePayment';
-
-
 
 /** tasks */
 $route['admin/tasks'] = 'admin/tasks/taskManagement';

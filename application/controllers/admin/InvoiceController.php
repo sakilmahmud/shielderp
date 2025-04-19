@@ -34,6 +34,7 @@ class InvoiceController extends CI_Controller
     {
         $from_date = $this->input->post('from_date', true);
         $to_date = $this->input->post('to_date', true);
+        $type = $this->input->post('type', true);
         $payment_status = $this->input->post('payment_status', true);
         $created_by = $this->input->post('created_by', true);
         $search_value = $this->input->post('search')['value'] ?? null;
@@ -52,6 +53,7 @@ class InvoiceController extends CI_Controller
             $from_date,
             $to_date,
             $payment_status,
+            $type,
             $created_by,
             $search_value,
             $start,
@@ -68,9 +70,9 @@ class InvoiceController extends CI_Controller
             $totalPaid += $invoice['paid_amount'];
             $totalDue += $invoice['due_amount'];
 
-            $actions = '<a href="' . base_url('admin/invoices/view/' . $invoice['id']) . '" class="btn btn-info btn-sm">View</a>';
-            $actions .= '<a href="' . base_url('admin/invoices/edit/' . $invoice['id']) . '" class="btn btn-warning btn-sm">Edit</a>';
-            $actions .= '<a href="' . base_url('admin/invoices/delete/' . $invoice['id']) . '" class="btn btn-danger btn-sm" onclick="return confirm(\'Are you sure you want to delete this invoice?\');">Delete</a>';
+            $actions = '<a href="' . base_url('admin/invoices/view/' . $invoice['id']) . '" class="btn btn-info btn-sm mr-1">View</a>';
+            $actions .= '<a href="' . base_url('admin/invoices/edit/' . $invoice['id']) . '" class="btn btn-warning btn-sm mr-1">Edit</a>';
+            $actions .= '<a href="' . base_url('admin/invoices/delete/' . $invoice['id']) . '" class="btn btn-danger btn-sm mr-1" onclick="return confirm(\'Are you sure you want to delete this invoice?\');">Delete</a>';
             $actions .= '<a href="' . base_url('admin/invoices/print/' . $invoice['id']) . '" target="_blank" class="btn btn-primary btn-sm">Print</a>';
 
             $status_badge = match ($invoice['payment_status']) {
@@ -83,14 +85,15 @@ class InvoiceController extends CI_Controller
 
             $data[] = [
                 $invoice['id'],
+                $status_badge,
+                ($invoice['is_gst']) ? 'GST' : 'NON-GST',
                 $invoice['invoice_no'],
-                $invoice['customer_name'],
+                $invoice['customer_name'] . '<br>' . $invoice['mobile'],
                 date('d-m-Y', strtotime($invoice['invoice_date'])),
                 '₹' . number_format($invoice['total_amount'], 2),
                 '₹' . number_format($invoice['paid_amount'], 2),
                 '₹' . number_format($invoice['due_amount'], 2),
-                $invoice['created_by_name'],
-                $status_badge,
+                //$invoice['created_by_name'],
                 $actions,
             ];
         }
