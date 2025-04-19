@@ -42,7 +42,7 @@ class ProductModel extends CI_Model
         return $query->result_array();
     }
 
-    public function get_filtered_products($category_id = null, $brand_id = null, $product_type_id = null, $search_value, $start, $length)
+    public function get_filtered_products($category_id = null, $brand_id = null, $product_type_id = null, $stock = null, $search_value, $start, $length)
     {
         $this->db->select('products.*, categories.name as category_name, brands.brand_name');
         $this->db->from('products');
@@ -112,11 +112,50 @@ class ProductModel extends CI_Model
             $product['total_available_stocks'] = $final_stock;
         }
 
+        if ($stock) {
+            //echo "stock filter works";
+            // Apply stock filter after calculating stock
+            if ($stock === 'positive') {
+                $products = array_filter($products, function ($product) {
+                    return $product['total_available_stocks'] > 0;
+                });
+            } elseif ($stock === 'zero') {
+                $products = array_filter($products, function ($product) {
+                    return $product['total_available_stocks'] == 0;
+                });
+            } elseif ($stock === 'negative') {
+                $products = array_filter($products, function ($product) {
+                    return $product['total_available_stocks'] < 0;
+                });
+            }
+
+            // Re-index the array after filtering
+            $products = array_values($products);
+        } else {
+            //echo "stock filter not works";
+        }
+
+        $filtered_count = count($products);
+
+        /* print_r($products);
+        die; */
+
         // Fetch filtered data count for DataTables
         $this->db->select('COUNT(DISTINCT products.id) as count');
         $this->db->from('products');
         $this->db->join('categories', 'products.category_id = categories.id', 'left');
         $this->db->join('brands', 'products.brand_id = brands.id', 'left');
+
+        // Apply filters if set
+        if ($category_id) {
+            $this->db->where('products.category_id', $category_id);
+        }
+        if ($brand_id) {
+            $this->db->where('products.brand_id', $brand_id);
+        }
+        if ($product_type_id) {
+            $this->db->where('products.product_type_id', $product_type_id);
+        }
 
         if (!empty($search_value)) {
             $this->db->group_start();
@@ -133,7 +172,7 @@ class ProductModel extends CI_Model
         return [
             'data' => $products,
             'recordsTotal' => $count_result['count'],
-            'recordsFiltered' => $count_result['count'],
+            'recordsFiltered' => $filtered_count,
         ];
     }
 

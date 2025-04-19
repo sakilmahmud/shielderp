@@ -27,30 +27,6 @@
                 <div class="col-md-12">
                     <div class="card">
                         <div class="card-body">
-                            <?php if (!empty($error)) : ?>
-                                <div class="alert alert-danger"><?php echo $error; ?></div>
-                            <?php endif; ?>
-                            <?php if ($this->session->flashdata('duplicate')) : ?>
-                                <div class="alert alert-warning">
-                                    <?php echo $this->session->flashdata('duplicate'); ?>
-                                </div>
-                            <?php endif; ?>
-                            <?php if ($this->session->flashdata('update')) : ?>
-                                <div class="alert alert-info">
-                                    <?php echo $this->session->flashdata('update'); ?>
-                                </div>
-                            <?php endif; ?>
-                            <?php if ($this->session->flashdata('message')) : ?>
-                                <div class="alert alert-success">
-                                    <?php echo $this->session->flashdata('message'); ?>
-                                </div>
-                            <?php endif; ?>
-
-                            <?php if ($this->session->flashdata('error')) : ?>
-                                <div class="alert alert-danger">
-                                    <?php echo $this->session->flashdata('error'); ?>
-                                </div>
-                            <?php endif; ?>
                             <div class="card_header">
                                 <form id="filterForm">
                                     <div class="row mb-3">
@@ -76,7 +52,7 @@
                                                 <?php endforeach; ?>
                                             </select>
                                         </div>
-                                        <div class="col-md-3">
+                                        <div class="col-md-2">
                                             <label for="product_type_id">Product Type</label>
                                             <select class="form-control filter-input" id="product_type_id">
                                                 <option value="">All</option>
@@ -87,7 +63,16 @@
                                                 <?php endforeach; ?>
                                             </select>
                                         </div>
-                                        <div class="col-md-3 mt-4">
+                                        <div class="col-md-2">
+                                            <label for="stock">Stock</label>
+                                            <select class="form-control filter-input" id="stock_filter">
+                                                <option value="">All</option>
+                                                <option value="positive">Available</option>
+                                                <option value="zero">No Stock</option>
+                                                <option value="negative">Negative</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-2 mt-4">
                                             <button type="button" id="resetFilter" class="btn btn-secondary">Reset</button>
                                         </div>
                                     </div>
@@ -107,6 +92,14 @@
                                         <th>Action</th>
                                     </tr>
                                 </thead>
+                                <tfoot>
+                                    <tr>
+                                        <th colspan="5" class="text-right">Total:</th>
+                                        <th id="totalAmount">₹0.00</th>
+                                        <th id="totalStock">0</th>
+                                        <th></th>
+                                    </tr>
+                                </tfoot>
                             </table>
                         </div>
                     </div>
@@ -132,8 +125,12 @@
                 d.category_id = $('#category_id').val();
                 d.brand_id = $('#brand_id').val();
                 d.product_type_id = $('#product_type_id').val();
+                d.stock = $('#stock_filter').val();
             },
             dataSrc: function(json) {
+                // Update the totals in the footer
+                $('#totalAmount').text(json.totals.total_amount);
+                $('#totalStock').text(json.totals.total_stock);
                 return json.data;
             }
         },
@@ -252,176 +249,168 @@
     </div>
 </div>
 <script>
-    $(document).ready(function() {
-        // Show modal with product data
-        $('.quick-stock-update').on('click', function() {
-            const productId = $(this).data('product-id');
-            const productName = $(this).data('product-name');
-            const totalPurchased = $(this).data('total-purchased');
-            const currentStocks = $(this).data('current-stocks');
+    // Show modal with product data
+    $(document).on('click', '.quick-stock-update', function() {
+        const productId = $(this).data('product-id');
+        const productName = $(this).data('product-name');
+        const totalPurchased = $(this).data('total-purchased');
+        const currentStocks = $(this).data('current-stocks');
 
-            // Set modal header and stock information
-            $('#stockUpdateModalLabel').text(`Update Stock: ${productName}`);
-            $('#stockInfo').html(`Total Purchased: ${totalPurchased} | Current Stocks: ${currentStocks}`);
-            $('#stock_product_id').val(productId);
+        // Set modal header and stock information
+        $('#stockUpdateModalLabel').text(`Update Stock: ${productName}`);
+        $('#stockInfo').html(`Total Purchased: ${totalPurchased} | Current Stocks: ${currentStocks}`);
+        $('#stock_product_id').val(productId);
 
-            $.ajax({
-                url: '<?php echo base_url('/'); ?>admin/products/get_product_prices', // Adjust the endpoint as needed
-                type: 'POST',
-                data: {
-                    product_id: productId
-                },
-                dataType: 'json',
-                success: function(response) {
-                    if (response && response.prices) {
-                        // Populate form fields with prices
-                        $('#st_sale_price').val(response.prices.sale_price || 0);
+        $.ajax({
+            url: '<?php echo base_url('/'); ?>admin/products/get_product_prices', // Adjust the endpoint as needed
+            type: 'POST',
+            data: {
+                product_id: productId
+            },
+            dataType: 'json',
+            success: function(response) {
+                if (response && response.prices) {
+                    // Populate form fields with prices
+                    $('#st_sale_price').val(response.prices.sale_price || 0);
 
-                        // Use 'last_purchase_price' if available, otherwise fallback to 'purchase_price'
-                        const purchasePrice = response.last_purchase_price !== null ?
-                            response.last_purchase_price :
-                            response.prices.purchase_price;
+                    // Use 'last_purchase_price' if available, otherwise fallback to 'purchase_price'
+                    const purchasePrice = response.last_purchase_price !== null ?
+                        response.last_purchase_price :
+                        response.prices.purchase_price;
 
-                        $('#st_purchase_price').val(purchasePrice || 0);
-                    } else {
-                        $('#st_sale_price').val(0);
-                        $('#st_purchase_price').val(0);
-                    }
-                },
-                error: function() {
-                    alert('An error occurred while fetching product prices.');
+                    $('#st_purchase_price').val(purchasePrice || 0);
+                } else {
+                    $('#st_sale_price').val(0);
+                    $('#st_purchase_price').val(0);
                 }
-            });
-
-            // Show the modal
-            $('#stockUpdateModal').modal('show');
+            },
+            error: function() {
+                alert('An error occurred while fetching product prices.');
+            }
         });
 
+        // Show the modal
+        $('#stockUpdateModal').modal('show');
+    });
 
-        // Handle stock update submission
-        $('#updateStock').on('click', function() {
-            const formData = $('#stockUpdateForm').serialize(); // Serialize form data
 
-            $.ajax({
-                url: '<?php echo base_url('/'); ?>admin/products/update_stock', // Adjust the endpoint as needed
-                type: 'POST',
-                data: formData,
-                dataType: 'json',
-                success: function(response) {
-                    if (response.status === 'success') {
-                        alert('Stock updated successfully!');
-                        $('#stockUpdateModal').modal('hide');
-                        location.reload(); // Reload the page to reflect changes
-                    } else {
-                        alert(response.message || 'Failed to update stock.');
-                    }
-                },
-                error: function() {
-                    alert('An error occurred while updating stock.');
+    // Handle stock update submission
+    $(document).on('click', '#updateStock', function() {
+        const formData = $('#stockUpdateForm').serialize(); // Serialize form data
+
+        $.ajax({
+            url: '<?php echo base_url('/'); ?>admin/products/update_stock', // Adjust the endpoint as needed
+            type: 'POST',
+            data: formData,
+            dataType: 'json',
+            success: function(response) {
+                if (response.status === 'success') {
+                    alert('Stock updated successfully!');
+                    $('#stockUpdateModal').modal('hide');
+                    //location.reload(); // Reload the page to reflect changes
+
+                    table.ajax.reload();
+                } else {
+                    alert(response.message || 'Failed to update stock.');
                 }
-            });
+            },
+            error: function() {
+                alert('An error occurred while updating stock.');
+            }
         });
     });
 
-    $(document).ready(function() {
-        // Show modal with product data
-        $('.quick-edit').on('click', function() {
-            const productId = $(this).data('product-id');
-            const productName = $(this).data('product-name');
+    // Show modal with product data
+    $(document).on('click', '.quick-edit', function() {
+        const productId = $(this).data('product-id');
+        const productName = $(this).data('product-name');
 
-            // Populate modal fields
-            $('#quickEditModalLabel').text(`Edit Product: ${productName}`);
-            $('#product_id').val(productId);
+        // Populate modal fields
+        $('#quickEditModalLabel').text(`Edit Product: ${productName}`);
+        $('#product_id').val(productId);
 
-            $.ajax({
-                url: '<?php echo base_url('/'); ?>admin/products/get_product_prices', // Adjust the endpoint as needed
-                type: 'POST',
-                data: {
-                    product_id: productId
-                },
-                dataType: 'json',
-                success: function(response) {
-                    if (response && response.prices) {
+        $.ajax({
+            url: '<?php echo base_url('/'); ?>admin/products/get_product_prices', // Adjust the endpoint as needed
+            type: 'POST',
+            data: {
+                product_id: productId
+            },
+            dataType: 'json',
+            success: function(response) {
+                if (response && response.prices) {
 
-                        // Use 'last_purchase_price' if available, otherwise fallback to 'purchase_price'
-                        const purchasePrice = response.last_purchase_price !== null ?
-                            response.last_purchase_price :
-                            response.prices.purchase_price;
+                    // Use 'last_purchase_price' if available, otherwise fallback to 'purchase_price'
+                    const purchasePrice = response.last_purchase_price !== null ?
+                        response.last_purchase_price :
+                        response.prices.purchase_price;
 
-                        $('#mrp').val(response.prices.regular_price);
-                        $('#sale_price').val(response.prices.sale_price);
-                        $('#purchase_price').val(purchasePrice);
-                    } else {
-                        $('#mrp').val(0);
-                        $('#sale_price').val(0);
-                        $('#purchase_price').val(0);
-                    }
-                },
-                error: function() {
-                    alert('An error occurred while fetching product prices.');
+                    $('#mrp').val(response.prices.regular_price);
+                    $('#sale_price').val(response.prices.sale_price);
+                    $('#purchase_price').val(purchasePrice);
+                } else {
+                    $('#mrp').val(0);
+                    $('#sale_price').val(0);
+                    $('#purchase_price').val(0);
                 }
-            });
-
-            // Show the modal
-            $('#quickEditModal').modal('show');
+            },
+            error: function() {
+                alert('An error occurred while fetching product prices.');
+            }
         });
 
-        // Handle update button click
-        $('#updateProduct').on('click', function() {
-            const formData = $('#quickEditForm').serialize(); // Get form data
+        // Show the modal
+        $('#quickEditModal').modal('show');
+    });
 
-            $.ajax({
-                url: '<?php echo base_url('/'); ?>admin/products/update_price', // Adjust the endpoint as needed
-                type: 'POST',
-                data: formData,
-                dataType: 'json',
-                success: function(response) {
-                    if (response.status === 'success') {
-                        alert('Product updated successfully!');
-                        $('#quickEditModal').modal('hide');
-                        location.reload(); // Reload the page to reflect changes
-                    } else {
-                        alert(response.message || 'Failed to update the product.');
-                    }
-                },
-                error: function() {
-                    alert('An error occurred while updating the product.');
+    // Handle update button click
+    $(document).on('click', '#updateProduct', function() {
+        const formData = $('#quickEditForm').serialize(); // Get form data
+
+        $.ajax({
+            url: '<?php echo base_url('/'); ?>admin/products/update_price', // Adjust the endpoint as needed
+            type: 'POST',
+            data: formData,
+            dataType: 'json',
+            success: function(response) {
+                if (response.status === 'success') {
+                    alert('Product updated successfully!');
+                    $('#quickEditModal').modal('hide');
+                    location.reload(); // Reload the page to reflect changes
+                } else {
+                    alert(response.message || 'Failed to update the product.');
                 }
-            });
+            },
+            error: function() {
+                alert('An error occurred while updating the product.');
+            }
         });
     });
 
-    $(document).ready(function() {
-        $('.show_pp').on('click', function() {
-            const purchasePrice = $(this).data('purchase-price');
-            $(this).siblings('.purchase-price').text(purchasePrice).show(); // Show the purchase price
-            $(this).hide(); // Hide the "Show" link
-        });
-    });
-    $(document).ready(function() {
-        $('.show_pp').on('click', function() {
-            const productId = $(this).data('product-id'); // Add a `data-product-id` attribute to your HTML element
+    $(document).on('click', '.show_pp', function() {
+        const productId = $(this).data('product-id'); // Add a `data-product-id` attribute to your HTML element
+        const purchasePrice = $(this).data('purchase-price');
+        $(this).siblings('.purchase-price').text(purchasePrice).show(); // Show the purchase price
+        $(this).hide(); // Hide the "Show" link
 
-            $.ajax({
-                url: '<?php echo base_url('/'); ?>admin/products/last_purchase_price',
-                type: 'POST',
-                data: {
-                    product_id: productId
-                },
-                dataType: 'json',
-                success: function(response) {
-                    if (response.status === 'success') {
-                        const purchasePrice = response.purchase_price;
-                        $(`.purchase-price[data-product-id="${productId}"]`).text(`₹${purchasePrice}`).show();
-                        $(`.show_pp[data-product-id="${productId}"]`).hide();
-                    } else {
-                        alert(response.message);
-                    }
-                },
-                error: function() {
-                    alert('An error occurred while fetching the purchase price.');
+        $.ajax({
+            url: '<?php echo base_url('/'); ?>admin/products/last_purchase_price',
+            type: 'POST',
+            data: {
+                product_id: productId
+            },
+            dataType: 'json',
+            success: function(response) {
+                if (response.status === 'success') {
+                    const purchasePrice = response.purchase_price;
+                    $(`.purchase-price[data-product-id="${productId}"]`).text(`₹${purchasePrice}`).show();
+                    $(`.show_pp[data-product-id="${productId}"]`).hide();
+                } else {
+                    alert(response.message);
                 }
-            });
+            },
+            error: function() {
+                alert('An error occurred while fetching the purchase price.');
+            }
         });
     });
 </script>

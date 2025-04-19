@@ -23,15 +23,6 @@ class ProductsController extends CI_Controller
     {
         $data['activePage'] = 'products';
 
-        // Get filter inputs
-        $category_id = $this->input->get('category_id', true);
-        $brand_id = $this->input->get('brand_id', true);
-        $product_type_id = $this->input->get('product_type_id', true);
-
-        // Get filtered products
-        //$data['products'] = $this->ProductModel->get_filtered_products($category_id, $brand_id, $product_type_id);
-        $data['products'] = [];
-
         // Get all categories, brands, and product types for filters
         $data['categories'] = $this->CategoryModel->get_all_categories();
         $data['brands'] = $this->BrandModel->get_all_brands();
@@ -47,22 +38,28 @@ class ProductsController extends CI_Controller
         $category_id = $this->input->post('category_id', true);
         $brand_id = $this->input->post('brand_id', true);
         $product_type_id = $this->input->post('product_type_id', true);
+        $stock = $this->input->post('stock', true);
         $search_value = $this->input->post('search')['value'] ?? null;
         $start = $this->input->post('start', true);
         $length = $this->input->post('length', true);
         $draw = $this->input->post('draw', true);
 
-        $result = $this->ProductModel->get_filtered_products($category_id, $brand_id, $product_type_id, $search_value, $start, $length);
+        $result = $this->ProductModel->get_filtered_products($category_id, $brand_id, $product_type_id, $stock, $search_value, $start, $length);
 
         $data = [];
+        $totalAmount = 0;
+        $totalStock = 0;
 
         foreach ($result['data'] as $product) {
-
-            $actions = '<a href="' . base_url('admin/invoices/edit/' . $product['id']) . '" class="btn btn-warning btn-sm mr-1">Edit</a>';
-            $actions .= '<a href="' . base_url('admin/invoices/delete/' . $product['id']) . '" class="btn btn-danger btn-sm mr-1" onclick="return confirm(\'Are you sure you want to delete this invoice?\');">Delete</a>';
-
+            $purchase_price = $product['purchase_price'];
             $total_quantity = $product['total_quantity'];
             $total_available_stocks = $product['total_available_stocks'];
+
+            $totalAmount += $purchase_price * $total_available_stocks;
+            $totalStock += $total_available_stocks;
+
+            $actions = '<a href="' . base_url('admin/products/edit/' . $product['id']) . '" class="btn btn-warning btn-sm mr-1">Edit</a>';
+            $actions .= '<a href="' . base_url('admin/products/delete/' . $product['id']) . '" class="btn btn-danger btn-sm mr-1" onclick="return confirm(\'Are you sure you want to delete this invoice?\');">Delete</a>';
 
             $endpoint = ($product['slug'] != "") ? $product['slug'] : $product['id'];
 
@@ -70,11 +67,11 @@ class ProductsController extends CI_Controller
                 <p>Sale: ₹' . number_format($product['sale_price'], 2) . '</p>
                 <p>Purchase:
                     <span class="purchase-price" data-product-id="' . $product['id'] . '" style="display: none;">
-                        ₹' . number_format($product['purchase_price'], 2) . '</span>
+                        ₹' . number_format($purchase_price, 2) . '</span>
                     <a href="javascript:void(0);"
                         class="show_pp"
                         data-product-id="' . $product['id'] . '"
-                        data-purchase-price="₹' . number_format($product['purchase_price'], 2) . '">Show</a>
+                        data-purchase-price="₹' . number_format($purchase_price, 2) . '">Show</a>
                 </p>
                 <a href="javascript:void(0);"
                     class="quick-edit"
@@ -109,7 +106,11 @@ class ProductsController extends CI_Controller
             "draw" => intval($draw),
             "recordsTotal" => $result['recordsTotal'],
             "recordsFiltered" => $result['recordsFiltered'],
-            "data" => $data
+            "data" => $data,
+            "totals" => [
+                'total_amount' => '₹' . number_format($totalAmount, 2),
+                'total_stock' => $totalStock
+            ],
         ]);
     }
 
