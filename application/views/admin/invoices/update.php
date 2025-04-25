@@ -23,9 +23,10 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h2>Update Invoice</h2>
+                    <h2>Update Invoice : #<?= $invoice['invoice_no'] ?></h2>
                 </div>
                 <div class="col-sm-6 text-right">
+                    <a href="<?php echo base_url('admin/invoices/view/' . $invoice['id']); ?>" class="btn btn-info">View Invoice</a>
                     <a href="<?php echo base_url('admin/invoices'); ?>" class="btn btn-primary">All Invoices</a>
                 </div>
             </div>
@@ -42,7 +43,7 @@
                                     <div class="col-md-1">
                                         <div class="form-group">
                                             <label for="is_gst">IS GST</label>
-                                            <select class="form-control" id="is_gst" name="is_gst">
+                                            <select class="form-control" id="is_gst" name="is_gst" disabled>
                                                 <option value="0" <?php echo ($invoice['is_gst'] == 0) ? "SELECTED" : ""; ?>>Non-GST</option>
                                                 <option value="1" <?php echo ($invoice['is_gst'] == 1) ? "SELECTED" : ""; ?>>GST</option>
                                             </select>

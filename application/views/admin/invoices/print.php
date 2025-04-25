@@ -400,6 +400,7 @@
                 <p>Branch & IFSC: <?php echo $bank_details['branch']; ?></p>
             </div>
             <div class="footer right_sec">
+                <img src="<?php echo base_url('assets/frontend/images/sign.png'); ?>" alt="SMM" width="200">
                 <p>For <?php echo $biller['name']; ?></p>
             </div>
         </div>

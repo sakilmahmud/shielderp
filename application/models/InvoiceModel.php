@@ -193,22 +193,22 @@ class InvoiceModel extends CI_Model
         $this->db->delete('invoices');
     }
 
-    public function get_last_invoice_no($is_gst_bill)
+    public function get_last_invoice_no($is_gst_bill, $financial_year)
     {
         if ($is_gst_bill) {
-            // For GST invoices, check for the last invoice in the current financial year
-            $this->db->like('invoice_no', '2024-25', 'both');
+            // GST invoice: format PREFIX/2025-26/0001
+            $sql = "SELECT invoice_no FROM invoices WHERE invoice_no LIKE ? ORDER BY CAST(SUBSTRING_INDEX (invoice_no, '/', -1) AS UNSIGNED) DESC LIMIT 1";
+            $like = '%/' . $financial_year . '/%';
         } else {
-            // For non-GST invoices, check for the last non-GST invoice
-            $this->db->like('invoice_no', 'INV', 'both');
+            // Non-GST invoice: format PREFIX/INV/0001
+            $sql = "SELECT invoice_no FROM invoices WHERE invoice_no LIKE ? ORDER BY CAST(SUBSTRING_INDEX (invoice_no, '/', -1) AS UNSIGNED) DESC  LIMIT 1";
+            $like = '%/INV/%';
         }
 
-        $this->db->order_by('id', 'DESC');
-        $query = $this->db->get('invoices', 1); // Assuming 'invoices' is your table
+        $query = $this->db->query($sql, [$like]);
 
         if ($query->num_rows() > 0) {
-            $result = $query->row();
-            return $result->invoice_no;
+            return $query->row()->invoice_no;
         }
 
         return null;

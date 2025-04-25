@@ -446,9 +446,9 @@ class InvoiceController extends CI_Controller
         $invoice_prefix = getSetting('invoice_prefix');
         $financial_year = getCurrentFinancialYear();
 
-        // Fetch the last invoice number
-        $last_invoice_no = $this->InvoiceModel->get_last_invoice_no($is_gst);
-
+        $last_invoice_no = $this->InvoiceModel->get_last_invoice_no($is_gst, $financial_year);
+        /* echo $last_invoice_no;
+        die; */
         if ($last_invoice_no) {
             $last_invoice_no_parts = explode('/', $last_invoice_no);
             $last_number = end($last_invoice_no_parts);
@@ -465,6 +465,7 @@ class InvoiceController extends CI_Controller
 
         return $invoice_no;
     }
+
 
 
     public function view($invoice_id)
