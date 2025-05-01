@@ -154,6 +154,7 @@ $route['admin/suppliers/edit/(:num)']       = 'admin/SupplierController/edit/$1'
 $route['admin/suppliers/delete/(:num)']     = 'admin/SupplierController/delete/$1';
 
 $route['admin/purchase_entries']            = 'admin/PurchaseEntryController/index';
+$route['admin/purchases/fetch']            = 'admin/PurchaseEntryController/fetchPurchases';
 $route['admin/purchase_entries/add']        = 'admin/PurchaseEntryController/add';
 $route['admin/purchase_entries/edit/(:num)'] = 'admin/PurchaseEntryController/edit/$1';
 $route['admin/purchase_entries/delete/(:num)'] = 'admin/PurchaseEntryController/delete/$1';

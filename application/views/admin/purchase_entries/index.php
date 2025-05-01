@@ -23,20 +23,57 @@
                                 </div>
                             <?php endif; ?>
 
-                            <?php if (!empty($purchase_entries)) : ?>
-                                <table class="table table-sm table-striped table-bordered" id="commonTable">
-                                    <thead>
-                                        <tr>
-                                            <th>ID</th>
-                                            <th>Supplier</th>
-                                            <th>Purchase Date</th>
-                                            <th>Invoice No</th>
-                                            <th>Total Amount</th>
-                                            <th>Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <?php foreach ($purchase_entries as $entry) : ?>
+                            <form id="filterForm">
+                                <div class="row mb-3">
+                                    <div class="col-md-2">
+                                        <input type="date" id="from_date" class="form-control filter-input" value="<?php echo date('Y-m-d', strtotime('-30 days')); ?>">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <input type="date" id="to_date" class="form-control filter-input" value="<?php echo date('Y-m-d'); ?>">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <select id="payment_status" class="form-control filter-input">
+                                            <option value="">Payment Status</option>
+                                            <option value="0">Due</option>
+                                            <option value="1">Paid</option>
+                                            <option value="2">Partial</option>
+                                            <option value="3">Return</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-1">
+                                        <select id="type" class="form-control filter-input">
+                                            <option value="">Type</option>
+                                            <option value="0">NON-GST</option>
+                                            <option value="1">GST</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <select id="supplier_id" class="form-control filter-input">
+                                            <option value="">Suppliers</option>
+                                            <?php foreach ($suppliers as $user): ?>
+                                                <option value="<?php echo $user['id']; ?>"><?php echo $user['supplier_name']; ?></option>
+                                            <?php endforeach; ?>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <button type="button" id="resetFilter" class="btn btn-secondary">Reset</button>
+                                    </div>
+                                </div>
+                            </form>
+
+                            <table class="table table-sm table-striped table-bordered" id="purchaseTable">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Supplier</th>
+                                        <th>Purchase Date</th>
+                                        <th>Invoice No</th>
+                                        <th>Total Amount</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php /* foreach ($purchase_entries as $entry) : ?>
                                             <tr>
                                                 <td><?php echo $entry['id']; ?></td>
                                                 <td><?php echo $entry['supplier_name']; ?></td>
@@ -51,12 +88,17 @@
                                                         onclick="return confirm('Are you sure you want to delete this purchase entry?');">Delete</a>
                                                 </td>
                                             </tr>
-                                        <?php endforeach; ?>
-                                    </tbody>
-                                </table>
-                            <?php else : ?>
-                                <div class="alert alert-info">No purchase entries found.</div>
-                            <?php endif; ?>
+                                        <?php endforeach; */ ?>
+                                </tbody>
+
+                                <tfoot>
+                                    <tr>
+                                        <th colspan="4" class="text-right">Total:</th>
+                                        <th id="totalAmount">₹0.00</th>
+                                        <th></th>
+                                    </tr>
+                                </tfoot>
+                            </table>
                         </div>
                     </div>
                 </div>
@@ -64,3 +106,59 @@
         </div>
     </section>
 </div>
+<script>
+    const table = $('#purchaseTable').DataTable({
+        processing: true,
+        serverSide: true,
+        order: false,
+        pageLength: 40,
+        lengthMenu: [
+            [40, 100, -1], // Options for number of items per page
+            [40, 100, "All"] // Labels for those options
+        ],
+        ajax: {
+            url: '<?php echo base_url("admin/purchases/fetch"); ?>',
+            type: 'POST',
+            data: function(d) {
+                d.from_date = $('#from_date').val();
+                d.to_date = $('#to_date').val();
+                d.payment_status = $('#payment_status').val();
+                d.type = $('#type').val();
+                d.supplier_id = $('#supplier_id').val();
+            },
+            dataSrc: function(json) {
+                // Update the totals in the footer
+                $('#totalAmount').text(json.totals.total_amount);
+                return json.data;
+            }
+        },
+        columns: [{
+                data: 0
+            },
+            {
+                data: 1
+            },
+            {
+                data: 2
+            },
+            {
+                data: 3
+            },
+            {
+                data: 4
+            },
+            {
+                data: 5
+            }
+        ]
+    });
+
+    $('.filter-input').on('change', function() {
+        table.ajax.reload();
+    });
+
+    $('#resetFilter').on('click', function() {
+        $('#filterForm')[0].reset();
+        table.ajax.reload();
+    });
+</script>

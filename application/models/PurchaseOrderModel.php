@@ -13,6 +13,94 @@ class PurchaseOrderModel extends CI_Model
         return $query->result_array();
     }
 
+    public function getFilteredPurchases($from_date, $to_date, $payment_status, $type, $supplier_id, $search_value, $start, $length)
+    {
+        // Select columns including calculated paid_amount and due_amount
+        $this->db->select('purchase_orders.*,suppliers.supplier_name');
+        $this->db->from('purchase_orders');
+        $this->db->join('suppliers', 'purchase_orders.supplier_id = suppliers.id', 'left');
+
+        // Join purchase_order_products and products for product search
+        $this->db->join('purchase_order_products', 'purchase_order_products.purchase_order_id = purchase_orders.id', 'left');
+        $this->db->join('products', 'products.id = purchase_order_products.product_id', 'left');
+
+        $this->db->where('DATE(purchase_orders.purchase_date) >=', $from_date);
+        $this->db->where('DATE(purchase_orders.purchase_date) <=', $to_date);
+
+        // Apply payment status filter if provided
+        if ($type !== '' && $type !== null) {
+            $this->db->where('purchase_orders.is_gst', $type);
+        }
+        // Apply payment status filter if provided
+        if ($payment_status !== '' && $payment_status !== null) {
+            //$this->db->where('purchase_orders.payment_status', $payment_status);
+        }
+
+        // Apply supplier_id filter if provided
+        if (!empty($supplier_id)) {
+            $this->db->where('purchase_orders.supplier_id', $supplier_id);
+        }
+
+        // Apply search filter
+        if (!empty($search_value)) {
+            $this->db->group_start();
+            $this->db->like('purchase_orders.invoice_no', $search_value);
+            $this->db->or_like('products.name', $search_value); // Search by product name
+            $this->db->group_end();
+        }
+
+        // Group by invoice ID
+        $this->db->group_by('purchase_orders.id');
+
+        // Pagination
+        if ($length != -1) {
+            $this->db->limit($length, $start);
+        }
+
+        // Ordering
+        $this->db->order_by('purchase_orders.purchase_date', 'DESC');
+
+        $query = $this->db->get();
+
+        // Fetch filtered data count for DataTables
+        $this->db->select('COUNT(DISTINCT purchase_orders.id) as count');
+        $this->db->from('purchase_orders');
+
+        $this->db->join('purchase_order_products', 'purchase_order_products.purchase_order_id = purchase_orders.id', 'left');
+        $this->db->join('products', 'products.id = purchase_order_products.product_id', 'left');
+
+        $this->db->where('DATE(purchase_orders.purchase_date) >=', $from_date);
+        $this->db->where('DATE(purchase_orders.purchase_date) <=', $to_date);
+
+        if ($payment_status !== '' && $payment_status !== null) {
+            //$this->db->where('purchase_orders.payment_status', $payment_status);
+        }
+
+        if ($type !== '' && $type !== null) {
+            $this->db->where('purchase_orders.is_gst', $type);
+        }
+
+        if (!empty($supplier_id)) {
+            $this->db->where('purchase_orders.supplier_id', $supplier_id);
+        }
+
+        if (!empty($search_value)) {
+            $this->db->group_start();
+            $this->db->like('purchase_orders.invoice_no', $search_value);
+            $this->db->or_like('products.name', $search_value); // Search by product name
+            $this->db->group_end();
+        }
+
+        $count_query = $this->db->get();
+        $count_result = $count_query->row_array();
+
+        return [
+            'data' => $query->result_array(),
+            'recordsTotal' => $count_result['count'],
+            'recordsFiltered' => $count_result['count'],
+        ];
+    }
+
     public function insert_purchase_order($data)
     {
         $this->db->insert('purchase_orders', $data);

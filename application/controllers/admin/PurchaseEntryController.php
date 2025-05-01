@@ -22,10 +22,78 @@ class PurchaseEntryController extends CI_Controller
     public function index()
     {
         $data['activePage'] = 'purchase_entries';
-        $data['purchase_entries'] = $this->PurchaseOrderModel->get_all_purchase_orders();
+        //$data['purchase_entries'] = $this->PurchaseOrderModel->get_all_purchase_orders();
+        $data['suppliers'] = $this->SupplierModel->get_all_suppliers();
         $this->load->view('admin/header', $data);
         $this->load->view('admin/purchase_entries/index', $data);
         $this->load->view('admin/footer');
+    }
+
+    public function fetchPurchases()
+    {
+        $from_date = $this->input->post('from_date', true);
+        $to_date = $this->input->post('to_date', true);
+        $payment_status = $this->input->post('payment_status', true);
+        $type = $this->input->post('type', true);
+        $supplier_id = $this->input->post('supplier_id', true);
+        $search_value = $this->input->post('search')['value'] ?? null;
+        $start = $this->input->post('start', true);
+        $length = $this->input->post('length', true);
+        $draw = $this->input->post('draw', true);
+
+        if (empty($from_date)) {
+            $from_date = date('Y-m-d', strtotime('-30 days'));
+        }
+        if (empty($to_date)) {
+            $to_date = date('Y-m-d');
+        }
+
+        $result = $this->PurchaseOrderModel->getFilteredPurchases(
+            $from_date,
+            $to_date,
+            $payment_status,
+            $type,
+            $supplier_id,
+            $search_value,
+            $start,
+            $length
+        );
+
+        $data = [];
+        $totalAmount = 0;
+        foreach ($result['data'] as $invoice) {
+            $totalAmount += $invoice['total_amount'];
+
+            $actions = '<a href="' . base_url('admin/purchase_entries/edit/' . $invoice['id']) . '" class="btn btn-warning btn-sm mr-1">Edit</a>';
+            $actions .= '<a href="' . base_url('admin/purchase_entries/delete/' . $invoice['id']) . '" class="btn btn-danger btn-sm mr-1" onclick="return confirm(\'Are you sure you want to delete this purchase entry?\');">Delete</a>';
+
+            /* $status_badge = match ($invoice['payment_status']) {
+                '1' => '<span class="badge badge-success">Paid</span>',
+                '0' => '<span class="badge badge-warning">Pending</span>',
+                '2' => '<span class="badge badge-info">Partial</span>',
+                '3' => '<span class="badge badge-danger">Return</span>',
+                default => '<span class="badge badge-secondary">Unknown</span>',
+            }; */
+
+            $data[] = [
+                $invoice['id'],
+                $invoice['supplier_name'],
+                date('d-m-Y', strtotime($invoice['purchase_date'])),
+                $invoice['invoice_no'],
+                '₹' . number_format($invoice['total_amount'], 2),
+                $actions,
+            ];
+        }
+
+        echo json_encode([
+            "draw" => intval($draw),
+            "recordsTotal" => $result['recordsTotal'],
+            "recordsFiltered" => $result['recordsFiltered'],
+            "data" => $data,
+            "totals" => [
+                'total_amount' => '₹' . number_format($totalAmount, 2)
+            ],
+        ]);
     }
 
     public function add()
