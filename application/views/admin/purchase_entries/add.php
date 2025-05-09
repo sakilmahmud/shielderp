@@ -178,6 +178,14 @@
                                             <input type="text" class="form-control" id="total_gst" name="total_gst" readonly>
                                         </div>
                                     </div>
+                                    <div class="d-flex gap-3 justify-content-end">
+                                        <div class="form-group">
+                                            <label for="round_off">Round Off</label>
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="text" id="round_off" name="round_off" class="form-control" value="<?php echo isset($purchase_entry['round_off']) ? $purchase_entry['round_off'] : ''; ?>" readonly>
+                                        </div>
+                                    </div>
 
                                     <div class="d-flex gap-3 justify-content-end">
                                         <div class="form-group">

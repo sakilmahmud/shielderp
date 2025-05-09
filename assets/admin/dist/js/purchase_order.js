@@ -387,10 +387,14 @@ function calculateTotals() {
     grandTotal += finalPrice;
   });
 
+  var roundedTotal = Math.round(grandTotal);
+  var roundOff = roundedTotal - grandTotal;
+  $("#round_off").val(roundOff.toFixed(2));
+
   $("#sub_total").val(subTotal.toFixed(2));
   $("#total_discount").val(totalDiscount.toFixed(2));
   $("#total_gst").val(totalGst.toFixed(2));
-  $("#total_amount").val(grandTotal.toFixed(2));
+  $("#total_amount").val(roundedTotal.toFixed(2));
   updateTotalBalance();
 }
 

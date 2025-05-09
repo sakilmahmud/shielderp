@@ -334,25 +334,14 @@ function updateTotals() {
     var finalPrice =
       parseFloat($(this).find("input[name='final_price[]']").val()) || 0;
 
-    /* subTotal += discountedPrice * quantity;
-		totalDiscount += price - discountedPrice;
-		totalGST += gstAmount;
-		grandTotal += finalPrice; */
-
     subTotal += price * quantity;
     totalDiscount += (price - discountedPrice) * quantity;
     totalGST += gstAmount * quantity;
     grandTotal += finalPrice;
   });
 
-  /* console.log("subTotal", subTotal);
-	console.log("totalDiscount", totalDiscount);
-	console.log("totalGst", totalGST);
-	console.log("grandTotal", grandTotal); */
-
   var roundedTotal = Math.round(grandTotal);
   var roundOff = roundedTotal - grandTotal;
-  //ar new_grandTotal = Math.round(grandTotal);
   $("#round_off").val(roundOff.toFixed(2));
 
   $("#sub_total").val(subTotal.toFixed(2));
