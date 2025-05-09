@@ -1,3 +1,41 @@
+<style>
+    .card-min-height {
+        min-height: 370px;
+    }
+
+    #ajax-low-stock-content .list-group-item {
+        padding: 5px 10px;
+        font-size: 13px;
+    }
+
+    .due-scroll-container {
+        max-height: 300px;
+        overflow-y: auto;
+        overflow-x: hidden;
+        /* hide horizontal scrollbar */
+        padding-right: 10px;
+        scrollbar-width: thin;
+        scrollbar-color: #ccc transparent;
+        border: 1px solid #dee2e6;
+        border-radius: 0.25rem;
+    }
+
+    /* Webkit (Chrome, Safari) Scrollbar Customization */
+    .due-scroll-container::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .due-scroll-container::-webkit-scrollbar-thumb {
+        background-color: #adb5bd;
+        border-radius: 10px;
+    }
+
+    .due-scroll-container::-webkit-scrollbar-track {
+        background: transparent;
+    }
+</style>
+
+
 <div class="content-wrapper">
     <section class="content-header">
         <div class="container-fluid">
@@ -12,110 +50,119 @@
     <section class="content">
         <div class="container-fluid">
             <div class="row">
-                <div class="col-md-6">
-                    <!-- Today's Tasks Section -->
-                    <div class="card">
-                        <div class="card-header">
-                            <h3 class="card-title">Today's Tasks</h3>
+                <div class="col-md-4">
+                    <div class="card card-min-height">
+                        <div class="">
+                            <ul class="nav nav-tabs" id="reportTabs" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link active" id="sale-tab" data-toggle="tab" href="#sale" role="tab" aria-controls="sale" aria-selected="true">Sales</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="purchase-tab" data-toggle="tab" href="#purchase" role="tab" aria-controls="purchase" aria-selected="false">Purchases</a>
+                                </li>
+                            </ul>
                         </div>
-                        <div class="card-body">
-                            <?php if (!empty($todaysTasks)) : ?>
-                                <table class="table table-bordered">
-                                    <thead>
-                                        <tr>
-                                            <th>Task</th>
-                                            <th>Client</th>
-                                            <th>Doer</th>
-                                            <th>End Time</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <?php foreach ($todaysTasks as $task) : ?>
-                                            <tr>
-                                                <td><a href="#" class="task-link" data-task-id="<?php echo $task->id; ?>"><?php echo $task->title; ?></a></td>
-                                                <td><?php echo $task->client_name; ?></td>
-                                                <td><?php echo $task->doer_name; ?></td>
-                                                <td><?php echo date("h:i A", strtotime($task->due_date)); ?></td>
-                                            </tr>
-                                        <?php endforeach; ?>
-                                    </tbody>
-                                </table>
-                            <?php else : ?>
-                                <p>No tasks for today.</p>
-                            <?php endif; ?>
+                        <div class="pl-1">
+
+                            <div class="tab-content" id="reportTabsContent">
+                                <!-- Sale Tab -->
+                                <div class="tab-pane fade show active" id="sale" role="tabpanel" aria-labelledby="sale-tab">
+                                    <ul class="list-group">
+                                        <li class="list-group-item">Today Sale: ₹<?= number_format($sales_report['daily'], 2) ?></li>
+                                        <li class="list-group-item">Last 7 Days Sale: ₹<?= number_format($sales_report['weekly'], 2) ?></li>
+                                        <li class="list-group-item">Last 30 Days Sale: ₹<?= number_format($sales_report['monthly'], 2) ?></li>
+                                    </ul>
+                                </div>
+
+                                <!-- Purchase Tab -->
+                                <div class="tab-pane fade" id="purchase" role="tabpanel" aria-labelledby="purchase-tab">
+                                    <ul class="list-group">
+                                        <li class="list-group-item">Today Purchase: ₹<?= number_format($purchase_report['daily'], 2) ?></li>
+                                        <li class="list-group-item">Last 7 Days Purchase: ₹<?= number_format($purchase_report['weekly'], 2) ?></li>
+                                        <li class="list-group-item">Last 30 Days Purchase: ₹<?= number_format($purchase_report['monthly'], 2) ?></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card card-min-height">
+                        <div class="">
+                            <ul class="nav nav-tabs" id="dueTab" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link active" id="customers-tab" data-toggle="tab" href="#customers" role="tab">Customers Due</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="suppliers-tab" data-toggle="tab" href="#suppliers" role="tab">Suppliers Due</a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="pl-1">
+                            <div class="tab-content" id="dueTabContent">
+                                <div class="tab-pane fade show active" id="customers" role="tabpanel">
+                                    <div id="ajax-customer-due-content" class="due-scroll-container">
+                                        <p>Loading...</p>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="suppliers" role="tabpanel">
+                                    <div id="ajax-supplier-due-content" class="due-scroll-container">
+                                        <p>Loading...</p>
+                                    </div>
+                                </div>
+                            </div>
+
                         </div>
                     </div>
                 </div>
-                <div class="col-md-6">
-                    <!-- This Week's Tasks Section -->
-                    <div class="card">
+                <div class="col-md-4">
+                    <div class="card card-min-height">
                         <div class="card-header">
-                            <h3 class="card-title">This Week's Tasks</h3>
+                            <h3 class="card-title">Quick Stocks</h3>
                         </div>
-                        <div class="card-body">
-                            <?php if (!empty($weeksTasks)) : ?>
-                                <table class="table table-bordered">
-                                    <thead>
-                                        <tr>
-                                            <th>Task</th>
-                                            <th>Client</th>
-                                            <th>Doer</th>
-                                            <th>End Time</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <?php foreach ($weeksTasks as $task) : ?>
-                                            <tr>
-                                                <td><a href="#" class="task-link" data-task-id="<?php echo $task->id; ?>"><?php echo $task->title; ?></a></td>
-                                                <td><?php echo $task->client_name; ?></td>
-                                                <td><?php echo $task->doer_name; ?></td>
-                                                <td><?php echo date("jS F, Y", strtotime($task->due_date)); ?></td>
-                                            </tr>
-                                        <?php endforeach; ?>
-                                    </tbody>
-                                </table>
-                            <?php else : ?>
-                                <p>No tasks for this week.</p>
-                            <?php endif; ?>
+                        <div class="p-2" id="ajax-low-stock-content">
+                            <p>Loading...</p>
                         </div>
                     </div>
                 </div>
 
-                <div class="col-md-6">
-                    <!-- Overdue Tasks Section -->
-                    <div class="card">
-                        <div class="card-header">
-                            <h3 class="card-title">Overdue Tasks</h3>
-                        </div>
-                        <div class="card-body">
-                            <?php if (!empty($overdueTasks)) : ?>
-                                <table class="table table-bordered">
-                                    <thead>
-                                        <tr>
-                                            <th>Task</th>
-                                            <th>Client</th>
-                                            <th>Doer</th>
-                                            <th>End Time</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <?php foreach ($overdueTasks as $task) : ?>
-                                            <tr>
-                                                <td><a href="#" class="task-link" data-task-id="<?php echo $task->id; ?>"><?php echo $task->title; ?></a></td>
-                                                <td><?php echo $task->client_name; ?></td>
-                                                <td><?php echo $task->doer_name; ?></td>
-                                                <td><?php echo date("jS F, Y", strtotime($task->due_date)); ?></td>
-                                            </tr>
-                                        <?php endforeach; ?>
-                                    </tbody>
-                                </table>
-                            <?php else : ?>
-                                <p>No overdue tasks.</p>
-                            <?php endif; ?>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
     </section>
 </div>
+<script>
+    $(document).ready(function() {
+        // Load customer due by default
+        loadCustomerDue();
+
+        $('#customers-tab').on('click', function() {
+            loadCustomerDue();
+        });
+
+        $('#suppliers-tab').on('click', function() {
+            loadSupplierDue();
+        });
+
+        function loadCustomerDue() {
+            $('#ajax-customer-due-content').html('<p>Loading...</p>');
+            $.get('<?= base_url('admin/dashboard/due_customers') ?>', function(data) {
+                $('#ajax-customer-due-content').html(data);
+            });
+        }
+
+        function loadSupplierDue() {
+            $('#ajax-supplier-due-content').html('<p>Loading...</p>');
+            $.get('<?= base_url('admin/dashboard/due_suppliers') ?>', function(data) {
+                $('#ajax-supplier-due-content').html(data);
+            });
+        }
+    });
+</script>
+<script>
+    $(document).ready(function() {
+        $.get('<?= base_url("admin/ajax/low-stock") ?>', function(data) {
+            $('#ajax-low-stock-content').html(data);
+        });
+    });
+</script>

@@ -16,9 +16,21 @@ class PurchaseOrderModel extends CI_Model
     public function getFilteredPurchases($from_date, $to_date, $payment_status, $type, $supplier_id, $search_value, $start, $length)
     {
         // Select columns including calculated paid_amount and due_amount
-        $this->db->select('purchase_orders.*,suppliers.supplier_name');
+        $this->db->select('purchase_orders.*,suppliers.supplier_name,
+        purchase_orders.total_amount,
+        IFNULL(transactions_summary.paid_amount, 0) as paid_amount,
+        (purchase_orders.total_amount - IFNULL(transactions_summary.paid_amount, 0)) as due_amount');
         $this->db->from('purchase_orders');
         $this->db->join('suppliers', 'purchase_orders.supplier_id = suppliers.id', 'left');
+
+        // Subquery for transactions total amount
+        $this->db->join(
+            '(SELECT table_id, SUM(amount) as paid_amount FROM transactions 
+                      WHERE transaction_for_table = "purchase_orders" AND trans_type = 2 AND status = 1 
+                      GROUP BY table_id) as transactions_summary',
+            'transactions_summary.table_id = purchase_orders.id',
+            'left'
+        );
 
         // Join purchase_order_products and products for product search
         $this->db->join('purchase_order_products', 'purchase_order_products.purchase_order_id = purchase_orders.id', 'left');
@@ -65,6 +77,14 @@ class PurchaseOrderModel extends CI_Model
         // Fetch filtered data count for DataTables
         $this->db->select('COUNT(DISTINCT purchase_orders.id) as count');
         $this->db->from('purchase_orders');
+        // Subquery for transactions total amount
+        $this->db->join(
+            '(SELECT table_id, SUM(amount) as paid_amount FROM transactions 
+                      WHERE transaction_for_table = "purchase_orders" AND trans_type = 2 AND status = 1 
+                      GROUP BY table_id) as transactions_summary',
+            'transactions_summary.table_id = purchase_orders.id',
+            'left'
+        );
 
         $this->db->join('purchase_order_products', 'purchase_order_products.purchase_order_id = purchase_orders.id', 'left');
         $this->db->join('products', 'products.id = purchase_order_products.product_id', 'left');
@@ -155,5 +175,20 @@ class PurchaseOrderModel extends CI_Model
         $this->db->join('products p', 'pop.product_id = p.id');
         $this->db->where('purchase_order_id', $id);
         return $this->db->get()->result_array();
+    }
+
+    // Get total amount of an purchase_order_id by its ID
+    public function get_purchase_total($purchase_order_id)
+    {
+        $this->db->select('total_amount');
+        $this->db->from('purchase_orders');
+        $this->db->where('id', $purchase_order_id);
+        $query = $this->db->get();
+
+        if ($query->num_rows() > 0) {
+            return $query->row()->total_amount;
+        } else {
+            return 0; // Return 0 if invoice not found
+        }
     }
 }

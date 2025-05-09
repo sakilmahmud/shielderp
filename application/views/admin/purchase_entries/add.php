@@ -187,6 +187,31 @@
                                             <input type="text" class="form-control" id="total_amount" name="total_amount" readonly>
                                         </div>
                                     </div>
+                                    <!-- Payment Section -->
+                                    <div id="payment-section">
+                                        <div class="payment-row">
+                                            <div class="d-flex gap-3 justify-content-end">
+                                                <div class="form-group payment_method_section">
+                                                    <select class="form-control" name="payment_mode[]">
+                                                        <?php if (!empty($paymentModes)) :
+                                                            foreach ($paymentModes as $index => $paymentMode) :
+                                                                echo '<option value="' . $paymentMode['id'] . '">' . $paymentMode['title'] . '</option>';
+                                                            endforeach;
+                                                        endif; ?>
+                                                    </select>
+                                                </div>
+                                                <div class="form-group">
+                                                    <input type="date" class="form-control payment_date" name="payment_date[]" value="<?php echo date("Y-m-d") ?>">
+                                                </div>
+                                                <div class="form-group">
+                                                    <input type="number" class="form-control payment_amount" name="payment_amount[]" placeholder="Enter Amount">
+                                                </div>
+                                                <div class="form-group">
+                                                    <button type="button" class="btn btn-primary add-payment"><i class="fa fa-plus"></i></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="d-flex justify-content-end">
                                     <button type="submit" class="btn btn-primary add_purchase">Add Purchase Entry</button>

@@ -619,7 +619,7 @@ class ProductsController extends CI_Controller
     public function update_stock()
     {
         $this->load->model('StockModel');
-
+        $current_user_id = $this->session->userdata('user_id');
         $product_id = $this->input->post('product_id');
         $action = $this->input->post('action');
         $quantity = $this->input->post('quantity');
@@ -643,6 +643,7 @@ class ProductsController extends CI_Controller
             'purchase_date' => $purchase_date,
             'quantity' => $quantity,
             'available_stock' => $available_stock,
+            'created_by' => $current_user_id,
             'created_at' => date('Y-m-d H:i:s'),
         ];
 

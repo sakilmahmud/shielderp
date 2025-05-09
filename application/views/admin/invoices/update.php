@@ -577,7 +577,6 @@
 
     });
 
-
     // Function to update payment log dynamically
     function updatePaymentLog(data, action) {
         if (action === 'edit') {

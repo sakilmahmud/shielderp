@@ -6,19 +6,12 @@ class AdminController extends CI_Controller
     public function __construct()
     {
         parent::__construct();
-
         $this->load->model('UserModel');
-        // Load form validation library
         $this->load->library('form_validation');
-
-        // Check if the "remember_me" cookie exists
         $cookie_value = $this->input->cookie('remember_me');
 
         if ($cookie_value) {
             list($user_id, $cookie_hash) = explode(':', $cookie_value);
-            // Validate the cookie hash here (e.g., against the user's stored hash)
-
-            // Log in the user automatically using the user_id
             $user = $this->UserModel->getUserById($user_id);
             if ($user) {
                 $this->session->set_userdata('user_id', $user['id']);
@@ -26,21 +19,12 @@ class AdminController extends CI_Controller
                 $this->session->set_userdata('role', $user['user_role']);
             }
         }
-
-        // Check if the user is logged in
         if (!$this->session->userdata('username')) {
             redirect('login'); // Redirect to the login page if not logged in
         }
-
-        //print_r($this->session->userdata); die;
-
         $this->load->model('SettingsModel');
-
         $this->load->helper('custom_helper');
-
-
         $this->load->model('TaskModel');
-        // Load the upload library for handling file uploads
         $this->load->library('upload'); // Make sure 'upload' is the correct name of the library class
     }
 
@@ -54,21 +38,268 @@ class AdminController extends CI_Controller
 
     public function dashboard()
     {
-        // Method logic for the dashboard
         $data['activePage'] = 'dashboard';
 
-        $user_id = $this->session->userdata('user_id');
-        $role = $this->session->userdata('role');
+        // Load total sales data
+        $data['sales_report'] = [
+            'daily' => $this->get_sales_total('daily'),
+            'weekly' => $this->get_sales_total('weekly'),
+            'monthly' => $this->get_sales_total('monthly'),
+        ];
 
-        $data['todaysTasks'] = $this->TaskModel->getTodaysTasks($user_id, $role);
-        $data['weeksTasks'] = $this->TaskModel->getWeeksTasks($user_id, $role);
-        $data['overdueTasks'] = $this->TaskModel->getOverdueTasks($user_id, $role);
+        // Load total purchase data
+        $data['purchase_report'] = [
+            'daily' => $this->get_purchase_total('daily'),
+            'weekly' => $this->get_purchase_total('weekly'),
+            'monthly' => $this->get_purchase_total('monthly'),
+        ];
 
-        // Load the views
         $this->load->view('admin/header', $data);
         $this->load->view('admin/dashboard', $data);
         $this->load->view('admin/footer');
     }
+
+    public function ajax_low_stock()
+    {
+        $this->load->helper('text');
+
+        $this->db->select('id, name, low_stock_alert');
+        $products = $this->db->get('products')->result_array();
+
+        $low_stocks = [];
+
+        foreach ($products as $product) {
+            $product_id = $product['id'];
+
+            // Total added stock
+            $this->db->select_sum('quantity');
+            $this->db->where('product_id', $product_id);
+            $stock_in = $this->db->get('stock_management')->row()->quantity ?? 0;
+
+            // Total sold
+            $this->db->select_sum('quantity');
+            $this->db->where('product_id', $product_id);
+            $stock_out = $this->db->get('invoice_details')->row()->quantity ?? 0;
+
+            $final_stock = $stock_in - $stock_out;
+
+            if ($final_stock < $product['low_stock_alert']) {
+                $low_stocks[] = [
+                    'name' => $product['name'],
+                    'quantity' => $final_stock
+                ];
+            }
+        }
+
+        // Sort ascending by quantity
+        usort($low_stocks, function ($a, $b) {
+            return $a['quantity'] <=> $b['quantity'];
+        });
+
+        // Load partial view
+        $html = '<div class="due-scroll-container"><ul class="list-group">';
+        foreach ($low_stocks as $stock) {
+            $html .= '<li class="list-group-item d-flex justify-content-between align-items-center">'
+                . htmlspecialchars($stock['name']) .
+                '<span class="badge badge-danger badge-pill">' . $stock['quantity'] . '</span>'
+                . '</li>';
+        }
+        $html .= '</ul></div>';
+
+        if (empty($low_stocks)) {
+            $html = '<p>All stocks are healthy.</p>';
+        }
+
+        echo $html;
+    }
+
+
+    public function ajax_due_customers()
+    {
+        $customers = $this->due_customer_list();
+        $html = $this->load->view('admin/dashboard/ajax_due_customers', ['due_customers' => $customers], true);
+        echo $html;
+    }
+
+    public function ajax_due_suppliers()
+    {
+        $suppliers = $this->due_supplier_list();
+        $html = $this->load->view('admin/dashboard/ajax_due_suppliers', ['due_suppliers' => $suppliers], true);
+        echo $html;
+    }
+
+
+    private function due_customer_list()
+    {
+        $this->db->select('id, customer_name, phone');
+        $customers = $this->db->get('customers')->result_array();
+
+        $due_customers = [];
+
+        foreach ($customers as $cust) {
+            $customer_id = $cust['id'];
+
+            // Get invoices for this customer
+            $this->db->select('id, total_amount, invoice_date');
+            $this->db->where('customer_id', $customer_id);
+            $invoices = $this->db->get('invoices')->result_array();
+
+            $total_purchase = 0;
+            $total_paid = 0;
+
+            foreach ($invoices as $inv) {
+                $invoice_id = $inv['id'];
+                $invoice_total = $inv['total_amount'];
+                $invoice_date = $inv['invoice_date'];
+
+                $total_purchase += $invoice_total;
+
+                // Payments (trans_type = 1)
+                $this->db->select_sum('amount');
+                $this->db->where([
+                    'trans_type' => 1,
+                    'transaction_for_table' => 'invoices',
+                    'table_id' => $invoice_id
+                ]);
+                $credit = $this->db->get('transactions')->row()->amount ?? 0;
+
+                // Adjustments/Returns (trans_type = 2 or 3)
+                $this->db->select_sum('amount');
+                $this->db->where_in('trans_type', [2, 3]);
+                $this->db->where([
+                    'transaction_for_table' => 'invoices',
+                    'table_id' => $invoice_id
+                ]);
+                $debit = $this->db->get('transactions')->row()->amount ?? 0;
+
+                $total_paid += ($credit - $debit);
+            }
+
+            $due = $total_purchase - $total_paid;
+
+            if ($due > 0) {
+                $due_customers[] = [
+                    'name' => $cust['customer_name'],
+                    'mobile' => $cust['phone'],
+                    'due_date' => $invoice_date ?? '',
+                    'due_amount' => $due
+                ];
+            }
+        }
+
+        // 🔽 Sort by due_amount in descending order
+        usort($due_customers, function ($a, $b) {
+            return $b['due_amount'] <=> $a['due_amount'];
+        });
+
+        return $due_customers;
+    }
+
+    private function due_supplier_list()
+    {
+        $this->db->select('id, supplier_name');
+        $suppliers = $this->db->get('suppliers')->result_array();
+
+        $due_suppliers = [];
+
+        foreach ($suppliers as $supplier) {
+            $supplier_id = $supplier['id'];
+
+            // Get purchase orders for this supplier
+            $this->db->select('id, total_amount, due_date');
+            $this->db->where('supplier_id', $supplier_id);
+            $purchases = $this->db->get('purchase_orders')->result_array();
+
+            $total_purchase = 0;
+            $total_paid = 0;
+            $latest_due_date = '';
+
+            foreach ($purchases as $po) {
+                $purchase_id = $po['id'];
+                $purchase_total = $po['total_amount'];
+                $due_date = $po['due_date'];
+
+                $total_purchase += $purchase_total;
+                $latest_due_date = $due_date; // Optional: capture last due date
+
+                // Payments made by me (trans_type = 2)
+                $this->db->select_sum('amount');
+                $this->db->where([
+                    'trans_type' => 2,
+                    'transaction_for_table' => 'purchase_orders',
+                    'table_id' => $purchase_id
+                ]);
+                $credit = $this->db->get('transactions')->row()->amount ?? 0;
+
+                // Adjustments / Refunds from supplier (trans_type = 1 or 3)
+                $this->db->select_sum('amount');
+                $this->db->where_in('trans_type', [1, 3]);
+                $this->db->where([
+                    'transaction_for_table' => 'purchase_orders',
+                    'table_id' => $purchase_id
+                ]);
+                $debit = $this->db->get('transactions')->row()->amount ?? 0;
+
+                $total_paid += ($credit - $debit);
+            }
+
+            $due = $total_purchase - $total_paid;
+
+            if ($due > 0) {
+                $due_suppliers[] = [
+                    'name' => $supplier['supplier_name'],
+                    'due_date' => $latest_due_date ?? '',
+                    'due_amount' => $due
+                ];
+            }
+        }
+
+        // 🔽 Sort by due_amount in descending order
+        usort($due_suppliers, function ($a, $b) {
+            return $b['due_amount'] <=> $a['due_amount'];
+        });
+
+        return $due_suppliers;
+    }
+
+    private function get_sales_total($range)
+    {
+        $this->db->select('SUM(total_amount) as total');
+        $this->db->from('invoices');
+
+        if ($range === 'daily') {
+            $this->db->where('DATE(invoice_date)', date('Y-m-d'));
+        } elseif ($range === 'weekly') {
+            $this->db->where('invoice_date >=', date('Y-m-d', strtotime('-7 days')));
+        } elseif ($range === 'monthly') {
+            $this->db->where('invoice_date >=', date('Y-m-d', strtotime('-30 days')));
+        }
+
+        $query = $this->db->get();
+        $result = $query->row_array();
+
+        return $result['total'] ?? 0;
+    }
+
+    private function get_purchase_total($range)
+    {
+        $this->db->select('SUM(total_amount) as total');
+        $this->db->from('purchase_orders');
+
+        if ($range === 'daily') {
+            $this->db->where('DATE(purchase_date)', date('Y-m-d'));
+        } elseif ($range === 'weekly') {
+            $this->db->where('purchase_date >=', date('Y-m-d', strtotime('-7 days')));
+        } elseif ($range === 'monthly') {
+            $this->db->where('purchase_date >=', date('Y-m-d', strtotime('-30 days')));
+        }
+
+        $query = $this->db->get();
+        $result = $query->row_array();
+
+        return $result['total'] ?? 0;
+    }
+
 
     public function taskDetails()
     {

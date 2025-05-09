@@ -50,6 +50,31 @@ class TransactionModel extends CI_Model
         return $this->db->get('transactions')->row()->amount;
     }
 
+    // Get payment details by purchase_order ID
+    public function get_payment_by_purchase_order($purchase_order_id)
+    {
+        $this->db->select('transactions.*, payment_methods.title AS payment_mode_title');
+        $this->db->from('transactions');
+        $this->db->join('payment_methods', 'payment_methods.id = transactions.payment_method_id', 'left'); // Join with payment_methods table
+        $this->db->where('transactions.table_id', $purchase_order_id);
+        $this->db->where('transactions.trans_type', 2); // Only get credit transactions
+        $this->db->where('transactions.transaction_for_table', 'purchase_orders'); // Filter for 'purchase_orders' table
+        $this->db->where('transactions.status', 1); // Only active transactions
+
+        return $this->db->get()->result_array();
+    }
+
+    // Get total paid amount by purchase_order
+    public function get_total_paid_by_purchase_order($purchase_order_id)
+    {
+        $this->db->select_sum('amount');
+        $this->db->where('table_id', $purchase_order_id);
+        $this->db->where('transaction_for_table', 'purchase_orders');
+        $this->db->where('trans_type', 2); // Debit
+        $this->db->where('status', 1);
+        return $this->db->get('transactions')->row()->amount;
+    }
+
     // Get payment method name by ID
     public function get_payment_method_name($payment_method_id)
     {

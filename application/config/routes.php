@@ -23,10 +23,17 @@ $route['product-type/(:any)'] = 'Home/product_type/$1';
 /** Admin Routes */
 $route['admin'] = 'AdminController/index';
 $route['admin/dashboard'] = 'AdminController/dashboard';
+/** other dashboard routes */
+$route['admin/dashboard/due_customers'] = 'AdminController/ajax_due_customers';
+$route['admin/dashboard/due_suppliers'] = 'AdminController/ajax_due_suppliers';
+$route['admin/ajax/low-stock'] = 'AdminController/ajax_low_stock';
+/** end of other dashboard routes */
+
 $route['admin/settings'] = 'AdminController/generalSettings';
 $route['admin/settings/update'] = 'AdminController/updateSettings';
 $route['admin/settings/company_details'] = 'AdminController/companyDetails';
 $route['admin/settings/bank_details'] = 'AdminController/bankDetails';
+
 
 $route['admin/password'] = 'AdminController/passwordChange';
 $route['admin/password/update'] = 'AdminController/updatePassword';
@@ -158,6 +165,10 @@ $route['admin/purchases/fetch']            = 'admin/PurchaseEntryController/fetc
 $route['admin/purchase_entries/add']        = 'admin/PurchaseEntryController/add';
 $route['admin/purchase_entries/edit/(:num)'] = 'admin/PurchaseEntryController/edit/$1';
 $route['admin/purchase_entries/delete/(:num)'] = 'admin/PurchaseEntryController/delete/$1';
+$route['admin/purchases/addPayment']         = 'admin/PurchaseEntryController/addPayment';
+$route['admin/purchases/updatePayment']   = 'admin/PurchaseEntryController/updatePayment';
+$route['admin/purchases/getPaymentDetails/(:num)']   = 'admin/PurchaseEntryController/getPaymentDetails/$1';
+$route['admin/purchases/deletePayment']      = 'admin/PurchaseEntryController/deletePayment';
 
 $route['admin/invoices'] = 'admin/InvoiceController/index';
 $route['admin/invoices/fetch'] = 'admin/InvoiceController/fetchInvoices';

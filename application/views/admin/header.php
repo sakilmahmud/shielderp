@@ -100,6 +100,41 @@
       width: 100% !important;
       clear: both !important;
     }
+
+    .form-control.error:focus {
+      border: 1px solid red !important;
+    }
+
+    .error {
+      border: 1px solid red !important;
+    }
+
+    /* Shake animation */
+    @keyframes shake {
+      0% {
+        transform: translateX(0);
+      }
+
+      25% {
+        transform: translateX(-5px);
+      }
+
+      50% {
+        transform: translateX(5px);
+      }
+
+      75% {
+        transform: translateX(-5px);
+      }
+
+      100% {
+        transform: translateX(0);
+      }
+    }
+
+    .shake {
+      animation: shake 0.5s;
+    }
   </style>
   <!-- include summernote css/js -->
   <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">

@@ -31,7 +31,7 @@ class StockModel extends CI_Model
             $this->db->where('brands.id', $filters['brand_id']);
         }
 
-        $this->db->order_by('stock_management.id', 'DESC');
+        $this->db->order_by('stock_management.purchase_date', 'DESC');
         $query = $this->db->get();
         return $query->result_array();
     }

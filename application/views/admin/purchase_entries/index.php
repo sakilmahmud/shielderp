@@ -68,33 +68,19 @@
                                         <th>Supplier</th>
                                         <th>Purchase Date</th>
                                         <th>Invoice No</th>
-                                        <th>Total Amount</th>
+                                        <th>Payable</th>
+                                        <th>Paid</th>
+                                        <th>Due</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    <?php /* foreach ($purchase_entries as $entry) : ?>
-                                            <tr>
-                                                <td><?php echo $entry['id']; ?></td>
-                                                <td><?php echo $entry['supplier_name']; ?></td>
-                                                <td><?php echo $entry['purchase_date']; ?></td>
-                                                <td><?php echo $entry['invoice_no']; ?></td>
-                                                <td><?php echo $entry['total_amount']; ?></td>
-                                                <td>
-                                                    <a href="<?php echo base_url('admin/purchase_entries/edit/' . $entry['id']); ?>"
-                                                        class="btn btn-info btn-sm">Edit</a>
-                                                    <a href="<?php echo base_url('admin/purchase_entries/delete/' . $entry['id']); ?>"
-                                                        class="btn btn-danger btn-sm"
-                                                        onclick="return confirm('Are you sure you want to delete this purchase entry?');">Delete</a>
-                                                </td>
-                                            </tr>
-                                        <?php endforeach; */ ?>
-                                </tbody>
-
+                                <tbody></tbody>
                                 <tfoot>
                                     <tr>
                                         <th colspan="4" class="text-right">Total:</th>
                                         <th id="totalAmount">₹0.00</th>
+                                        <th id="totalPaid">₹0.00</th>
+                                        <th id="totalDue">₹0.00</th>
                                         <th></th>
                                     </tr>
                                 </tfoot>
@@ -129,6 +115,8 @@
             dataSrc: function(json) {
                 // Update the totals in the footer
                 $('#totalAmount').text(json.totals.total_amount);
+                $('#totalPaid').text(json.totals.total_paid);
+                $('#totalDue').text(json.totals.total_due);
                 return json.data;
             }
         },
@@ -149,6 +137,12 @@
             },
             {
                 data: 5
+            },
+            {
+                data: 6
+            },
+            {
+                data: 7
             }
         ]
     });

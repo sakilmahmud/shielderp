@@ -40,6 +40,8 @@ class StockManagementController extends CI_Controller
         $data['activePage'] = 'stocks';
         $data['products'] = $this->ProductModel->get_all_products();
 
+        $current_user_id = $this->session->userdata('user_id');
+
         $this->form_validation->set_rules('product_id', 'Product', 'required');
         $this->form_validation->set_rules('purchase_price', 'Purchase Price', 'required');
         $this->form_validation->set_rules('sale_price', 'Sale Price', 'required');
@@ -58,7 +60,8 @@ class StockManagementController extends CI_Controller
                 'purchase_date' => $this->input->post('purchase_date'),
                 'quantity' => $this->input->post('quantity'),
                 'available_stock' => $this->input->post('quantity'),
-                'batch_no' => $this->input->post('batch_no')
+                'batch_no' => $this->input->post('batch_no'),
+                'created_by' => $current_user_id
             );
 
             $this->StockModel->insert_stock($stockData);
@@ -71,6 +74,8 @@ class StockManagementController extends CI_Controller
         $data['activePage'] = 'stocks';
         $data['products'] = $this->ProductModel->get_all_products();
         $data['stock'] = $this->StockModel->get_stock($id);
+
+        $current_user_id = $this->session->userdata('user_id');
 
         if (empty($data['stock'])) {
             show_404();
@@ -87,6 +92,7 @@ class StockManagementController extends CI_Controller
             $this->load->view('admin/stocks/edit', $data);
             $this->load->view('admin/footer');
         } else {
+
             $stockData = array(
                 'product_id' => $this->input->post('product_id'),
                 'purchase_price' => $this->input->post('purchase_price'),
@@ -94,7 +100,8 @@ class StockManagementController extends CI_Controller
                 'purchase_date' => $this->input->post('purchase_date'),
                 'quantity' => $this->input->post('quantity'),
                 'available_stock' => $this->input->post('quantity'),
-                'batch_no' => $this->input->post('batch_no')
+                'batch_no' => $this->input->post('batch_no'),
+                'created_by' => $current_user_id
             );
 
             $this->StockModel->update_stock($id, $stockData);
