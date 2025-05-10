@@ -190,7 +190,6 @@ class InvoiceController extends CI_Controller
                 'customer_name' => $customer_name,
                 'mobile' => $customer_phone,
                 'address' => $customer_address,
-                'gst' => $customer_gst,
                 'round_off' => $this->input->post('round_off'),
                 'note' => $this->input->post('note'),
                 'created_by' => $this->session->userdata('user_id'),
@@ -221,7 +220,8 @@ class InvoiceController extends CI_Controller
             $purchase_prices = $this->input->post('purchase_price');
             $discount_types = $this->input->post('discount_type');
             $discounts = $this->input->post('discount');
-            $gst_rates = $this->input->post('gst_rate');
+            $cgst = $this->input->post('cgst');
+            $sgst = $this->input->post('sgst');
             $gst_amounts = $this->input->post('gst_amount');
             $final_prices = $this->input->post('final_price');
 
@@ -235,7 +235,8 @@ class InvoiceController extends CI_Controller
                     'price' => $purchase_prices[$index],
                     'discount_type' => $discount_types[$index],
                     'discount' => $discounts[$index],
-                    'gst_rate' => $gst_rates[$index],
+                    'cgst' => $cgst[$index],
+                    'sgst' => $sgst[$index],
                     'gst_amount' => $gst_amounts[$index],
                     'final_price' => $final_prices[$index],
                     'created_at' => $current_date_time
