@@ -43,7 +43,7 @@ class InvoiceController extends CI_Controller
         $draw = $this->input->post('draw', true);
 
         if (empty($from_date)) {
-            $from_date = date('Y-m-d', strtotime('-15 days'));
+            $from_date = date('Y-m-d', strtotime('-30 days'));
         }
         if (empty($to_date)) {
             $to_date = date('Y-m-d');
@@ -338,6 +338,7 @@ class InvoiceController extends CI_Controller
         // Load necessary data for the view
         $data['products'] = $this->ProductModel->get_all_products();
         $data['customers'] = $this->CustomerModel->get_all_customers();
+        $data['customer_details'] = $this->CustomerModel->get_customer_by_id($data['invoice']['customer_id']);
         //$data['payment_methods'] = $this->PaymentModel->get_all_payment_methods(); // Load payment methods
 
         // Check if a payment already exists for this invoice
@@ -374,7 +375,6 @@ class InvoiceController extends CI_Controller
                 'customer_name' => $this->input->post('customer_name'),
                 'mobile' => $this->input->post('mobile'),
                 'address' => $this->input->post('address'),
-                'gst' => $this->input->post('gst'),
                 'note' => $this->input->post('note'),
                 'updated_at' => $current_date_time
             ];
@@ -406,7 +406,8 @@ class InvoiceController extends CI_Controller
             $purchase_prices = $this->input->post('purchase_price');
             $discount_types = $this->input->post('discount_type');
             $discounts = $this->input->post('discount');
-            $gst_rates = $this->input->post('gst_rate');
+            $cgst = $this->input->post('cgst');
+            $sgst = $this->input->post('sgst');
             $gst_amounts = $this->input->post('gst_amount');
             $final_prices = $this->input->post('final_price');
 
@@ -420,7 +421,8 @@ class InvoiceController extends CI_Controller
                     'price' => $purchase_prices[$index],
                     'discount_type' => $discount_types[$index],
                     'discount' => $discounts[$index],
-                    'gst_rate' => $gst_rates[$index],
+                    'cgst' => $cgst[$index],
+                    'sgst' => $sgst[$index],
                     'gst_amount' => $gst_amounts[$index],
                     'final_price' => $final_prices[$index],
                     'created_at' => $current_date_time

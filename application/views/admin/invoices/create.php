@@ -1,46 +1,3 @@
-<style>
-    .product-row {
-        background: #efefef;
-        box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
-    }
-
-    li.list-group-item.customer-suggestion {
-        padding: 5px 0 5px 10px;
-        background: #ddd;
-        cursor: pointer;
-    }
-
-    ul#customer_suggestions {
-        position: absolute;
-        z-index: 1000;
-        width: 250px !important;
-        left: 6px;
-        top: 70px;
-    }
-
-    .last_purchase_prices {
-        padding: 10px;
-    }
-
-    .last_purchase_prices ul {
-        list-style: none;
-        padding: 0px;
-        margin: 0px;
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
-    }
-
-    .last_purchase_prices ul li {
-        display: inline-block;
-        background: rgb(245, 245, 245);
-        padding: 3px 5px;
-        border-radius: 4px;
-        border: 1px solid rgb(221, 221, 221);
-        margin-bottom: -10px;
-        font-size: 13px;
-    }
-</style>
 <div class="content-wrapper">
     <section class="content-header">
         <div class="container-fluid">
@@ -131,9 +88,16 @@
                                             <input type="number" min="1" class="form-control quantity" value="1">
                                         </div>
                                     </div>
-                                    <div class="col-md-2">
+                                    <div class="col-md-1">
                                         <div class="form-group">
                                             <label for="price">Price</label>
+                                            <input type="text" class="form-control price" value="0">
+                                            <div class="text-sm net_price_section" style="display: none;">Net Price: <span class="net_price"></span> <a href="javascript:void(0);" class="quick-edit"> <i class="fa fa-edit"></i></a></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-1">
+                                        <div class="form-group">
+                                            <label for="price">Plus</label>
                                             <input type="text" class="form-control price" value="0">
                                             <div class="text-sm net_price_section" style="display: none;">Net Price: <span class="net_price"></span> <a href="javascript:void(0);" class="quick-edit"> <i class="fa fa-edit"></i></a></div>
                                         </div>
@@ -157,12 +121,7 @@
                                     <div class="col-md-1">
                                         <div class="form-group">
                                             <label for="gst_rate">GST Rate</label>
-                                            <select class="form-control gst_rate">
-                                                <option value="0">0%</option>
-                                                <option value="12">12%</option>
-                                                <option value="18">18%</option>
-                                                <option value="28">28%</option>
-                                            </select>
+                                            <input type="number" class="form-control gst_rate">
                                         </div>
                                         <input type="hidden" class="gst_amount">
                                     </div>

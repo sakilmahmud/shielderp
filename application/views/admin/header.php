@@ -43,6 +43,48 @@
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.8.7/chosen.jquery.min.js"></script>
   <style>
+    .product-row {
+      background: #efefef;
+      box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    }
+
+    li.list-group-item.customer-suggestion {
+      padding: 5px 0 5px 10px;
+      background: #ddd;
+      cursor: pointer;
+    }
+
+    ul#customer_suggestions {
+      position: absolute;
+      z-index: 1000;
+      width: 250px !important;
+      left: 6px;
+      top: 70px;
+    }
+
+    .last_purchase_prices {
+      padding: 10px;
+    }
+
+    .last_purchase_prices ul {
+      list-style: none;
+      padding: 0px;
+      margin: 0px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .last_purchase_prices ul li {
+      display: inline-block;
+      background: rgb(245, 245, 245);
+      padding: 3px 5px;
+      border-radius: 4px;
+      border: 1px solid rgb(221, 221, 221);
+      margin-bottom: -10px;
+      font-size: 13px;
+    }
+
     .form-group p {
       color: red;
     }
@@ -139,6 +181,15 @@
   <!-- include summernote css/js -->
   <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
+
+  <script>
+    setTimeout(function() {
+      const toggleButton = document.querySelector('[data-widget="pushmenu"]');
+      if (toggleButton) {
+        toggleButton.click();
+      }
+    }, 1000); // 1 second delay
+  </script>
 </head>
 
 <body class="hold-transition sidebar-mini">

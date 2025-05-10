@@ -29,7 +29,7 @@
                             <?php echo ($product['discount_type'] == 1) ? "₹" . $product['discount'] : $product['discount'] . "%"; ?>
                         </td>
                         <td>
-                            <p>₹<?php echo $product['gst_amount']; ?> (<?php echo $product['gst_rate']; ?>%)</p>
+                            <p>₹<?php echo $product['gst_amount']; ?> (<?php echo $product['cgst'] + $product['sgst']; ?>%)</p>
                         </td>
                         <td>
                             <b>₹<?php echo number_format(($product['price'] + $product['gst_amount']), 2); ?></b>
@@ -48,7 +48,8 @@
                         <input type="hidden" name="purchase_price[]" value="<?php echo $product['price']; ?>">
                         <input type="hidden" name="discount_type[]" value="<?php echo $product['discount_type']; ?>">
                         <input type="hidden" name="discount[]" value="<?php echo $product['discount']; ?>">
-                        <input type="hidden" name="gst_rate[]" value="<?php echo $product['gst_rate']; ?>">
+                        <input type="hidden" name="cgst[]" value="<?php echo $product['cgst']; ?>">
+                        <input type="hidden" name="sgst[]" value="<?php echo $product['sgst']; ?>">
                         <input type="hidden" name="gst_amount[]" value="<?php echo $product['gst_amount']; ?>">
                         <input type="hidden" name="final_price[]" value="<?php echo $product['final_price']; ?>">
                     </tr>

@@ -215,7 +215,6 @@ function calculateTotalForRow(row) {
 function addProductToTable() {
   var productRow = $(".product-row");
   var product_id = productRow.find(".product_id").val();
-  ///console.log(product_id);
 
   var product = productRow.find(".product_id option:selected").text();
   var quantity = parseFloat(productRow.find(".quantity").val());
@@ -289,7 +288,6 @@ function addProductToTable() {
   updateTotals();
 
   // Reset the form fields for new entry
-  //productRow.find(".product_id").chosen().trigger("chosen:updated");
   productRow.find("input, select").val("");
   productRow.find(".quantity").val("1");
   let is_gst = $("#is_gst").val();
@@ -360,10 +358,7 @@ $(document).ready(function () {
   $(".product_id").on("change", function () {
     let product_id = $(this).val();
     let customer_id = $(".customer_id").val();
-    //let product_id = $(this).val();
-    console.log(product_id, customer_id);
 
-    //get data from ajax with customer_id and product_id for last purchase price from invoice_details table
     if (customer_id && product_id) {
       $.ajax({
         url: getLastPurchasePricesUrl, // Set the correct URL
@@ -426,11 +421,10 @@ $(document).ready(function () {
             });
 
             $(".product-row").each(function () {
-              $(this).find(".price").val(response.lastSP);
+              $(this).find(".price").val(response.lastSP).change();
               calculateTotalForRow($(this));
             });
 
-            //$('.product-row').find('.price').val(response.lastSP);
             $(".in_stock").html(totalStock + " pcs");
             $("#total_stocks").val(totalStock);
             $(".product_details").show(); // Show the stock details section

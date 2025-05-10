@@ -1,23 +1,3 @@
-<style>
-    .product-row {
-        background: #efefef;
-        box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
-    }
-
-    li.list-group-item.customer-suggestion {
-        padding: 5px 0 5px 10px;
-        background: #ddd;
-        cursor: pointer;
-    }
-
-    ul#customer_suggestions {
-        position: absolute;
-        z-index: 1000;
-        width: 250px !important;
-        left: 6px;
-        top: 70px;
-    }
-</style>
 <div class="content-wrapper">
     <section class="content-header">
         <div class="container-fluid">
@@ -77,7 +57,7 @@
                                     <div class="col-md-2">
                                         <div class="form-group">
                                             <label for="customer_gst">GST No</label>
-                                            <input type="text" class="form-control" id="customer_gst" name="gst" value="<?php echo $invoice['gst']; ?>">
+                                            <input type="text" class="form-control" id="customer_gst" name="gst" value="<?php echo $customer_details['gst_number']; ?>">
                                         </div>
                                     </div>
                                     <input type="hidden" name="customer_id" class="customer_id" value="<?php echo $invoice['customer_id']; ?>">
@@ -103,11 +83,17 @@
                                             <input type="number" min="1" class="form-control quantity" value="1">
                                         </div>
                                     </div>
-                                    <div class="col-md-2">
+                                    <div class="col-md-1">
                                         <div class="form-group">
                                             <label for="price">Price</label>
-                                            <input type="text" class="form-control price" value="0">
-                                            <div class="text-sm net_price_section" style="display: none;">Net Price: <span class="net_price"></span> <a href="javascript:void(0);" class="quick-edit"> <i class="fa fa-edit"></i></a></div>
+                                            <input type="text" class="form-control price" value="0" id="modal_price">
+                                            <!-- <div class="text-sm net_price_section" style="display: none;">Net Price: <span class="net_price"></span> <a href="javascript:void(0);" class="quick-edit"> <i class="fa fa-edit"></i></a></div> -->
+                                        </div>
+                                    </div>
+                                    <div class="col-md-1">
+                                        <div class="form-group">
+                                            <label for="price">Plus</label>
+                                            <input type="text" class="form-control" value="0" id="modal_net_price">
                                         </div>
                                     </div>
                                     <div class="col-md-1">
@@ -129,12 +115,7 @@
                                     <div class="col-md-1">
                                         <div class="form-group">
                                             <label for="gst_rate">GST Rate</label>
-                                            <select class="form-control gst_rate">
-                                                <option value="0">0%</option>
-                                                <option value="12">12%</option>
-                                                <option value="18">18%</option>
-                                                <option value="28">28%</option>
-                                            </select>
+                                            <input type="number" class="form-control gst_rate">
                                         </div>
                                         <input type="hidden" class="gst_amount">
                                     </div>
@@ -152,6 +133,7 @@
                                     <div class="col-md-12 product_descriptions_section">
                                         <input type="text" class="form-control product_descriptions" placeholder="Write Product Details">
                                     </div>
+                                    <div class="col-md-12 last_purchase_prices"></div>
                                 </div>
 
                                 <div class="no_stocks p-2 mb-3 border rounded-3" style="display: none;">
@@ -259,34 +241,6 @@
     </section>
 </div>
 
-<!-- Quick Edit Modal -->
-<div class="modal fade" id="quickEditModal" tabindex="-1" aria-labelledby="quickEditModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="quickEditModalLabel">Quick Edit</h5>
-                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form>
-                    <div class="form-group">
-                        <label for="modal_price">Price</label>
-                        <input type="text" class="form-control" id="modal_price">
-                    </div>
-                    <div class="form-group">
-                        <label for="modal_net_price">Net Price</label>
-                        <input type="text" class="form-control" id="modal_net_price">
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary save-quick-edit">Save changes</button>
-            </div>
-        </div>
-    </div>
-</div>
-
 <script>
     $(document).on('click', '.edit-item', function() {
         // Find the parent row of the clicked button
@@ -366,65 +320,30 @@
 </div>
 
 <script>
-    $(document).ready(function() {
-        // Variables to store the current target element
-        let currentPriceInput = null;
-        let currentNetPriceInput = null;
+    let getLastestStocksUrl = "<?php echo base_url('admin/invoices/getLastestStocks'); ?>";
+    let getLastPurchasePricesUrl = "<?php echo base_url('admin/invoices/getLastPurchasePrices'); ?>";
 
-        // Open the modal on quick-edit click
-        $(document).on("click", ".quick-edit", function() {
-            // Get the target price and net price inputs
-            currentPriceInput = $(this).closest(".form-group").find(".price");
-            currentNetPriceInput = $(this).closest(".form-group").find(".net_price_section .net_price");
+    // Unified handler for modal_price
+    $(document).on("input change keyup", "#modal_price", function() {
+        const price = parseFloat($(this).val()) || 0;
+        const gstRate = parseFloat($(".gst_rate").val()) || 0;
+        const netPrice = price + (price * gstRate) / 100;
 
-            // Fill modal fields with current values
-            $("#modal_price").val(currentPriceInput.val());
-            $("#modal_net_price").val(currentNetPriceInput.text());
+        $("#modal_net_price").val(netPrice.toFixed(2));
+    });
 
-            // Show the modal
-            $("#quickEditModal").modal("show");
-        });
 
-        // Save changes from modal
-        $(".save-quick-edit").on("click", function() {
-            // Update the values in the form fields
-            const updatedPrice = parseFloat($("#modal_price").val()) || 0;
-            const updatedNetPrice = parseFloat($("#modal_net_price").val()) || 0;
+    // Handle net price input
+    $(document).on("input change keyup", "#modal_net_price", function() {
+        const netPrice = parseFloat($(this).val()) || 0;
+        const gstRate = parseFloat($(".gst_rate").val()) || 0;
+        const price = netPrice / (1 + gstRate / 100);
 
-            currentPriceInput.val(updatedPrice.toFixed(2));
-            currentNetPriceInput.text(updatedNetPrice.toFixed(2)).closest(".net_price_section").show();
-
-            // Trigger input event to recalculate on the fields
-            currentPriceInput.trigger("input");
-            currentNetPriceInput.trigger("input");
-
-            // Hide the modal
-            $("#quickEditModal").modal("hide");
-        });
-
-        // Handle price input
-        $(document).on("input", "#modal_price", function() {
-            const price = parseFloat($(this).val()) || 0;
-            const gstRate = parseFloat($(".gst_rate").val()) || 0;
-            const netPrice = price + (price * gstRate) / 100;
-            console.log('GST: ' + gstRate);
-            // Update the price field
-            $("#modal_net_price").val(netPrice.toFixed(2));
-        });
-
-        // Handle net price input
-        $(document).on("input", "#modal_net_price", function() {
-            const netPrice = parseFloat($(this).val()) || 0;
-            const gstRate = parseFloat($(".gst_rate").val()) || 0;
-            const price = netPrice / (1 + gstRate / 100);
-
-            // Update the price field
-            $("#modal_price").val(price.toFixed(2));
-        });
+        // Update the price field
+        $("#modal_price").val(price.toFixed(2));
     });
 </script>
 <script>
-    let getLastestStocksUrl = "<?php echo base_url('admin/invoices/getLastestStocks'); ?>";
     $(document).ready(function() {
 
         $('.add-payment').on('click', function() {
