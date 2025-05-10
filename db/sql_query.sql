@@ -7,3 +7,9 @@ ALTER TABLE `stock_management` ADD `created_by` INT NOT NULL DEFAULT '1' AFTER `
 ALTER TABLE `purchase_orders` ADD `due_date` DATE NULL DEFAULT NULL AFTER `total_amount`; 
 ALTER TABLE `products` ADD `low_stock_alert` INT NOT NULL DEFAULT '5' AFTER `product_type_id`; 
 ALTER TABLE `purchase_orders` ADD `round_off` DECIMAL(9,2) NOT NULL AFTER `total_gst`; 
+ALTER TABLE `products` CHANGE `product_type_id` `product_type_id` INT(11) NOT NULL DEFAULT '1'; 
+ALTER TABLE `products` ADD `unit_id` INT NOT NULL DEFAULT '1' AFTER `low_stock_alert`, ADD `cgst` DECIMAL(9,2) NOT NULL DEFAULT '9' AFTER `unit_id`, ADD `sgst` DECIMAL(9,2) NOT NULL DEFAULT '9' AFTER `cgst`;
+ALTER TABLE `invoices` DROP `gst`;
+ALTER TABLE `invoice_details` DROP `gst_rate`;
+ALTER TABLE `invoice_details` ADD `cgst` DECIMAL(9,2) NOT NULL DEFAULT '9' AFTER `discount`, ADD `sgst` DECIMAL(9,2) NOT NULL DEFAULT '9' AFTER `cgst`;
+ALTER TABLE `invoice_details` ADD `hsn_code` VARCHAR(50) NULL DEFAULT NULL AFTER `invoice_date`; 

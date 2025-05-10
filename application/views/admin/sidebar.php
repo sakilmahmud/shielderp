@@ -273,8 +273,8 @@
 
         <!-- Other Menu Items -->
 
-        <li class="nav-item has-treeview <?php if ($activePage === 'settings' || $activePage === 'bank_details' || $activePage === 'company_details') echo 'menu-open'; ?>">
-          <a href="#" class="nav-link <?php if ($activePage === 'settings' || $activePage === 'bank_details' || $activePage === 'company_details') echo 'active'; ?>">
+        <li class="nav-item has-treeview <?php if ($activePage === 'settings' || $activePage === 'units' || $activePage === 'bank_details' || $activePage === 'company_details') echo 'menu-open'; ?>">
+          <a href="#" class="nav-link <?php if ($activePage === 'settings' || $activePage === 'units' || $activePage === 'bank_details' || $activePage === 'company_details') echo 'active'; ?>">
             <i class="nav-icon fas fa-cog"></i>
             <p>
               Settings
@@ -288,6 +288,13 @@
                 <p>General Settings</p>
               </a>
             </li>
+            <li class="nav-item">
+              <a href="<?php echo base_url('admin/units'); ?>" class="nav-link <?php if ($activePage === 'units') echo 'active'; ?>">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Units</p>
+              </a>
+            </li>
+
             <li class="nav-item">
               <a href="<?php echo base_url('admin/settings/company_details'); ?>" class="nav-link <?php if ($activePage === 'company_details') echo 'active'; ?>">
                 <i class="far fa-circle nav-icon"></i>

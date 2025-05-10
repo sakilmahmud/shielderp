@@ -95,6 +95,12 @@ $route['admin/expense/head/edit/(:num)'] = 'admin/ExpenseController/editHead/$1'
 $route['admin/expense/head/delete/(:num)'] = 'admin/ExpenseController/deleteHead/$1';
 
 
+/** Units **/
+$route['admin/units'] = 'admin/UnitsController/index';
+$route['admin/units/add'] = 'admin/UnitsController/add';
+$route['admin/units/edit/(:num)'] = 'admin/UnitsController/edit/$1';
+$route['admin/units/delete/(:num)'] = 'admin/UnitsController/delete/$1';
+
 /** Categories */
 $route['admin/categories'] = 'admin/CategoriesController/index';
 $route['admin/categories/add'] = 'admin/CategoriesController/add';

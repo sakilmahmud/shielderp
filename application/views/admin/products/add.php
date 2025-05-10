@@ -27,76 +27,150 @@
                             <form action="<?php echo $action; ?>" method="post" enctype="multipart/form-data">
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="name">Product Name <sup>*</sup></label>
-                                            <input type="text" class="form-control" id="name" name="name" value="<?php echo set_value('name', isset($product['name']) ? $product['name'] : ''); ?>">
-                                            <?php echo form_error('name'); ?>
-                                            <div class="d-flex mt-2">
-                                                <span><?php echo base_url('product/'); ?></span>
-                                                <span class="slug_text"><?php echo set_value('slug', isset($product['slug']) ? $product['slug'] : ''); ?></span>
-                                                <input type="hidden" id="slug" name="slug" value="<?php echo set_value('slug', isset($product['slug']) ? $product['slug'] : ''); ?>" readonly>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <label for="name">Product Name <sup>*</sup></label>
+                                                    <input type="text" class="form-control" id="name" name="name" value="<?php echo set_value('name', isset($product['name']) ? $product['name'] : ''); ?>">
+                                                    <?php echo form_error('name'); ?>
+                                                    <div class="d-flex mt-2">
+                                                        <span><?php echo base_url('product/'); ?></span>
+                                                        <span class="slug_text"><?php echo set_value('slug', isset($product['slug']) ? $product['slug'] : ''); ?></span>
+                                                        <input type="hidden" id="slug" name="slug" value="<?php echo set_value('slug', isset($product['slug']) ? $product['slug'] : ''); ?>" readonly>
+                                                    </div>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <!-- Regular Price Field -->
-                                        <div class="form-group">
-                                            <label for="regular_price">Regular Price <sup>*</sup></label>
-                                            <input type="text" class="form-control" id="regular_price" name="regular_price" value="<?php echo set_value('regular_price', isset($product['regular_price']) ? $product['regular_price'] : ''); ?>" required>
-                                            <?php echo form_error('regular_price'); ?>
-                                        </div>
-
-                                        <!-- Sale Price Field -->
-                                        <div class="form-group">
-                                            <label for="sale_price">Sale Price <sup>*</sup></label>
-                                            <input type="text" class="form-control" id="sale_price" name="sale_price" value="<?php echo set_value('sale_price', isset($product['sale_price']) ? $product['sale_price'] : ''); ?>" required>
-                                            <?php echo form_error('sale_price'); ?>
-                                        </div>
-
-                                        <!-- Purchase Price Field -->
-                                        <div class="form-group">
-                                            <label for="purchase_price">Purchase Price <sup>*</sup></label>
-                                            <input type="text" class="form-control" id="purchase_price" name="purchase_price" value="<?php echo set_value('purchase_price', isset($product['purchase_price']) ? $product['purchase_price'] : ''); ?>" required>
-                                            <?php echo form_error('purchase_price'); ?>
-                                        </div>
-                                        <div class="form-group">
-                                            <div class="mt-1 d-flex justify-content-between">
-                                                <label for="category_id">Category <sup>*</sup></label>
-                                                <a href="javascript:void(0)" class="text-sm add_category">Add Category</a>
+                                            <div class="col-md-4 col-sm-12">
+                                                <!-- Purchase Price Field -->
+                                                <div class="form-group">
+                                                    <label for="purchase_price">Purchase Price <sup>*</sup></label>
+                                                    <input type="number" class="form-control" id="purchase_price" name="purchase_price" value="<?php echo set_value('purchase_price', isset($product['purchase_price']) ? $product['purchase_price'] : '0.00'); ?>" required>
+                                                    <?php echo form_error('purchase_price'); ?>
+                                                </div>
                                             </div>
-                                            <select class="form-control category_id" id="category_id" name="category_id">
-                                                <option value="">Select Category</option>
-                                                <?php foreach ($categories as $category) { ?>
-                                                    <option value="<?php echo $category['id']; ?>" <?php echo set_select('category_id', $category['id'], isset($product['category_id']) && $product['category_id'] == $category['id']); ?>><?php echo $category['name']; ?></option>
-                                                <?php } ?>
-                                            </select>
-                                            <?php echo form_error('category_id'); ?>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <div class="mt-1 d-flex justify-content-between">
-                                                <label for="brand_id">Brand <sup>*</sup></label>
-                                                <a href="javascript:void(0)" class="text-sm add_brand">Add Brand</a>
+                                            <div class="col-md-4 col-sm-12">
+                                                <!-- Sale Price Field -->
+                                                <div class="form-group">
+                                                    <label for="sale_price">Sale Price <sup>*</sup></label>
+                                                    <input type="number" class="form-control" id="sale_price" name="sale_price" value="<?php echo set_value('sale_price', isset($product['sale_price']) ? $product['sale_price'] : '0.00'); ?>" required>
+                                                    <?php echo form_error('sale_price'); ?>
+                                                </div>
                                             </div>
-                                            <select class="form-control brand_id" id="brand_id" name="brand_id">
-                                                <option value="">Select Brand</option>
-                                                <?php foreach ($brands as $brand) { ?>
-                                                    <option value="<?php echo $brand['id']; ?>" <?php echo set_select('brand_id', $brand['id'], isset($product['brand_id']) && $product['brand_id'] == $brand['id']); ?>><?php echo $brand['brand_name']; ?></option>
-                                                <?php } ?>
-                                            </select>
-                                            <?php echo form_error('brand_id'); ?>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <div class="mt-1 d-flex justify-content-between">
-                                                <label for="product_type_id">Product Type</label>
-                                                <a href="javascript:void(0)" class="text-sm add_product_type">Add Product Type</a>
+                                            <div class="col-md-4 col-sm-12">
+                                                <!-- Regular Price Field -->
+                                                <div class="form-group">
+                                                    <label for="regular_price">Regular Price <sup>*</sup></label>
+                                                    <input type="number" class="form-control" id="regular_price" name="regular_price" value="<?php echo set_value('regular_price', isset($product['regular_price']) ? $product['regular_price'] : '0.00'); ?>" required>
+                                                    <?php echo form_error('regular_price'); ?>
+                                                </div>
                                             </div>
-                                            <select class="form-control product_type_id" id="product_type_id" name="product_type_id">
-                                                <option value="">Select product type</option>
-                                                <?php foreach ($product_types as $product_type) { ?>
-                                                    <option value="<?php echo $product_type['id']; ?>" <?php echo set_select('product_type_id', $product_type['id'], isset($product['product_type_id']) && $product['product_type_id'] == $product_type['id']); ?>><?php echo $product_type['product_type_name']; ?></option>
-                                                <?php } ?>
-                                            </select>
-                                            <?php echo form_error('product_type_id'); ?>
+                                            <div class="col-md-6 col-sm-12">
+                                                <div class="form-group">
+                                                    <div class="mt-1 d-flex justify-content-between">
+                                                        <label for="category_id">Category <sup>*</sup></label>
+                                                        <a href="javascript:void(0)" class="text-sm add_category">Add Category</a>
+                                                    </div>
+                                                    <select class="form-control category_id" id="category_id" name="category_id">
+                                                        <option value="">Select Category</option>
+                                                        <?php foreach ($categories as $category) { ?>
+                                                            <option value="<?php echo $category['id']; ?>" <?php echo set_select('category_id', $category['id'], isset($product['category_id']) && $product['category_id'] == $category['id']); ?>><?php echo $category['name']; ?></option>
+                                                        <?php } ?>
+                                                    </select>
+                                                    <?php echo form_error('category_id'); ?>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 col-sm-12">
+                                                <div class="form-group">
+                                                    <div class="mt-1 d-flex justify-content-between">
+                                                        <label for="brand_id">Brand <sup>*</sup></label>
+                                                        <a href="javascript:void(0)" class="text-sm add_brand">Add Brand</a>
+                                                    </div>
+                                                    <select class="form-control brand_id" id="brand_id" name="brand_id">
+                                                        <option value="">Select Brand</option>
+                                                        <?php foreach ($brands as $brand) { ?>
+                                                            <option value="<?php echo $brand['id']; ?>" <?php echo set_select('brand_id', $brand['id'], isset($product['brand_id']) && $product['brand_id'] == $brand['id']); ?>><?php echo ucwords($brand['brand_name']); ?></option>
+                                                        <?php } ?>
+                                                    </select>
+                                                    <?php echo form_error('brand_id'); ?>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4 col-sm-12">
+                                                <div class="form-group">
+                                                    <label for="hsn_code">HSN Code <sup>*</sup></label>
+                                                    <input type="text" class="form-control" id="hsn_code" name="hsn_code"
+                                                        value="<?php echo set_value('hsn_code', isset($product['hsn_code']) ? $product['hsn_code'] : '0'); ?>" required>
+                                                    <?php echo form_error('hsn_code'); ?>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-4 col-sm-12">
+                                                <div class="form-group">
+                                                    <label for="cgst">CGST (%) <sup>*</sup></label>
+                                                    <input type="number" step="0.01" class="form-control" id="cgst" name="cgst"
+                                                        value="<?php echo set_value('cgst', isset($product['cgst']) ? $product['cgst'] : '0.00'); ?>" required>
+                                                    <?php echo form_error('cgst'); ?>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-4 col-sm-12">
+                                                <div class="form-group">
+                                                    <label for="sgst">SGST (%) <sup>*</sup></label>
+                                                    <input type="number" step="0.01" class="form-control" id="sgst" name="sgst"
+                                                        value="<?php echo set_value('sgst', isset($product['sgst']) ? $product['sgst'] : '0.00'); ?>" required>
+                                                    <?php echo form_error('sgst'); ?>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-4 col-sm-12">
+                                                <div class="form-group">
+                                                    <div class="mt-1 d-flex justify-content-between">
+                                                        <label for="product_type_id">Type</label>
+                                                        <a href="javascript:void(0)" class="text-sm add_product_type">Add Type</a>
+                                                    </div>
+                                                    <select class="form-control product_type_id" id="product_type_id" name="product_type_id">
+                                                        <option value="">Select product type</option>
+                                                        <?php foreach ($product_types as $product_type) {
+                                                            $selected = ($product_type['id'] == 1) ? 'selected' : '';
+                                                        ?>
+                                                            <option value="<?php echo $product_type['id']; ?>" <?php echo $selected; ?>>
+                                                                <?php echo $product_type['product_type_name']; ?>
+                                                            </option>
+                                                        <?php } ?>
+                                                    </select>
+                                                    <?php echo form_error('product_type_id'); ?>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-4 col-sm-12">
+                                                <div class="form-group">
+                                                    <label for="low_stock_alert">Low Stock Alert</label>
+                                                    <input type="number" class="form-control" id="low_stock_alert" name="low_stock_alert"
+                                                        value="<?php echo set_value('low_stock_alert', isset($product['low_stock_alert']) ? $product['low_stock_alert'] : '0'); ?>">
+                                                    <?php echo form_error('low_stock_alert'); ?>
+                                                </div>
+                                            </div>
+                                            <?php
+                                            $selectedUnitId = isset($product['unit_id']) ? $product['unit_id'] : 1;
+                                            ?>
+                                            <div class="col-md-4 col-sm-12">
+                                                <div class="form-group">
+                                                    <div class="mt-1 d-flex justify-content-between">
+                                                        <label for="unit_id">Unit</label>
+                                                        <a href="javascript:void(0)" class="text-sm add_unit">Add Unit</a>
+                                                    </div>
+                                                    <select class="form-control" id="unit_id" name="unit_id">
+                                                        <option value="">Select unit</option>
+                                                        <?php foreach ($units as $unit) { ?>
+                                                            <option value="<?php echo $unit['id']; ?>" <?php echo ($unit['id'] == $selectedUnitId) ? 'selected' : ''; ?>>
+                                                                <?php echo $unit['name']; ?>
+                                                            </option>
+                                                        <?php } ?>
+                                                    </select>
+                                                    <?php echo form_error('unit_id'); ?>
+                                                </div>
+                                            </div>
+
+
                                         </div>
                                     </div>
                                     <div class="col-md-6">

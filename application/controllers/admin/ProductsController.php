@@ -10,6 +10,7 @@ class ProductsController extends CI_Controller
         $this->load->model('ProductModel');
         $this->load->model('CategoryModel');
         $this->load->model('BrandModel');
+        $this->load->model('UnitModel');
         $this->load->model('ProductTypeModel');
         $this->load->library('form_validation');
         $this->load->library('upload');
@@ -114,26 +115,25 @@ class ProductsController extends CI_Controller
         ]);
     }
 
-
-
     public function add()
     {
         $data['activePage'] = 'products';
         $data['categories'] = $this->CategoryModel->get_all_categories();
         $data['brands'] = $this->BrandModel->get_all_brands();  // Get all brands
         $data['product_types'] = $this->ProductTypeModel->get_all_product_types();  // Get all brands
+        $data['units'] = $this->UnitModel->get_all_units();  // Get all units
 
         $this->form_validation->set_rules('name', 'Name', 'required');
         $this->form_validation->set_rules('category_id', 'Category', 'required');
         $this->form_validation->set_rules('brand_id', 'Brand', 'required');
 
         // Validation for MRP Price (regular_price)
-        $this->form_validation->set_rules(
+        /* $this->form_validation->set_rules(
             'regular_price',
             'Regular Price',
             'required|numeric|greater_than[0]',
             ['greater_than' => 'The {field} must be greater than 0.']
-        );
+        ); */
 
         // Validation for Sale Price
         $this->form_validation->set_rules(
@@ -220,7 +220,12 @@ class ProductsController extends CI_Controller
                 'gallery_images' => $gallery_images_encoded,
                 'category_id' => $this->input->post('category_id'),
                 'brand_id' => $this->input->post('brand_id'),
-                'product_type_id' => $this->input->post('product_type_id')
+                'product_type_id' => $this->input->post('product_type_id'),
+                'hsn_code' => $this->input->post('hsn_code'),
+                'cgst' => $this->input->post('cgst'),
+                'sgst' => $this->input->post('sgst'),
+                'low_stock_alert' => $this->input->post('low_stock_alert'),
+                'unit_id' => $this->input->post('unit_id')
             );
 
             $this->ProductModel->insert_product($productData);
@@ -229,7 +234,6 @@ class ProductsController extends CI_Controller
         }
     }
 
-
     public function edit($id)
     {
         $data['activePage'] = 'products';
@@ -237,18 +241,19 @@ class ProductsController extends CI_Controller
         $data['brands'] = $this->BrandModel->get_all_brands(); // Get all brands
         $data['product_types'] = $this->ProductTypeModel->get_all_product_types();
         $data['product'] = $this->ProductModel->get_product($id);
+        $data['units'] = $this->UnitModel->get_all_units();  // Get all units
 
         $this->form_validation->set_rules('name', 'Name', 'required');
         $this->form_validation->set_rules('category_id', 'Category', 'required');
         $this->form_validation->set_rules('brand_id', 'Brand', 'required');
 
         // Validation for MRP Price (regular_price)
-        $this->form_validation->set_rules(
+        /* $this->form_validation->set_rules(
             'regular_price',
             'Regular Price',
             'required|numeric|greater_than[0]',
             ['greater_than' => 'The {field} must be greater than 0.']
-        );
+        ); */
 
         // Validation for Sale Price
         $this->form_validation->set_rules(
@@ -349,7 +354,12 @@ class ProductsController extends CI_Controller
                 'brand_id' => $this->input->post('brand_id'),
                 'product_type_id' => $this->input->post('product_type_id'),
                 'featured_image' => $featured_image,
-                'gallery_images' => $gallery_images_encoded  // Store gallery images as JSON in DB
+                'gallery_images' => $gallery_images_encoded,
+                'hsn_code' => $this->input->post('hsn_code'),
+                'cgst' => $this->input->post('cgst'),
+                'sgst' => $this->input->post('sgst'),
+                'low_stock_alert' => $this->input->post('low_stock_alert'),
+                'unit_id' => $this->input->post('unit_id')
             );
 
             // Update the product
@@ -367,12 +377,12 @@ class ProductsController extends CI_Controller
         $this->form_validation->set_rules('brand_id', 'Brand', 'required');
 
         // Validation for MRP Price (regular_price)
-        $this->form_validation->set_rules(
+        /* $this->form_validation->set_rules(
             'mrp_price',
             'MRP Price',
             'required|numeric|greater_than[0]',
             ['greater_than' => 'The {field} must be greater than 0.']
-        );
+        ); */
 
         // Validation for Sale Price
         $this->form_validation->set_rules(
