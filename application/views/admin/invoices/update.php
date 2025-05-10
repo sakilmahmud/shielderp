@@ -1,3 +1,11 @@
+<script>
+    setTimeout(function() {
+        const toggleButton = document.querySelector('[data-widget="pushmenu"]');
+        if (toggleButton) {
+            toggleButton.click();
+        }
+    }, 1000); // 1 second delay
+</script>
 <div class="content-wrapper">
     <section class="content-header">
         <div class="container-fluid">
@@ -92,7 +100,7 @@
                                     </div>
                                     <div class="col-md-1">
                                         <div class="form-group">
-                                            <label for="price">Plus</label>
+                                            <label for="plus">With GST</label>
                                             <input type="text" class="form-control" value="0" id="modal_net_price">
                                         </div>
                                     </div>
@@ -331,7 +339,6 @@
 
         $("#modal_net_price").val(netPrice.toFixed(2));
     });
-
 
     // Handle net price input
     $(document).on("input change keyup", "#modal_net_price", function() {

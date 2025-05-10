@@ -1,3 +1,11 @@
+<script>
+    setTimeout(function() {
+        const toggleButton = document.querySelector('[data-widget="pushmenu"]');
+        if (toggleButton) {
+            toggleButton.click();
+        }
+    }, 1000); // 1 second delay
+</script>
 <div class="content-wrapper">
     <section class="content-header">
         <div class="container-fluid">

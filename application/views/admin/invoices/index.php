@@ -1,3 +1,11 @@
+<script>
+    setTimeout(function() {
+        const toggleButton = document.querySelector('[data-widget="pushmenu"]');
+        if (toggleButton) {
+            toggleButton.click();
+        }
+    }, 100); // 1 second delay
+</script>
 <style>
     .btn-group-sm>.btn,
     .btn-sm {
@@ -59,31 +67,33 @@
                             </div>
                         </div>
                     </form>
-                    <table id="invoiceTable" class="table table-bordered table-striped">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Status</th>
-                                <th>Type</th>
-                                <th>Invoice No</th>
-                                <th>Customer</th>
-                                <th>Date</th>
-                                <th>Total</th>
-                                <th>Paid</th>
-                                <th>Due</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tfoot>
-                            <tr>
-                                <th colspan="6" class="text-right">Total:</th>
-                                <th id="totalAmount">₹0.00</th>
-                                <th id="totalPaid">₹0.00</th>
-                                <th id="totalDue">₹0.00</th>
-                                <th></th>
-                            </tr>
-                        </tfoot>
-                    </table>
+                    <div class="table-responsive">
+                        <table id="invoiceTable" class="table table-bordered table-striped" style="width: 100% !important;">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Status</th>
+                                    <th>Type</th>
+                                    <th>Invoice No</th>
+                                    <th>Customer</th>
+                                    <th>Date</th>
+                                    <th>Total</th>
+                                    <th>Paid</th>
+                                    <th>Due</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tfoot>
+                                <tr>
+                                    <th colspan="6" class="text-right">Total:</th>
+                                    <th id="totalAmount">₹0.00</th>
+                                    <th id="totalPaid">₹0.00</th>
+                                    <th id="totalDue">₹0.00</th>
+                                    <th></th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -94,6 +104,7 @@
     const table = $('#invoiceTable').DataTable({
         processing: true,
         serverSide: true,
+        responsive: true,
         order: false,
         pageLength: 40,
         lengthMenu: [

@@ -20,11 +20,11 @@
   <!-- Custom style -->
   <link rel="stylesheet" href="<?php echo base_url('assets/admin/dist/css/styles.css') ?>">
   <link rel="stylesheet" href="<?php echo base_url('assets/admin/dist/css/calc.css') ?>">
+  <link rel="stylesheet" href="<?php echo base_url('assets/admin/dist/css/chosen.min.css') ?>">
 
   <!-- DataTables -->
   <link rel="stylesheet" href="<?php echo base_url('assets/admin/plugins/') ?>datatables-bs4/css/dataTables.bootstrap4.min.css">
   <link rel="stylesheet" href="<?php echo base_url('assets/admin/plugins/') ?>datatables-responsive/css/responsive.bootstrap4.min.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.8.7/chosen.min.css" />
 
   <!-- jQuery -->
   <script src="<?php echo base_url('assets/admin/plugins/jquery/jquery.min.js') ?>"></script>
@@ -35,13 +35,13 @@
   <!-- AdminLTE App -->
   <script src="<?php echo base_url('assets/admin/dist/js/adminlte.min.js') ?>"></script>
   <script src="<?php echo base_url('assets/admin/dist/js/calc.js') ?>"></script>
+  <script src="<?php echo base_url('assets/admin/dist/js/chosen.jquery.min.js') ?>"></script>
   <!-- DataTables  & Plugins -->
   <script src="<?php echo base_url('assets/admin/plugins/') ?>datatables/jquery.dataTables.min.js"></script>
   <script src="<?php echo base_url('assets/admin/plugins/') ?>datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
   <script src="<?php echo base_url('assets/admin/plugins/') ?>datatables-responsive/js/dataTables.responsive.min.js"></script>
   <script src="<?php echo base_url('assets/admin/plugins/') ?>datatables-responsive/js/responsive.bootstrap4.min.js"></script>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.8.7/chosen.jquery.min.js"></script>
   <style>
     .product-row {
       background: #efefef;
@@ -178,18 +178,6 @@
       animation: shake 0.5s;
     }
   </style>
-  <!-- include summernote css/js -->
-  <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
-
-  <script>
-    setTimeout(function() {
-      const toggleButton = document.querySelector('[data-widget="pushmenu"]');
-      if (toggleButton) {
-        toggleButton.click();
-      }
-    }, 1000); // 1 second delay
-  </script>
 </head>
 
 <body class="hold-transition sidebar-mini">

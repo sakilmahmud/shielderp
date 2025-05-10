@@ -1,3 +1,11 @@
+<script>
+    setTimeout(function() {
+        const toggleButton = document.querySelector('[data-widget="pushmenu"]');
+        if (toggleButton) {
+            toggleButton.click();
+        }
+    }, 1000); // 1 second delay
+</script>
 <div class="content-wrapper">
     <section class="content-header">
         <div class="container-fluid">
@@ -91,15 +99,13 @@
                                     <div class="col-md-1">
                                         <div class="form-group">
                                             <label for="price">Price</label>
-                                            <input type="text" class="form-control price" value="0">
-                                            <div class="text-sm net_price_section" style="display: none;">Net Price: <span class="net_price"></span> <a href="javascript:void(0);" class="quick-edit"> <i class="fa fa-edit"></i></a></div>
+                                            <input type="text" class="form-control price" value="0" id="modal_price">
                                         </div>
                                     </div>
                                     <div class="col-md-1">
                                         <div class="form-group">
-                                            <label for="price">Plus</label>
-                                            <input type="text" class="form-control price" value="0">
-                                            <div class="text-sm net_price_section" style="display: none;">Net Price: <span class="net_price"></span> <a href="javascript:void(0);" class="quick-edit"> <i class="fa fa-edit"></i></a></div>
+                                            <label for="with_gst">With GST</label>
+                                            <input type="text" class="form-control" value="0" id="modal_net_price">
                                         </div>
                                     </div>
                                     <div class="col-md-1">
@@ -218,93 +224,29 @@
         </div>
     </section>
 </div>
-<!-- Quick Edit Modal -->
-<div class="modal fade" id="quickEditModal" tabindex="-1" aria-labelledby="quickEditModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="quickEditModalLabel">Quick Edit</h5>
-                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form>
-                    <div class="form-group">
-                        <label for="modal_price">Price</label>
-                        <input type="text" class="form-control" id="modal_price">
-                    </div>
-                    <div class="form-group">
-                        <label for="modal_net_price">Net Price</label>
-                        <input type="text" class="form-control" id="modal_net_price">
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary save-quick-edit">Save changes</button>
-            </div>
-        </div>
-    </div>
-</div>
+
 
 <script>
     let getLastestStocksUrl = "<?php echo base_url('admin/invoices/getLastestStocks'); ?>";
     let getLastPurchasePricesUrl = "<?php echo base_url('admin/invoices/getLastPurchasePrices'); ?>";
 
-    $(document).ready(function() {
-        // Variables to store the current target element
-        let currentPriceInput = null;
-        let currentNetPriceInput = null;
+    // Unified handler for modal_price
+    $(document).on("input change keyup", "#modal_price", function() {
+        const price = parseFloat($(this).val()) || 0;
+        const gstRate = parseFloat($(".gst_rate").val()) || 0;
+        const netPrice = price + (price * gstRate) / 100;
 
-        // Open the modal on quick-edit click
-        $(document).on("click", ".quick-edit", function() {
-            // Get the target price and net price inputs
-            currentPriceInput = $(this).closest(".form-group").find(".price");
-            currentNetPriceInput = $(this).closest(".form-group").find(".net_price_section .net_price");
+        $("#modal_net_price").val(netPrice.toFixed(2));
+    });
 
-            // Fill modal fields with current values
-            $("#modal_price").val(currentPriceInput.val());
-            $("#modal_net_price").val(currentNetPriceInput.text());
+    // Handle net price input
+    $(document).on("input change keyup", "#modal_net_price", function() {
+        const netPrice = parseFloat($(this).val()) || 0;
+        const gstRate = parseFloat($(".gst_rate").val()) || 0;
+        const price = netPrice / (1 + gstRate / 100);
 
-            // Show the modal
-            $("#quickEditModal").modal("show");
-        });
-
-        // Save changes from modal
-        $(".save-quick-edit").on("click", function() {
-            // Update the values in the form fields
-            const updatedPrice = parseFloat($("#modal_price").val()) || 0;
-            const updatedNetPrice = parseFloat($("#modal_net_price").val()) || 0;
-
-            currentPriceInput.val(updatedPrice.toFixed(2));
-            currentNetPriceInput.text(updatedNetPrice.toFixed(2)).closest(".net_price_section").show();
-
-            // Trigger input event to recalculate on the fields
-            currentPriceInput.trigger("input");
-            currentNetPriceInput.trigger("input");
-
-            // Hide the modal
-            $("#quickEditModal").modal("hide");
-        });
-
-        // Handle price input
-        $(document).on("input", "#modal_price", function() {
-            const price = parseFloat($(this).val()) || 0;
-            const gstRate = parseFloat($(".gst_rate").val()) || 0;
-            const netPrice = price + (price * gstRate) / 100;
-            console.log('GST: ' + gstRate);
-            // Update the price field
-            $("#modal_net_price").val(netPrice.toFixed(2));
-        });
-
-        // Handle net price input
-        $(document).on("input", "#modal_net_price", function() {
-            const netPrice = parseFloat($(this).val()) || 0;
-            const gstRate = parseFloat($(".gst_rate").val()) || 0;
-            const price = netPrice / (1 + gstRate / 100);
-
-            // Update the price field
-            $("#modal_price").val(price.toFixed(2));
-        });
+        // Update the price field
+        $("#modal_price").val(price.toFixed(2));
     });
 </script>
 <script src="<?php echo base_url('assets/admin/dist/js/invoice.js') ?>"></script>

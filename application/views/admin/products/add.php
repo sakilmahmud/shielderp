@@ -1,3 +1,5 @@
+<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
+<script src="<?php echo base_url('assets/admin/dist/js/summernote.min.js') ?>"></script>
 <div class="content-wrapper">
     <section class="content-header">
         <div class="container-fluid">
