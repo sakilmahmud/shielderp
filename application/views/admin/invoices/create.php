@@ -9,7 +9,7 @@
 <div class="content-wrapper">
     <section class="content-header">
         <div class="container-fluid">
-            <div class="row mb-2">
+            <div class="row">
                 <div class="col-sm-6">
                     <h2>Invoices</h2>
                 </div>
@@ -76,107 +76,8 @@
                                 </div>
 
                                 <hr>
-                                <!-- <h4>Add Items</h4> -->
-                                <div class="row product-row mb-3 py-3">
-                                    <!-- Input fields for adding a new product -->
-                                    <div class="col-md-3">
-                                        <div class="form-group">
-                                            <label for="product_id">Product</label>
-                                            <select class="form-control product_id">
-                                                <option value="">Select Product</option>
-                                                <?php foreach ($products as $product) : ?>
-                                                    <option value="<?php echo $product['id']; ?>"><?php echo $product['name']; ?></option>
-                                                <?php endforeach; ?>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-1">
-                                        <div class="form-group">
-                                            <label for="quantity">Qnty</label>
-                                            <input type="number" min="1" class="form-control quantity" value="1">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-1">
-                                        <div class="form-group">
-                                            <label for="price">Price</label>
-                                            <input type="text" class="form-control price" value="0" id="modal_price">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-1">
-                                        <div class="form-group">
-                                            <label for="with_gst">With GST</label>
-                                            <input type="text" class="form-control" value="0" id="modal_net_price">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-1">
-                                        <div class="form-group">
-                                            <label for="discount_type">Disc Type</label>
-                                            <select class="form-control discount_type">
-                                                <option value="">No</option>
-                                                <option value="1">Flat</option>
-                                                <option value="2">Percent</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-1">
-                                        <div class="form-group">
-                                            <label for="discount_amount">Disc Amnt</label>
-                                            <input type="text" class="form-control discount_amount" readonly>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-1">
-                                        <div class="form-group">
-                                            <label for="gst_rate">GST Rate</label>
-                                            <input type="number" class="form-control gst_rate">
-                                        </div>
-                                        <input type="hidden" class="gst_amount">
-                                    </div>
-                                    <div class="col-md-2">
-                                        <div class="d-flex">
-                                            <div class="form-group">
-                                                <label for="total">Total</label>
-                                                <input type="text" class="form-control total" readonly>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-1">
-                                        <button type="button" class="mt-4 btn btn-secondary add-product">+</button>
-                                    </div>
-                                    <div class="col-md-12 product_descriptions_section">
-                                        <input type="text" class="form-control product_descriptions" placeholder="Write Product Details">
-                                    </div>
-                                    <div class="col-md-12 last_purchase_prices"></div>
-                                </div>
-
-                                <div class="no_stocks p-2 mb-3 border rounded-3" style="display: none;">
-                                    <p class="no_stock_txt"></p>
-                                </div>
-                                <div class="product_details p-2 mb-3 border rounded-3" style="display: none;">
-                                    <div class="d-flex justify-content-between">
-                                        <div class="d-flex gap-3">
-                                            <h5>In Stock <span class="in_stock"></span></h5>
-                                            <input type="hidden" name="total_stocks" id="total_stocks">
-                                        </div>
-                                        <div class="stock_show_action">
-                                            <button class="btn btn-outline-info show_details">+</button>
-                                        </div>
-                                    </div>
-
-                                    <table id="stock-details-table" class="table table-hover table-bordered table-sm" style="display: none;">
-                                        <thead>
-                                            <tr>
-                                                <th>Supplier Name</th>
-                                                <th>Available Stock</th>
-                                                <th>Purchase Price</th>
-                                                <th>Purchase Date</th>
-                                                <th>Batch No</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <!-- Stock rows will be added here by JavaScript -->
-                                        </tbody>
-                                    </table>
-                                </div>
+                                <!-- product section -->
+                                <?php $this->load->view('admin/invoices/inc/product_section'); ?>
 
                                 <!-- All added items -->
                                 <?php $this->load->view('admin/invoices/inc/items'); ?>
@@ -224,29 +125,11 @@
         </div>
     </section>
 </div>
-
-
 <script>
+    let productDetailsUrl = "<?php echo base_url('admin/products/product_details'); ?>";
     let getLastestStocksUrl = "<?php echo base_url('admin/invoices/getLastestStocks'); ?>";
     let getLastPurchasePricesUrl = "<?php echo base_url('admin/invoices/getLastPurchasePrices'); ?>";
-
-    // Unified handler for modal_price
-    $(document).on("input change keyup", "#modal_price", function() {
-        const price = parseFloat($(this).val()) || 0;
-        const gstRate = parseFloat($(".gst_rate").val()) || 0;
-        const netPrice = price + (price * gstRate) / 100;
-
-        $("#modal_net_price").val(netPrice.toFixed(2));
-    });
-
-    // Handle net price input
-    $(document).on("input change keyup", "#modal_net_price", function() {
-        const netPrice = parseFloat($(this).val()) || 0;
-        const gstRate = parseFloat($(".gst_rate").val()) || 0;
-        const price = netPrice / (1 + gstRate / 100);
-
-        // Update the price field
-        $("#modal_price").val(price.toFixed(2));
-    });
+    let default_cgst_rate = 0;
+    let default_sgst_rate = 0;
 </script>
 <script src="<?php echo base_url('assets/admin/dist/js/invoice.js') ?>"></script>

@@ -141,6 +141,7 @@ $route['admin/products/add-ajax'] = 'admin/ProductsController/addAjax';
 $route['admin/products/edit/(:num)'] = 'admin/ProductsController/edit/$1';
 $route['admin/products/delete/(:num)'] = 'admin/ProductsController/delete/$1';
 $route['admin/products/search'] = 'admin/ProductsController/search';
+$route['admin/products/product_details'] = 'admin/ProductsController/get_product_details';
 $route['admin/products/get_product_prices'] = 'admin/ProductsController/get_product_prices';
 $route['admin/products/last_purchase_price'] = 'admin/ProductsController/get_last_purchase_price';
 $route['admin/products/update_price'] = 'admin/ProductsController/update_price';

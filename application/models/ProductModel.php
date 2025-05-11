@@ -176,7 +176,6 @@ class ProductModel extends CI_Model
         ];
     }
 
-
     public function get_product($id)
     {
         $this->db->select('products.*, categories.name as category_name, brands.brand_name');
@@ -186,6 +185,16 @@ class ProductModel extends CI_Model
         $this->db->where('products.id', $id);
         $query = $this->db->get();
         return $query->row_array();
+    }
+
+    public function get_product_details($id)
+    {
+        $this->db->select('products.*,units.symbol');
+        $this->db->from('products');
+        $this->db->join('units', 'products.unit_id = units.id', 'left');
+        $this->db->where('products.id', $id);
+        $query = $this->db->get();
+        return $query->row();
     }
 
     public function insert_product($data)

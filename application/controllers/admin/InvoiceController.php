@@ -220,12 +220,16 @@ class InvoiceController extends CI_Controller
             $purchase_prices = $this->input->post('purchase_price');
             $discount_types = $this->input->post('discount_type');
             $discounts = $this->input->post('discount');
-            $cgst = $this->input->post('cgst');
-            $sgst = $this->input->post('sgst');
+            $gst_rates = $this->input->post('gst_rate');
+
             $gst_amounts = $this->input->post('gst_amount');
             $final_prices = $this->input->post('final_price');
 
             foreach ($product_ids as $index => $product_id) {
+                $gst_rate = $gst_rates[$index];
+                $cgst = $gst_rate / 2;
+                $sgst = $gst_rate / 2;
+
                 $invoiceDetailsData[] = [
                     'invoice_id' => $invoice_id,
                     'customer_id' => $this->input->post('customer_id'),
@@ -235,8 +239,8 @@ class InvoiceController extends CI_Controller
                     'price' => $purchase_prices[$index],
                     'discount_type' => $discount_types[$index],
                     'discount' => $discounts[$index],
-                    'cgst' => $cgst[$index],
-                    'sgst' => $sgst[$index],
+                    'cgst' => $cgst,
+                    'sgst' => $sgst,
                     'gst_amount' => $gst_amounts[$index],
                     'final_price' => $final_prices[$index],
                     'created_at' => $current_date_time
@@ -324,7 +328,6 @@ class InvoiceController extends CI_Controller
             redirect('admin/invoices');
         }
     }
-
 
     public function updateInvoice($invoice_id)
     {
@@ -441,8 +444,6 @@ class InvoiceController extends CI_Controller
             redirect('admin/invoices');
         }
     }
-
-
 
     public function generate_invoice_no($is_gst)
     {

@@ -450,6 +450,24 @@ class ProductsController extends CI_Controller
         echo json_encode($products);
     }
 
+    public function get_product_details()
+    {
+        $product_id = $this->input->post('product_id');
+        $product_details = $this->ProductModel->get_product_details($product_id);
+        if (!empty($product_details)) {
+            $response = [
+                'status' => 'success',
+                'data' => $product_details
+            ];
+        } else {
+            $response = [
+                'status' => 'error',
+                'message' => 'No details found.'
+            ];
+        }
+        echo json_encode($response);
+    }
+
     public function get_product_prices()
     {
         $product_id = $this->input->post('product_id');

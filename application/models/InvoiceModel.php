@@ -98,6 +98,7 @@ class InvoiceModel extends CI_Model
 
         // Ordering
         $this->db->order_by('invoices.invoice_date', 'DESC');
+        $this->db->order_by('invoices.id', 'DESC');
 
         $query = $this->db->get();
 

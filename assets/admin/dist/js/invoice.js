@@ -1,3 +1,26 @@
+// Unified handler for modal_price
+$(document).on("input change keyup", "#modal_price", function () {
+  const price = parseFloat($(this).val()) || 0;
+  const cgstRate = parseFloat($(".cgst_rate").val()) || 0;
+  const sgstRate = parseFloat($(".sgst_rate").val()) || 0;
+  const gstRate = parseFloat(cgstRate + sgstRate);
+  const netPrice = price + (price * gstRate) / 100;
+
+  $("#modal_net_price").val(netPrice.toFixed(2));
+});
+
+// Handle net price input
+$(document).on("input change keyup", "#modal_net_price", function () {
+  const netPrice = parseFloat($(this).val()) || 0;
+  const cgstRate = parseFloat($(".cgst_rate").val()) || 0;
+  const sgstRate = parseFloat($(".sgst_rate").val()) || 0;
+  const gstRate = parseFloat(cgstRate + sgstRate);
+  const price = netPrice / (1 + gstRate / 100);
+
+  // Update the price field
+  $("#modal_price").val(price.toFixed(2));
+});
+
 $(document).ready(function () {
   $("#is_gst").change();
   // Event: Calculate total when inputs change
@@ -12,11 +35,6 @@ $(document).ready(function () {
     let total_stocks = parseFloat($("#total_stocks").val());
     let productRow = $(".product-row");
     let quantity = parseFloat(productRow.find(".quantity").val());
-
-    /* if (quantity > total_stocks) {
-      alert(`You chose ${quantity}, but current stock is ${total_stocks}`);
-      return; // Stop the function if quantity exceeds stock
-    } */
 
     addOrUpdateProductInTable(); // Update the product logic
     $(".product_id").chosen().trigger("chosen:updated");
@@ -36,7 +54,9 @@ $(document).ready(function () {
     let discountType = productRow.find(".discount_type").val();
     let discountAmount =
       parseFloat(productRow.find(".discount_amount").val()) || 0;
-    let gstRate = parseFloat(productRow.find(".gst_rate").val()) || 0;
+    let cgstRate = parseFloat(productRow.find(".cgst_rate").val()) || 0;
+    let sgstRate = parseFloat(productRow.find(".sgst_rate").val()) || 0;
+    let gstRate = parseFloat(cgstRate + sgstRate);
     let gst_amount = parseFloat(productRow.find(".gst_amount").val()) || 0;
     let total = parseFloat(productRow.find(".total").val());
     let product_descriptions = productRow.find(".product_descriptions").val();
@@ -64,6 +84,14 @@ $(document).ready(function () {
       '<input type="hidden" name="discount[]" value="' +
       discountAmount +
       '">' +
+      '<input type="hidden" name="cgst_rate[]" value="' +
+      cgstRate +
+      '">' +
+      "" +
+      '<input type="hidden" name="sgst_rate[]" value="' +
+      sgstRate +
+      '">' +
+      "" +
       '<input type="hidden" name="gst_rate[]" value="' +
       gstRate +
       '">' +
@@ -102,7 +130,7 @@ $(document).ready(function () {
       "<td>₹" +
       total.toFixed(2) +
       "</td>" +
-      "<td class='text-center'><button type='button' class='btn btn-danger btn-sm remove-item'>X</button></td>" +
+      "<td class='text-center'><button type='button' class='btn btn-info btn-sm edit-item'>Edit</button><button type='button' class='btn btn-danger btn-sm remove-item'>X</button></td>" +
       hiddenFields +
       "</tr>";
 
@@ -125,12 +153,12 @@ $(document).ready(function () {
     // Reset the form fields
     productRow.find("input, select").val("");
     productRow.find(".quantity").val("1");
+    productRow.find(".product_extra_section").hide();
 
     let is_gst = $("#is_gst").val();
     if (is_gst == 0) {
-      productRow.find(".gst_rate").val("0");
-    } else {
-      productRow.find(".gst_rate").val("18");
+      productRow.find(".cgst_rate").val("0");
+      productRow.find(".sgst_rate").val("0");
     }
 
     productRow.find(".discount_amount").attr("readonly", "readonly").val("0");
@@ -157,16 +185,18 @@ $(document).on("change", ".discount_type", function () {
 // Handle GST/Non-GST change
 $("#is_gst").on("change", function () {
   let is_gst = $(this).val();
-  let gstRate = is_gst == 1 ? 18 : 0;
+  let cgstRate = is_gst == 1 ? default_cgst_rate : 0;
+  let sgstRate = is_gst == 1 ? default_sgst_rate : 0;
 
   if (is_gst == 0) {
-    $(".gst_rate").prop("disabled", true);
+    $(".cgst_rate,.sgst_rate").prop("disabled", true);
   } else {
-    $(".gst_rate").removeAttr("disabled");
+    $(".cgst_rate,.sgst_rate").removeAttr("disabled");
   }
 
   $(".product-row").each(function () {
-    $(this).find(".gst_rate").val(gstRate);
+    $(this).find(".cgst_rate").val(cgstRate);
+    $(this).find(".sgst_rate").val(sgstRate);
     calculateTotalForRow($(this));
   });
 });
@@ -177,7 +207,8 @@ function calculateTotalForRow(row) {
   var price = parseFloat(row.find(".price").val());
   var discountType = row.find(".discount_type").val();
   var discountAmount = parseFloat(row.find(".discount_amount").val()) || 0;
-  var gstRate = parseFloat(row.find(".gst_rate").val()) || 0;
+  var cgstRate = parseFloat(row.find(".cgst_rate").val()) || 0;
+  var sgstRate = parseFloat(row.find(".sgst_rate").val()) || 0;
 
   // Calculate discount
   var discount = 0;
@@ -193,8 +224,9 @@ function calculateTotalForRow(row) {
   var totalBeforeGST = price - discount;
 
   // Calculate GST amount
-  var gstAmount = (totalBeforeGST * gstRate) / 100;
-
+  var cgstAmount = (totalBeforeGST * cgstRate) / 100;
+  var sgstAmount = (totalBeforeGST * sgstRate) / 100;
+  var gstAmount = parseFloat(cgstAmount) + parseFloat(sgstAmount);
   //alert(gstAmount);
 
   // Calculate final total
@@ -206,9 +238,12 @@ function calculateTotalForRow(row) {
 
   row.find(".net_price").html(net_single_price.toFixed(2));
   row.find(".net_price_section").show();
+  row.find(".cst_amount").val(cgstAmount.toFixed(2));
+  row.find(".sgst_amount").val(sgstAmount.toFixed(2));
   row.find(".gst_amount").val(gstAmount.toFixed(2));
   // Update the total input field
-  row.find(".total").val(total.toFixed(2));
+  //row.find(".total").val(total.toFixed(2));
+  row.find(".total").val(Math.round(total));
 }
 
 // Function to add a product to the table
@@ -222,7 +257,8 @@ function addProductToTable() {
   var discountType = productRow.find(".discount_type").val();
   var discountAmount =
     parseFloat(productRow.find(".discount_amount").val()) || 0;
-  var gstRate = parseFloat(productRow.find(".gst_rate").val()) || 0;
+  var cgstRate = parseFloat(productRow.find(".cgst_rate").val()) || 0;
+  var sgstRate = parseFloat(productRow.find(".sgst_rate").val()) || 0;
 
   var gst_amount = parseFloat(productRow.find(".gst_amount").val()) || 0;
 
@@ -246,8 +282,10 @@ function addProductToTable() {
     discountType +
     '"><input type="hidden" name="discount[]" value="' +
     discountAmount +
-    '"><input type="hidden" name="gst_rate[]" value="' +
-    gstRate +
+    '"><input type="hidden" name="cgst_rate[]" value="' +
+    cgstRate +
+    '"><input type="hidden" name="sgst_rate[]" value="' +
+    sgstRate +
     '"><input type="hidden" name="gst_amount[]" value="' +
     gst_amount +
     '"><input type="hidden" name="final_price[]" value="' +
@@ -272,12 +310,12 @@ function addProductToTable() {
     "<td>₹" +
     gst_amount +
     " (" +
-    gstRate +
+    (cgstRate + cgstRate) +
     "%)" +
     "</td>" +
     "<td>₹" +
     total.toFixed(2) +
-    "</td><td class='text-center'><button type='button' class='btn btn-danger btn-sm remove-item'>X</button></td>" +
+    "</td><td class='text-center'><button type='button' class='btn btn-info btn-sm edit-item'>Edit</button><button type='button' class='btn btn-danger btn-sm remove-item'>X</button></td>" +
     hiddenFields +
     "</tr>";
 
@@ -290,12 +328,9 @@ function addProductToTable() {
   // Reset the form fields for new entry
   productRow.find("input, select").val("");
   productRow.find(".quantity").val("1");
-  let is_gst = $("#is_gst").val();
-  if (is_gst == 0) {
-    productRow.find(".gst_rate").val("0");
-  } else {
-    productRow.find(".gst_rate").val("18");
-  }
+  productRow.find(".cgst_rate").val("0");
+  productRow.find(".sgst_rate").val("0");
+
   productRow.find(".discount_amount").attr("readonly", "readonly").val("0");
   productRow.find(".net_price_section").hide();
 }
@@ -315,8 +350,10 @@ function updateTotals() {
     var discountType = $(this).find("input[name='discount_type[]']").val();
     var discount =
       parseFloat($(this).find("input[name='discount[]']").val()) || 0;
-    var gstRate =
-      parseFloat($(this).find("input[name='gst_rate[]']").val()) || 0;
+    var cgstRate =
+      parseFloat($(this).find("input[name='cgst_rate[]']").val()) || 0;
+    var sgstRate =
+      parseFloat($(this).find("input[name='sgst_rate[]']").val()) || 0;
 
     var discountedPrice = price;
     if (discountType == "2") {
@@ -358,7 +395,7 @@ $(document).ready(function () {
   $(".product_id").on("change", function () {
     let product_id = $(this).val();
     let customer_id = $(".customer_id").val();
-
+    var productRow = $(".product-row");
     if (customer_id && product_id) {
       $.ajax({
         url: getLastPurchasePricesUrl, // Set the correct URL
@@ -393,6 +430,37 @@ $(document).ready(function () {
     }
 
     if (product_id) {
+      $.ajax({
+        url: productDetailsUrl,
+        type: "POST",
+        data: {
+          product_id: product_id,
+        },
+        dataType: "json",
+        success: function (response) {
+          if (response.status === "success") {
+            let product_details = response.data;
+            //console.log(product_details);
+            let is_gst = $("#is_gst").val();
+            let cgstRate = is_gst == 1 ? product_details.cgst : 0;
+            let sgstRate = is_gst == 1 ? product_details.sgst : 0;
+
+            productRow.find(".cgst_rate").val(cgstRate);
+            productRow.find(".sgst_rate").val(sgstRate);
+            productRow.find(".unit").val(product_details.symbol);
+            productRow
+              .find(".product_unit")
+              .text("(" + product_details.symbol + ")");
+            productRow.find(".hsn_code").text(product_details.hsn_code);
+            productRow
+              .find(".highlight_text")
+              .text(product_details.highlight_text);
+            productRow.find(".product_extra_section").show();
+            productRow.find(".price").change();
+          }
+        },
+      });
+
       $.ajax({
         url: getLastestStocksUrl,
         type: "POST",
@@ -439,13 +507,12 @@ $(document).ready(function () {
         },
       });
     } else {
-      var productRow = $(".product-row");
       let is_gst = $("#is_gst").val();
       if (is_gst == 0) {
-        productRow.find(".gst_rate").val("0");
-      } else {
-        productRow.find(".gst_rate").val("18");
+        productRow.find(".cgst_rate").val("0");
+        productRow.find(".sgst_rate").val("0");
       }
+
       productRow.find(".discount_amount").attr("readonly", "readonly").val("0");
       productRow.find(".net_price_section").hide();
 
@@ -454,6 +521,44 @@ $(document).ready(function () {
   });
 });
 
+/** Edit Product from table row */
+$(document).on("click", ".edit-item", function () {
+  // Find the parent row of the clicked button
+  var $row = $(this).closest("tr");
+
+  // Get the product ID from the hidden input
+  var productId = $row.find('input[name="product_id[]"]').val();
+  var productDescriptions = $row
+    .find('input[name="product_descriptions[]"]')
+    .val();
+
+  // Update the dropdown with the selected product
+  $(".product_id").val(productId).chosen().trigger("chosen:updated");
+
+  // Get other fields from the hidden inputs
+  var quantity = $row.find('input[name="qnt[]"]').val();
+  var price = $row.find('input[name="purchase_price[]"]').val();
+  var discountType = $row.find('input[name="discount_type[]"]').val();
+  var discount = $row.find('input[name="discount[]"]').val();
+  var cgst_rate = $row.find('input[name="cgst_rate[]"]').val();
+  var sgst_rate = $row.find('input[name="sgst_rate[]"]').val();
+  var gstRate = $row.find('input[name="gst_rate[]"]').val();
+
+  let productRow = $(".product-row");
+  productRow.find(".cgst_rate").val(cgst_rate);
+  productRow.find(".sgst_rate").val(sgst_rate);
+
+  $(".price").val(price).trigger("change");
+
+  // Update other fields immediately
+  $(".product_descriptions").val(productDescriptions);
+  $(".quantity").val(quantity);
+  $(".discount_type").val(discountType).trigger("change");
+  $(".discount_amount").val(discount);
+  $(".gst_rate").val(gstRate).trigger("change");
+});
+
+/** Add Payment Section */
 $(document).ready(function () {
   // Add payment row on clicking plus icon
   $(document).on("click", ".add-payment", function () {
