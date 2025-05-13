@@ -693,4 +693,45 @@ class ProductsController extends CI_Controller
             echo json_encode(['status' => 'error', 'message' => 'Failed to update stock']);
         }
     }
+
+    public function my_update_product()
+    {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['csv_file'])) {
+            $file = $_FILES['csv_file']['tmp_name'];
+            $handle = fopen($file, 'r');
+
+            if ($handle !== false) {
+                $this->load->database();
+                $this->load->helper('security');
+
+                $header = fgetcsv($handle); // Read and skip the header row
+
+                while (($row = fgetcsv($handle)) !== false) {
+                    $id = intval($row[0]);
+                    $name = $this->security->xss_clean($row[1]);
+                    $hsn_code = $this->security->xss_clean($row[2]);
+                    $cgst = floatval($row[3]);
+                    $sgst = floatval($row[4]);
+
+                    $data = [
+                        'name' => $name,
+                        'hsn_code' => $hsn_code,
+                        'cgst' => $cgst,
+                        'sgst' => $sgst,
+                    ];
+
+                    $this->db->where('id', $id);
+                    $this->db->update('products', $data);
+                }
+
+                fclose($handle);
+                $data['message'] = "Products updated successfully.";
+            } else {
+                $data['error'] = "Failed to open uploaded file.";
+            }
+        }
+
+        // Load raw view
+        $this->load->view('admin/product_update', isset($data) ? $data : []);
+    }
 }

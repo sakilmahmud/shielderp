@@ -224,6 +224,7 @@ class InvoiceController extends CI_Controller
 
             $gst_amounts = $this->input->post('gst_amount');
             $final_prices = $this->input->post('final_price');
+            $hsn_codes = $this->input->post('hsn_code');
 
             foreach ($product_ids as $index => $product_id) {
                 $gst_rate = $gst_rates[$index];
@@ -243,6 +244,7 @@ class InvoiceController extends CI_Controller
                     'sgst' => $sgst,
                     'gst_amount' => $gst_amounts[$index],
                     'final_price' => $final_prices[$index],
+                    'hsn_code' => $hsn_codes[$index],
                     'created_at' => $current_date_time
                 ];
                 // Reduce the stock for each product
@@ -413,6 +415,7 @@ class InvoiceController extends CI_Controller
             $cgst = $this->input->post('cgst');
             $sgst = $this->input->post('sgst');
             $gst_amounts = $this->input->post('gst_amount');
+            $hsn_codes = $this->input->post('hsn_code');
             $final_prices = $this->input->post('final_price');
 
             foreach ($product_ids as $index => $product_id) {
@@ -429,6 +432,7 @@ class InvoiceController extends CI_Controller
                     'sgst' => $sgst[$index],
                     'gst_amount' => $gst_amounts[$index],
                     'final_price' => $final_prices[$index],
+                    'hsn_code' => $hsn_codes[$index],
                     'created_at' => $current_date_time
                 ];
             }
@@ -536,6 +540,12 @@ class InvoiceController extends CI_Controller
 
         $invoice_details = $this->InvoiceModel->get_invoice_details($invoice_id);
         $data['invoice_details'] = $invoice_details;
+        $data['customer'] = $this->CustomerModel->get_customer_by_id($invoice['customer_id']);
+        /* echo "<pre>";
+        print_r($data['customer']);
+        die; */
+        $customer_name = $data['customer']['customer_name'];
+        $customer_name_formatted = str_replace(' ', '_', ucwords(strtolower($customer_name)));
 
         $data['transactions'] = $this->InvoiceModel->get_invoice_transactions($invoice_id);
 
@@ -547,7 +557,7 @@ class InvoiceController extends CI_Controller
         $this->pdf->loadHtml($html);
         $this->pdf->setPaper('A4', 'portrait');
         $this->pdf->render();
-        $this->pdf->stream('invoice_' . $invoice_id . '.pdf', array('Attachment' => 0));
+        $this->pdf->stream('Invoice_' . $customer_name_formatted . '_' . $invoice_id . '.pdf', array('Attachment' => 0));
     }
 
     // Method to fetch last 5 stock entries

@@ -54,6 +54,7 @@ $(document).ready(function () {
     let discountType = productRow.find(".discount_type").val();
     let discountAmount =
       parseFloat(productRow.find(".discount_amount").val()) || 0;
+    let hsn_code = productRow.find(".hsn_code_val").val() || 0;
     let cgstRate = parseFloat(productRow.find(".cgst_rate").val()) || 0;
     let sgstRate = parseFloat(productRow.find(".sgst_rate").val()) || 0;
     let gstRate = parseFloat(cgstRate + sgstRate);
@@ -98,6 +99,9 @@ $(document).ready(function () {
       '<input type="hidden" name="gst_amount[]" value="' +
       gst_amount +
       '">' +
+      '<input type="hidden" name="hsn_code[]" value="' +
+      hsn_code +
+      '">' +
       '<input type="hidden" name="final_price[]" value="' +
       total +
       '">';
@@ -111,7 +115,11 @@ $(document).ready(function () {
       product +
       "</b><p>" +
       product_descriptions +
-      "</p></td>" +
+      "</p></td><td>" +
+      hsn_code +
+      "</td><td>" +
+      quantity +
+      "</td>" +
       "<td>₹" +
       price.toFixed(2) +
       "</td>" +
@@ -124,9 +132,7 @@ $(document).ready(function () {
       gstRate +
       "%)</td><td><b>₹" +
       formatNumber(parseFloat(price + gst_amount)) +
-      "</b></td><td>" +
-      quantity +
-      "</td>" +
+      "</b></td>" +
       "<td>₹" +
       total.toFixed(2) +
       "</td>" +
@@ -259,6 +265,7 @@ function addProductToTable() {
     parseFloat(productRow.find(".discount_amount").val()) || 0;
   var cgstRate = parseFloat(productRow.find(".cgst_rate").val()) || 0;
   var sgstRate = parseFloat(productRow.find(".sgst_rate").val()) || 0;
+  var hsn_code = productRow.find(".hsn_code_val").val() || 0;
 
   var gst_amount = parseFloat(productRow.find(".gst_amount").val()) || 0;
 
@@ -288,6 +295,8 @@ function addProductToTable() {
     sgstRate +
     '"><input type="hidden" name="gst_amount[]" value="' +
     gst_amount +
+    '"><input type="hidden" name="hsn_code[]" value="' +
+    hsn_code +
     '"><input type="hidden" name="final_price[]" value="' +
     total +
     '">';
@@ -448,10 +457,12 @@ $(document).ready(function () {
             productRow.find(".cgst_rate").val(cgstRate);
             productRow.find(".sgst_rate").val(sgstRate);
             productRow.find(".unit").val(product_details.symbol);
+
             productRow
               .find(".product_unit")
               .text("(" + product_details.symbol + ")");
             productRow.find(".hsn_code").text(product_details.hsn_code);
+            productRow.find(".hsn_code_val").val(product_details.hsn_code);
             productRow
               .find(".highlight_text")
               .text(product_details.highlight_text);
@@ -525,7 +536,7 @@ $(document).ready(function () {
 $(document).on("click", ".edit-item", function () {
   // Find the parent row of the clicked button
   var $row = $(this).closest("tr");
-
+  $(".product_extra_section").show();
   // Get the product ID from the hidden input
   var productId = $row.find('input[name="product_id[]"]').val();
   var productDescriptions = $row
@@ -540,8 +551,9 @@ $(document).on("click", ".edit-item", function () {
   var price = $row.find('input[name="purchase_price[]"]').val();
   var discountType = $row.find('input[name="discount_type[]"]').val();
   var discount = $row.find('input[name="discount[]"]').val();
-  var cgst_rate = $row.find('input[name="cgst_rate[]"]').val();
-  var sgst_rate = $row.find('input[name="sgst_rate[]"]').val();
+  var cgst_rate = $row.find('input[name="cgst[]"]').val();
+  var sgst_rate = $row.find('input[name="sgst[]"]').val();
+  var hsn_code = $row.find('input[name="hsn_code[]"]').val();
   var gstRate = $row.find('input[name="gst_rate[]"]').val();
 
   let productRow = $(".product-row");
@@ -555,7 +567,10 @@ $(document).on("click", ".edit-item", function () {
   $(".quantity").val(quantity);
   $(".discount_type").val(discountType).trigger("change");
   $(".discount_amount").val(discount);
-  $(".gst_rate").val(gstRate).trigger("change");
+  $(".cgst_rate").val(cgst_rate).trigger("change");
+  $(".sgst_rate").val(sgst_rate).trigger("change");
+  $(".hsn_code_val").val(hsn_code);
+  $(".hsn_code").text(hsn_code);
 });
 
 /** Add Payment Section */

@@ -261,7 +261,7 @@
                     <h2><?php echo $invoice['customer_name']; ?></h2>
                     <p><?php echo ($invoice['address'] != "") ? $invoice['address'] : ""; ?></p>
                     <p><?php echo ($invoice['mobile'] != "") ? "Contact: " . $invoice['mobile'] : ""; ?></p>
-                    <p><?php echo ($invoice['gst'] != "") ? "GSTIN: " . $invoice['gst'] : ""; ?></p>
+                    <p><?php echo ($customer['gst_number'] != "") ? "GSTIN: " . $customer['gst_number'] : ""; ?></p>
                 </div>
             </div>
         </div>
@@ -293,10 +293,10 @@
                                 <b><?php echo $detail['product_name']; ?></b><br>
                                 <p><?php echo $detail['product_descriptions']; ?></p>
                             </td>
-                            <td><?php echo isset($detail['hsn']) ? $detail['hsn'] : '8471'; ?></td>
+                            <td><?php echo isset($detail['hsn_code']) ? $detail['hsn_code'] : '8471'; ?></td>
                             <td><?php echo $detail['quantity']; ?> PCS</td>
                             <td><span style="font-family: DejaVu Sans; sans-serif;">&#8377;</span><?php echo number_format($detail['price'], 2); ?></td>
-                            <td><?php echo $detail['gst_rate']; ?>%</td>
+                            <td><?php echo $detail['cgst'] + $detail['sgst']; ?>%</td>
                             <td><span style="font-family: DejaVu Sans; sans-serif;">&#8377;</span><?php echo number_format(round($detail['final_price']), 2); ?></td>
                         </tr>
                     <?php endforeach; ?>
@@ -329,12 +329,13 @@
                             // Group the invoice details by HSN code
                             $groupedDetails = [];
                             foreach ($invoice_details as $detail) {
-                                $hsn_code = isset($detail['hsn']) ? $detail['hsn'] : '8471';
-                                $gst_rate = $detail['gst_rate'];
+                                $hsn_code = isset($detail['hsn_code']) ? $detail['hsn_code'] : '8471';
+                                $cgst = $detail['cgst'];
+                                $sgst = $detail['sgst'];
 
                                 if (!isset($groupedDetails[$hsn_code])) {
                                     $groupedDetails[$hsn_code] = [
-                                        'gst_rate' => $gst_rate,
+                                        'gst_rate' => 18,
                                         'amount' => 0,
                                         'cgst' => 0,
                                         'sgst' => 0
@@ -342,12 +343,14 @@
                                 }
 
                                 // Calculate GST amount
-                                $get_gst_price = ($detail['price'] * $gst_rate) / 100;
+                                $cgst_price = ($detail['price'] * $cgst) / 100;
+                                $sgst_price = ($detail['price'] * $sgst) / 100;
 
                                 // Add to the grouped details
+                                $groupedDetails[$hsn_code]['gst_rate'] = $cgst + $sgst;
                                 $groupedDetails[$hsn_code]['amount'] += $detail['price'];
-                                $groupedDetails[$hsn_code]['cgst'] += $get_gst_price / 2;
-                                $groupedDetails[$hsn_code]['sgst'] += $get_gst_price / 2;
+                                $groupedDetails[$hsn_code]['cgst'] += $cgst_price;
+                                $groupedDetails[$hsn_code]['sgst'] += $sgst_price;
                             }
 
                             // Render the grouped details

@@ -74,6 +74,7 @@
     </div>
     <div class="col-md-12 product_extra_section" style="display: none;">
         HSN Code: <span class="hsn_code"></span>|<small class="highlight_text"></small>
+        <input type="text" class="hsn_code_val">
     </div>
     <div class="col-md-12 product_extra_section" style="display: none;">
         <input type="text" class="form-control product_descriptions" placeholder="Write Product Details">

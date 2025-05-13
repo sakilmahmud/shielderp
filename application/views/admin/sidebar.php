@@ -340,6 +340,13 @@
           </ul>
         </li>
 
+        <li class="nav-item">
+          <a href="<?php echo base_url('admin/password'); ?>" class="nav-link <?php if ($activePage === 'password') echo 'active'; ?>">
+            <i class="nav-icon fas fa-key"></i>
+            <p>Change Password</p>
+          </a>
+        </li>
+
 
         <li class="nav-item">
           <a href="<?php echo base_url('logout'); ?>" class="nav-link">
