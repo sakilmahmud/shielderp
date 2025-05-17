@@ -30,6 +30,10 @@
                                     <input type="email" class="form-control" id="email" name="email" value="<?php echo set_value('email'); ?>">
                                 </div>
                                 <div class="form-group">
+                                    <label for="gst_number">GST</label>
+                                    <input type="text" class="form-control" id="gst_number" name="gst_number" value="<?php echo set_value('gst_number'); ?>">
+                                </div>
+                                <div class="form-group">
                                     <label for="address">Address</label>
                                     <textarea class="form-control" id="address" name="address" required><?php echo set_value('address'); ?></textarea>
                                     <?php echo form_error('address'); ?>

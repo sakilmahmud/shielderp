@@ -366,6 +366,40 @@ class InvoiceController extends CI_Controller
             print_r($_POST);
             die; */
             $current_date_time = date('Y-m-d H:i:s');
+            // Customer Data
+            $customer_name = $this->input->post('customer_name');
+            $customer_phone = $this->input->post('mobile');
+            $customer_address = $this->input->post('address');
+            $customer_gst = $this->input->post('gst');
+
+            // Check if customer exists by mobile number
+            $customer = $this->CustomerModel->get_by_phone($customer_phone); // Assuming this method exists in CustomerModel
+
+            if ($customer) {
+                // Customer exists, update the record
+                $customer_id = $customer['id'];
+                $customerData = [
+                    'customer_name' => $customer_name,
+                    'phone' => $customer_phone,
+                    'address' => $customer_address,
+                    'gst_number' => $customer_gst,
+                    'updated_at' => $current_date_time
+                ];
+                $this->db->where('id', $customer_id);
+                $this->db->update('customers', $customerData);
+            } else {
+                // Customer doesn't exist, insert a new record
+                $customerData = [
+                    'customer_name' => $customer_name,
+                    'phone' => $customer_phone,
+                    'address' => $customer_address,
+                    'gst_number' => $customer_gst,
+                    'created_at' => $current_date_time
+                ];
+                $this->db->insert('customers', $customerData);
+                $customer_id = $this->db->insert_id();
+            }
+
             $round_off = $this->input->post('round_off');
             $total_amount = array_sum($this->input->post('final_price'));
             // Prepare updated invoice data

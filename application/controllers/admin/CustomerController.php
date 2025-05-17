@@ -40,6 +40,7 @@ class CustomerController extends CI_Controller
                 'customer_name' => $this->input->post('customer_name'),
                 'phone' => $this->input->post('phone'),
                 'email' => $this->input->post('email'),
+                'gst_number' => $this->input->post('gst_number'),
                 'address' => $this->input->post('address')
             );
 
@@ -71,6 +72,7 @@ class CustomerController extends CI_Controller
                 'customer_name' => $this->input->post('customer_name'),
                 'phone' => $this->input->post('phone'),
                 'email' => $this->input->post('email'),
+                'gst_number' => $this->input->post('gst_number'),
                 'address' => $this->input->post('address')
             );
 
