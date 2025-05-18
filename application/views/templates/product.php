@@ -1,4 +1,7 @@
 <!-- views/templates/product.php -->
+<?php
+$image_url = ($product['featured_image'] != "") ? base_url('uploads/products/' . $product['featured_image']) : base_url('assets/uploads/no_image.jpeg');
+?>
 <?php $endpoint = ($product['slug'] != "") ? $product['slug'] : $product['id']; ?>
 <div class="single_product_listing">
     <div class="single_pro_work">
@@ -8,7 +11,7 @@
     <div class="single_product_listing_img">
         <a href="<?php echo base_url('products/' . $endpoint); ?>">
             <img
-                src="<?php echo base_url('uploads/products/' . $product['featured_image']); ?>" class="img-fluid"
+                src="<?php echo $image_url; ?>" class="img-fluid"
                 alt="<?php echo $product['name']; ?>" />
         </a>
     </div>

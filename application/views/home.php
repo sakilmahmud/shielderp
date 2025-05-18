@@ -132,7 +132,11 @@
                 <a href="#">Show All</a>
             </div>
             <div class="popular_collection_content_area">
-                <?php foreach ($categories as $category): ?>
+                <?php
+                $count = 0;
+                foreach ($categories as $category):
+                    $count++;
+                    if ($count > 7) continue; ?>
                     <?php $this->load->view('templates/category', ['category' => $category]); ?>
                 <?php endforeach; ?>
             </div>

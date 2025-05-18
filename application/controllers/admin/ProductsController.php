@@ -59,11 +59,17 @@ class ProductsController extends CI_Controller
             $totalAmount += $purchase_price * $total_available_stocks;
             $totalStock += $total_available_stocks;
 
+            //
+
+            $image_url = ($product['featured_image'] != "") ? base_url('uploads/products/' . $product['featured_image']) : base_url('assets/uploads/no_image.jpeg');
+
+            $image = '<img src="' . $image_url . '" alt="' . $product['name'] . '" width="100">';
+
             $actions = '<a href="' . base_url('admin/products/edit/' . $product['id']) . '" class="btn btn-warning btn-sm mr-1">Edit</a>';
             $actions .= '<a href="' . base_url('admin/products/delete/' . $product['id']) . '" class="btn btn-danger btn-sm mr-1" onclick="return confirm(\'Are you sure you want to delete this invoice?\');">Delete</a>';
 
             $endpoint = ($product['slug'] != "") ? $product['slug'] : $product['id'];
-
+            $product_link = '<a href="' . base_url('products/' . $endpoint) . '" class="" target="_blank">' . $product['name'] . '</a>';
             $price_lists = '<p>MRP: ₹' . number_format($product['regular_price'], 2) . '</p>
                 <p>Sale: ₹' . number_format($product['sale_price'], 2) . '</p>
                 <p>Purchase:
@@ -93,8 +99,8 @@ class ProductsController extends CI_Controller
 
             $data[] = [
                 $product['id'],
-                'image',
-                $product['name'],
+                $image,
+                $product_link,
                 $product['category_name'],
                 $product['brand_name'],
                 $price_lists,
@@ -215,7 +221,7 @@ class ProductsController extends CI_Controller
                 'regular_price' => $this->input->post('regular_price'),
                 'sale_price' => $this->input->post('sale_price'),
                 'purchase_price' => $this->input->post('purchase_price'),
-                'description' => $this->input->post('description'),
+                'highlight_text' => $this->input->post('highlight_text'),
                 'featured_image' => $featured_image,
                 'gallery_images' => $gallery_images_encoded,
                 'category_id' => $this->input->post('category_id'),
@@ -349,7 +355,7 @@ class ProductsController extends CI_Controller
                 'regular_price' => $this->input->post('regular_price'),
                 'sale_price' => $this->input->post('sale_price'),
                 'purchase_price' => $this->input->post('purchase_price'),
-                'description' => $this->input->post('description'),
+                'highlight_text' => $this->input->post('highlight_text'),
                 'category_id' => $this->input->post('category_id'),
                 'brand_id' => $this->input->post('brand_id'),
                 'product_type_id' => $this->input->post('product_type_id'),

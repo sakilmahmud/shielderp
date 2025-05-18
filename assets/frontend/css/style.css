@@ -1131,10 +1131,11 @@ header {
   justify-content: center;
 }
 .single_product_listing {
-  margin: 0px 0px 50px 0px;
+  margin: 0px 0px 35px 0px;
   border: 1px solid rgba(0, 0, 0, 0.1);
-  padding: 10px 0px;
+  padding: 0px;
   position: relative;
+  min-height: 290px;
 }
 .breadcrumb {
   margin-bottom: 0px;

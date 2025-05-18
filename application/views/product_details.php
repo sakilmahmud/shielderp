@@ -16,16 +16,22 @@
             <div class="card">
                 <div class="demo">
                     <ul id="lightSlider">
-                        <li data-thumb="<?php echo base_url('uploads/products/' . $product['featured_image']); ?>">
+                        <?php
+                        $image_url = ($product['featured_image'] != "") ? base_url('uploads/products/' . $product['featured_image']) : base_url('assets/uploads/no_image.jpeg');
+
+                        //$image = '<img src="' . $image_url . '" alt="' . $product['name'] . '" width="100">';
+                        ?>
+                        <li data-thumb="<?php echo $image_url; ?>">
                             <img
                                 class="slide_img"
-                                src="<?php echo base_url('uploads/products/' . $product['featured_image']); ?>" />
+                                src="<?php echo $image_url; ?>" />
                         </li>
                         <?php
                         if (!empty($product['gallery_images'])) :
                             $gallery_images = json_decode($product['gallery_images']);
                             foreach ($gallery_images as $gallery_image) :
-                                echo '<li data-thumb="' . base_url('uploads/products/' . $gallery_image) . '"><img class="slide_img" src="' . base_url('uploads/products/' . $gallery_image) . '" /></li>';
+                                $image_thumb_url = ($gallery_image) ? base_url('uploads/products/' . $gallery_image) : base_url('assets/uploads/no_image.jpeg');
+                                echo '<li data-thumb="' . $image_thumb_url . '"><img class="slide_img" src="' . $image_thumb_url . '" /></li>';
                             endforeach;
                         endif;
                         ?>
@@ -35,13 +41,28 @@
         </div>
         <div class="col-lg-6">
             <div class="single_product_content_box">
-                <h6 class="pro_id">NK<?php echo $product['id']; ?></h6>
+                <h6 class="pro_id"><?php echo getSetting('invoice_prefix'); ?><?php echo $product['id']; ?></h6>
                 <h4 class="single_product_heading">
                     <?php echo $product['name']; ?>
                 </h4>
-                <p class="single_product_text">
+
+                <div class="single_product_col">
+                    <h5 class="price_single_product">
+                        <?php echo ($product['sale_price'] > 0)
+                            ? '<del>₹' . number_format($product['regular_price'], 2) . '</del> <span class="sale-price">₹' . number_format($product['sale_price'], 2) . '</span>'
+                            : '₹' . number_format($product['regular_price'], 2); ?>
+                    </h5>
+                    <img src="<?php echo base_url(); ?>assets/frontend/images/lineheart.png" class="img-fluid heart_clickable" alt="">
+                </div>
+                <p class="tax_data">Inclusive of all taxes</p>
+                <div class="underline"></div>
+
+                <div class="single_pro_data">
+                    <h6>Product Details</h6>
                     <?php echo $product['highlight_text']; ?>
-                </p>
+                </div>
+                <div class="underline"></div>
+
                 <div class="single_pro_quantity">
                     <h6>Quantity</h6>
                     <form>
@@ -62,45 +83,6 @@
                         </div>
                     </form>
                 </div>
-                <div class="single_product_col">
-                    <h5 class="price_single_product">
-                        <?php echo ($product['sale_price'] > 0)
-                            ? '<del>₹' . number_format($product['regular_price'], 2) . '</del> <span class="sale-price">₹' . number_format($product['sale_price'], 2) . '</span>'
-                            : '₹' . number_format($product['regular_price'], 2); ?>
-                    </h5>
-                    <img src="<?php echo base_url(); ?>assets/frontend/images/lineheart.png" class="img-fluid heart_clickable" alt="">
-                </div>
-                <p class="tax_data">Inclusive of all taxes</p>
-                <div class="underline"></div>
-                <div class="prosize">
-                    <h6>Size</h6>
-                    <h5>Free Size</h5>
-                </div>
-                <div class="single_pro_data">
-                    <h6>Product Details</h6>
-                    <ul>
-                        <li>
-                            <ul>
-                                <li>Metal Weight (Gram):</li>
-                                <li>11.15</li>
-                            </ul>
-                        </li>
-                        <li>
-                            <ul>
-                                <li>Gold Purity (Karat):</li>
-                                <li>22 KT</li>
-                            </ul>
-                        </li>
-                        <li>
-                            <ul>
-                                <li>Gold Color:</li>
-                                <li>Yellow Gold</li>
-                            </ul>
-                        </li>
-                    </ul>
-                </div>
-                <div class="underline"></div>
-
                 <div class="single_pro_button">
                     <a href="#" class="add_to_cart_btn">Add to Cart</a>
                     <a href="#" class="buy_now_btn">Buy Now</a>
@@ -127,17 +109,8 @@
                     </nav>
                     <section class="tab_content_area">
                         <div class="content content-1">
-                            <div class="title">This is a Home content</div>
-                            <p>
-                                Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                                Vero aspernatur nobis provident dolores molestias quia
-                                quisquam laborum, inventore quis, distinctioa, fugit
-                                repudiandae delectus sunt ipsam! Odio illo at quia
-                                doloremque fugit iops, asperiores? Consectetur esse officia
-                                labore voluptatum blanditiis molestias dic voluptas est,
-                                minima unde sequi, praesentium dicta suscipit quisquam iure
-                                sed, nemo.
-                            </p>
+                            <div class="title"><?php echo $product['name']; ?></div>
+                            <?php echo $product['description']; ?>
                         </div>
                         <div class="content content-3">
                             <div class="title">This is a Code content</div>

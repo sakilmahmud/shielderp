@@ -210,11 +210,18 @@
                                     </div>
                                     <div class="col-md-12">
                                         <div class="form-group">
+                                            <label for="highlight_text">Highlight</label>
+                                            <textarea class="form-control" id="highlight_text" name="highlight_text"><?php echo set_value('highlight_text', isset($product['highlight_text']) ? $product['highlight_text'] : ''); ?></textarea>
+                                            <?php echo form_error('highlight_text'); ?>
+                                        </div>
+                                    </div>
+                                    <!-- <div class="col-md-12">
+                                        <div class="form-group">
                                             <label for="description">Description</label>
                                             <textarea class="form-control editor" id="description" name="description"><?php echo set_value('description', isset($product['description']) ? $product['description'] : ''); ?></textarea>
                                             <?php echo form_error('description'); ?>
                                         </div>
-                                    </div>
+                                    </div> -->
 
                                     <?php if ($isUpdate) { ?>
                                         <input type="hidden" name="product_id" value="<?php echo $product['id']; ?>">
