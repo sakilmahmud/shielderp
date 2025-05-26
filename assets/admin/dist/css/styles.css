@@ -1,221 +1,316 @@
-.big-badge {
-  font-size: 1.5em; /* Adjust the size as needed */
-  padding: 0.3em 0.6em; /* Adjust padding as needed */
-}
-.ap-calendar {
-  display: flex;
-  flex-wrap: wrap;
-  max-width: 100%;
-  margin: 0 auto;
-  font-size: 16px;
-}
-.months {
-  display: flex;
-  flex-wrap: wrap;
-  max-width: 100%;
-  margin: 0 auto;
-  font-size: 16px;
+.navbar {
+  padding: 0px !important;
 }
 
-.month {
-  width: 100px;
-  height: 50px;
-  font-weight: bold;
-  text-align: center;
-  margin: 10px 10px 0 5px;
-  padding: 10px;
-}
-
-.day {
-  width: 55px;
-  margin: 5px;
-  text-align: center;
-  cursor: pointer;
-  border: 1px solid #ccc;
-  padding: 5px;
-}
-
-.time-select {
-  margin-top: 10px;
-}
-
-.day.selected {
-  background-color: #007bff;
-  color: white;
-}
-
-select {
-  width: 100%;
-  padding: 5px;
-}
-/* January */
-.january {
-  background-color: #f2f5a9; /* Light Yellow */
-  color: #333; /* Dark Gray Text Color */
-}
-
-/* February */
-.february {
-  background-color: #f5a9a9; /* Light Red */
-  color: #333; /* Dark Gray Text Color */
-}
-
-/* March */
-.march {
-  background-color: #a9f5f2; /* Light Blue */
-  color: #333; /* Dark Gray Text Color */
-}
-
-/* April */
-.april {
-  background-color: #f5d0a9; /* Light Orange */
-  color: #333; /* Dark Gray Text Color */
-}
-
-/* May */
-.may {
-  background-color: #d0f5a9; /* Light Green */
-  color: #333; /* Dark Gray Text Color */
-}
-
-/* June */
-.june {
-  background-color: #a9bcf5; /* Light Purple */
-  color: #333; /* Dark Gray Text Color */
-}
-
-/* July */
-.july {
-  background-color: #f5a9bc; /* Light Pink */
-  color: #333; /* Dark Gray Text Color */
-}
-
-/* August */
-.august {
-  background-color: #f2f5a9; /* Light Yellow */
-  color: #333; /* Dark Gray Text Color */
-}
-
-/* September */
-.september {
-  background-color: #f5a9a9; /* Light Red */
-  color: #333; /* Dark Gray Text Color */
-}
-
-/* October */
-.october {
-  background-color: #a9f5f2; /* Light Blue */
-  color: #333; /* Dark Gray Text Color */
-}
-
-/* November */
-.november {
-  background-color: #f5d0a9; /* Light Orange */
-  color: #333; /* Dark Gray Text Color */
-}
-
-/* December */
-.december {
-  background-color: #d0f5a9; /* Light Green */
-  color: #333; /* Dark Gray Text Color */
-}
-.ap-calendar .day.selected {
-  background-color: #007bff; /* Blue background color for selected date */
-  color: #fff; /* White text color for selected date */
-  font-weight: bold; /* Bold text for selected date */
-}
-
-.doc_banner {
-  position: relative;
-}
-.appointmentDetails {
-  position: absolute;
-  top: 4px;
-  left: 10px;
-  color: #fff;
-  font-size: 20px;
-  background-color: rgba(7, 173, 110, 0.5);
-  padding: 5px 15px;
-  border-radius: 10px;
-}
-
-/* Media query for responsiveness */
-@media (max-width: 768px) {
-  .appointmentDetails {
-    font-size: 10px;
-    background-color: rgba(18, 23, 21, 0.5);
-    padding: 3px 5px;
-    border-radius: 5px;
+@media (min-width: 768px) {
+  body:not(.sidebar-mini-md):not(.sidebar-mini-xs):not(.layout-top-nav)
+    .content-wrapper,
+  body:not(.sidebar-mini-md):not(.sidebar-mini-xs):not(.layout-top-nav)
+    .main-footer,
+  body:not(.sidebar-mini-md):not(.sidebar-mini-xs):not(.layout-top-nav)
+    .main-header {
+    transition: margin-left 0.3s ease-in-out;
+    margin-left: 200px;
   }
 }
 
-.gap-3 {
-  gap: 20px;
+.main-sidebar,
+.main-sidebar::before {
+  transition: margin-left 0.3s ease-in-out, width 0.3s ease-in-out;
+  width: 200px;
 }
 
-.mt-4 {
-  margin-top: 1.9rem !important;
+.sidebar-mini .main-sidebar .nav-link,
+.sidebar-mini-md .main-sidebar .nav-link,
+.sidebar-mini-xs .main-sidebar .nav-link {
+  width: calc(200px - 0.5rem * 2);
+  transition: width ease-in-out 0.3s;
 }
 
-.chosen-container {
+.nav-sidebar .nav-link p {
+  font-size: 14px;
+}
+
+.icon-blue {
+  color: #3498db;
+}
+
+.icon-inventory {
+  color: rgb(189, 247, 90);
+}
+
+.icon-purple {
+  color: #8e44ad;
+}
+
+.icon-yellow {
+  color: rgb(233, 29, 161);
+}
+
+.icon-invoice {
+  color: rgb(246, 110, 205);
+}
+
+.icon-orange {
+  color: #f39c12;
+}
+
+.icon-deeporange {
+  color: #e67e22;
+}
+
+.icon-lightgreen {
+  color: #2ecc71;
+}
+
+.icon-red {
+  color: #e74c3c;
+}
+
+.icon-teal {
+  color: #16a085;
+}
+
+.icon-darkblue {
+  color: #2980b9;
+}
+
+.icon-gray {
+  color: #7f8c8d;
+}
+
+.icon-bluegray {
+  color: #34495e;
+}
+.icon-social {
+  color: #9cf2f8;
+}
+
+.icon-darkred {
+  color: #c0392b;
+}
+
+[class*="sidebar-dark-"] .sidebar a {
+  color: #fff;
+}
+
+.product-row {
+  background: #efefef;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}
+
+li.list-group-item.customer-suggestion {
+  padding: 5px 0 5px 10px;
+  background: #ddd;
+  cursor: pointer;
+}
+
+ul#customer_suggestions {
+  position: absolute;
+  z-index: 1000;
+  width: 250px !important;
+  left: 6px;
+  top: 70px;
+}
+
+.last_purchase_prices {
+  padding: 10px;
+}
+
+.last_purchase_prices ul {
+  list-style: none;
+  padding: 0px;
+  margin: 0px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.last_purchase_prices ul li {
+  display: inline-block;
+  background: rgb(245, 245, 245);
+  padding: 3px 5px;
+  border-radius: 4px;
+  border: 1px solid rgb(221, 221, 221);
+  margin-bottom: -10px;
+  font-size: 13px;
+}
+
+.form-group p {
+  color: red;
+}
+
+[class*="sidebar-dark-"] .nav-sidebar > .nav-item > .nav-treeview {
+  background-color: #666;
+}
+
+label:not(.form-check-label):not(.custom-file-label) {
+  font-weight: 700;
+  font-size: 13px;
+}
+
+.table thead th {
+  font-size: 12px;
+}
+
+.form-control {
+  font-size: 14px;
+}
+
+.brand-link .brand-image {
+  line-height: 1 !important;
+  margin: 0px !important;
+  width: 20% !important;
+  max-height: none !important;
+  float: none !important;
+}
+
+.brand-link {
+  display: block;
+  font-size: 1.75rem;
+  line-height: 1;
+  padding: 4px;
+  background-color: #000 !important;
+  text-align: center;
+}
+
+.nav-link {
+  padding: 5px 10px;
+}
+
+.table td {
+  font-size: 12px !important;
+  padding: 5px 7px !important;
+}
+
+.table td p {
+  margin-bottom: 2px;
+}
+
+sup {
+  color: red;
+  font-size: 14px;
+  top: -0.2em;
+}
+
+.chosen-container-single {
   width: 100% !important;
+  clear: both !important;
 }
 
-div.chosen-container-multi ul,
-div.chosen-container-single {
-  min-height: 38px;
-  border-radius: 5px;
-  box-shadow: none;
-  min-width: 200px;
+.form-control.error:focus {
+  border: 1px solid red !important;
 }
 
-div.chosen-container-multi ul li {
-  line-height: 36px;
+.error {
+  border: 1px solid red !important;
 }
 
-div.chosen-container-single a {
-  line-height: 36px !important;
-  min-height: 38px;
+/* Shake animation */
+@keyframes shake {
+  0% {
+    transform: translateX(0);
+  }
+
+  25% {
+    transform: translateX(-5px);
+  }
+
+  50% {
+    transform: translateX(5px);
+  }
+
+  75% {
+    transform: translateX(-5px);
+  }
+
+  100% {
+    transform: translateX(0);
+  }
 }
 
-.chosen-container-single .chosen-single div {
-  top: 7px !important;
+.shake {
+  animation: shake 0.5s;
 }
 
-div.chosen-container-multi.error ul {
-  border: 1px solid #f00 !important;
+/**neww style for due list */
+.due-scroll-container {
+  max-height: 350px;
+  overflow-y: auto;
+  padding-right: 10px;
 }
 
-div.chosen-container-single.error {
-  border: 1px solid #f00 !important;
+.list-group-item {
+  border: none;
+  border-bottom: 1px solid #f1f1f1;
+  transition: background 0.3s;
 }
 
-.chosen-container-multi .chosen-choices li.search-choice {
-  margin: 7px 5px 3px 0;
+.list-group-item:hover {
+  background: #f9f9f9;
 }
 
-.product-list-container {
+.nav-tabs .nav-link {
+  font-weight: 500;
+  font-size: 15px;
+  color: #333;
+  background-color: #fff;
+}
+
+.nav-tabs .nav-link.active {
+  background-color: #e9ecef;
+  border-color: #dee2e6 #dee2e6 #fff;
+}
+
+.nav-tabs .badge {
+  font-size: 0.875rem;
+}
+.card-min-height {
+  min-height: 370px;
+}
+
+#ajax-low-stock-content .list-group-item {
+  padding: 5px 10px;
+  font-size: 13px;
+}
+
+.due-scroll-container {
   max-height: 300px;
   overflow-y: auto;
-  border: 1px solid #ddd;
-  padding: 10px;
-  border-radius: 4px;
+  overflow-x: hidden;
+  /* hide horizontal scrollbar */
+  padding-right: 10px;
+  scrollbar-width: thin;
+  scrollbar-color: #ccc transparent;
+  border: 1px solid #dee2e6;
+  border-radius: 0.25rem;
 }
 
-.product-list {
-  list-style-type: none;
-  padding-left: 0;
-  margin: 0;
+/* Webkit (Chrome, Safari) Scrollbar Customization */
+.due-scroll-container::-webkit-scrollbar {
+  width: 6px;
 }
 
-.product-list li {
-  background: #f4f4f4;
-  margin: 5px 0;
-  padding: 5px 10px;
-  border-radius: 4px;
-  border: 1px solid #ddd;
+.due-scroll-container::-webkit-scrollbar-thumb {
+  background-color: #adb5bd;
+  border-radius: 10px;
 }
 
-.product-list li:hover {
-  background: #e4e4e4;
+.due-scroll-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.due-scroll-container {
+  max-height: 300px;
+  overflow-y: auto;
+  padding-right: 5px;
+}
+
+.list-group-item {
+  font-size: 14px;
+  transition: background-color 0.3s;
+}
+
+.list-group-item:hover {
+  background-color: #f8f9fa;
 }

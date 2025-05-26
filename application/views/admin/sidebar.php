@@ -340,7 +340,7 @@
         </li>
         <li class="nav-item has-treeview <?php if (in_array($activePage, ['posts', 'wa', 'contacts'])) echo 'menu-open'; ?>">
           <a href="#" class="nav-link <?php if (in_array($activePage, ['posts', 'wa', 'contacts'])) echo 'active'; ?>">
-            <i class="nav-icon fas fa-share-alt icon-bluegray"></i>
+            <i class="nav-icon fas fa-share-alt icon-social"></i>
             <p>
               Social Media
               <i class="right fas fa-angle-left"></i>

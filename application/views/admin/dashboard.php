@@ -1,57 +1,3 @@
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-<style>
-    .card-min-height {
-        min-height: 370px;
-    }
-
-    #ajax-low-stock-content .list-group-item {
-        padding: 5px 10px;
-        font-size: 13px;
-    }
-
-    .due-scroll-container {
-        max-height: 300px;
-        overflow-y: auto;
-        overflow-x: hidden;
-        /* hide horizontal scrollbar */
-        padding-right: 10px;
-        scrollbar-width: thin;
-        scrollbar-color: #ccc transparent;
-        border: 1px solid #dee2e6;
-        border-radius: 0.25rem;
-    }
-
-    /* Webkit (Chrome, Safari) Scrollbar Customization */
-    .due-scroll-container::-webkit-scrollbar {
-        width: 6px;
-    }
-
-    .due-scroll-container::-webkit-scrollbar-thumb {
-        background-color: #adb5bd;
-        border-radius: 10px;
-    }
-
-    .due-scroll-container::-webkit-scrollbar-track {
-        background: transparent;
-    }
-
-    .due-scroll-container {
-        max-height: 300px;
-        overflow-y: auto;
-        padding-right: 5px;
-    }
-
-    .list-group-item {
-        font-size: 14px;
-        transition: background-color 0.3s;
-    }
-
-    .list-group-item:hover {
-        background-color: #f8f9fa;
-    }
-</style>
-
 <div class="content-wrapper mt-3">
     <section class="content">
         <div class="container-fluid">
@@ -162,7 +108,7 @@
                 <div class="col-md-4">
                     <div class="card">
                         <div class="card-body">
-                            <canvas id="categorySalesChart" height="100"></canvas>
+                            <canvas id="categorySalesChart" height="300"></canvas>
                         </div>
                     </div>
                 </div>

@@ -25,6 +25,7 @@
   <!-- DataTables -->
   <link rel="stylesheet" href="<?php echo base_url('assets/admin/plugins/') ?>datatables-bs4/css/dataTables.bootstrap4.min.css">
   <link rel="stylesheet" href="<?php echo base_url('assets/admin/plugins/') ?>datatables-responsive/css/responsive.bootstrap4.min.css">
+  <link rel="stylesheet" href="<?php echo base_url('assets/admin/plugins/') ?>chart.js/Chart.min.css">
 
   <!-- jQuery -->
   <script src="<?php echo base_url('assets/admin/plugins/jquery/jquery.min.js') ?>"></script>
@@ -41,271 +42,47 @@
   <script src="<?php echo base_url('assets/admin/plugins/') ?>datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
   <script src="<?php echo base_url('assets/admin/plugins/') ?>datatables-responsive/js/dataTables.responsive.min.js"></script>
   <script src="<?php echo base_url('assets/admin/plugins/') ?>datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+  <script src="<?php echo base_url('assets/admin/plugins/') ?>chart.js/Chart.min.js"></script>
+  <script>
+    function updateDateTime() {
+      const now = new Date();
 
-  <style>
-    .navbar {
-      padding: 0px !important;
+      const hours = now.getHours() % 12 || 12;
+      const minutes = now.getMinutes().toString().padStart(2, '0');
+      const seconds = now.getSeconds().toString().padStart(2, '0');
+      const ampm = now.getHours() >= 12 ? 'PM' : 'AM';
+
+      const day = now.getDate();
+      const daySuffix = (d => {
+        if (d > 3 && d < 21) return 'th';
+        switch (d % 10) {
+          case 1:
+            return 'st';
+          case 2:
+            return 'nd';
+          case 3:
+            return 'rd';
+          default:
+            return 'th';
+        }
+      })(day);
+
+      const monthNames = [
+        "January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"
+      ];
+
+      const formattedTime = `${day}${daySuffix} ${monthNames[now.getMonth()]}, ${now.getFullYear()} ${hours}:${minutes}:${seconds} ${ampm}`;
+      $('#live-datetime').text(formattedTime);
     }
 
-    @media (min-width: 768px) {
+    $(document).ready(function() {
+      updateDateTime(); // Initial call
+      setInterval(updateDateTime, 1000); // Update every second
+    });
+  </script>
 
-      body:not(.sidebar-mini-md):not(.sidebar-mini-xs):not(.layout-top-nav) .content-wrapper,
-      body:not(.sidebar-mini-md):not(.sidebar-mini-xs):not(.layout-top-nav) .main-footer,
-      body:not(.sidebar-mini-md):not(.sidebar-mini-xs):not(.layout-top-nav) .main-header {
-        transition: margin-left .3s ease-in-out;
-        margin-left: 200px;
-      }
-    }
 
-    .main-sidebar,
-    .main-sidebar::before {
-      transition: margin-left .3s ease-in-out, width .3s ease-in-out;
-      width: 200px;
-    }
-
-    .sidebar-mini .main-sidebar .nav-link,
-    .sidebar-mini-md .main-sidebar .nav-link,
-    .sidebar-mini-xs .main-sidebar .nav-link {
-      width: calc(200px - .5rem * 2);
-      transition: width ease-in-out .3s;
-    }
-
-    .nav-sidebar .nav-link p {
-      font-size: 14px;
-    }
-
-    .icon-blue {
-      color: #3498db;
-    }
-
-    .icon-inventory {
-      color: rgb(189, 247, 90);
-    }
-
-    .icon-purple {
-      color: #8e44ad;
-    }
-
-    .icon-yellow {
-      color: rgb(233, 29, 161);
-    }
-
-    .icon-invoice {
-      color: rgb(246, 110, 205);
-    }
-
-    .icon-orange {
-      color: #f39c12;
-    }
-
-    .icon-deeporange {
-      color: #e67e22;
-    }
-
-    .icon-lightgreen {
-      color: #2ecc71;
-    }
-
-    .icon-red {
-      color: #e74c3c;
-    }
-
-    .icon-teal {
-      color: #16a085;
-    }
-
-    .icon-darkblue {
-      color: #2980b9;
-    }
-
-    .icon-gray {
-      color: #7f8c8d;
-    }
-
-    .icon-bluegray {
-      color: #34495e;
-    }
-
-    .icon-darkred {
-      color: #c0392b;
-    }
-
-    [class*=sidebar-dark-] .sidebar a {
-      color: #fff;
-    }
-
-    .product-row {
-      background: #efefef;
-      box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
-    }
-
-    li.list-group-item.customer-suggestion {
-      padding: 5px 0 5px 10px;
-      background: #ddd;
-      cursor: pointer;
-    }
-
-    ul#customer_suggestions {
-      position: absolute;
-      z-index: 1000;
-      width: 250px !important;
-      left: 6px;
-      top: 70px;
-    }
-
-    .last_purchase_prices {
-      padding: 10px;
-    }
-
-    .last_purchase_prices ul {
-      list-style: none;
-      padding: 0px;
-      margin: 0px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    .last_purchase_prices ul li {
-      display: inline-block;
-      background: rgb(245, 245, 245);
-      padding: 3px 5px;
-      border-radius: 4px;
-      border: 1px solid rgb(221, 221, 221);
-      margin-bottom: -10px;
-      font-size: 13px;
-    }
-
-    .form-group p {
-      color: red;
-    }
-
-    [class*="sidebar-dark-"] .nav-sidebar>.nav-item>.nav-treeview {
-      background-color: #666;
-    }
-
-    label:not(.form-check-label):not(.custom-file-label) {
-      font-weight: 700;
-      font-size: 13px;
-    }
-
-    .table thead th {
-      font-size: 12px;
-    }
-
-    .form-control {
-      font-size: 14px;
-    }
-
-    .brand-link .brand-image {
-      line-height: 1 !important;
-      margin: 0px !important;
-      width: 20% !important;
-      max-height: none !important;
-      float: none !important;
-    }
-
-    .brand-link {
-      display: block;
-      font-size: 1.75rem;
-      line-height: 1;
-      padding: 4px;
-      background-color: #000 !important;
-      text-align: center;
-    }
-
-    .nav-link {
-      padding: 5px 10px;
-    }
-
-    .table td {
-      font-size: 12px !important;
-      padding: 5px 7px !important;
-    }
-
-    .table td p {
-      margin-bottom: 2px;
-    }
-
-    sup {
-      color: red;
-      font-size: 14px;
-      top: -.2em;
-    }
-
-    .chosen-container-single {
-      width: 100% !important;
-      clear: both !important;
-    }
-
-    .form-control.error:focus {
-      border: 1px solid red !important;
-    }
-
-    .error {
-      border: 1px solid red !important;
-    }
-
-    /* Shake animation */
-    @keyframes shake {
-      0% {
-        transform: translateX(0);
-      }
-
-      25% {
-        transform: translateX(-5px);
-      }
-
-      50% {
-        transform: translateX(5px);
-      }
-
-      75% {
-        transform: translateX(-5px);
-      }
-
-      100% {
-        transform: translateX(0);
-      }
-    }
-
-    .shake {
-      animation: shake 0.5s;
-    }
-
-    /**neww style for due list */
-    .due-scroll-container {
-      max-height: 350px;
-      overflow-y: auto;
-      padding-right: 10px;
-    }
-
-    .list-group-item {
-      border: none;
-      border-bottom: 1px solid #f1f1f1;
-      transition: background 0.3s;
-    }
-
-    .list-group-item:hover {
-      background: #f9f9f9;
-    }
-
-    .nav-tabs .nav-link {
-      font-weight: 500;
-      font-size: 15px;
-      color: #333;
-      background-color: #fff;
-    }
-
-    .nav-tabs .nav-link.active {
-      background-color: #e9ecef;
-      border-color: #dee2e6 #dee2e6 #fff;
-    }
-
-    .nav-tabs .badge {
-      font-size: 0.875rem;
-    }
-  </style>
 </head>
 
 <body class="hold-transition sidebar-mini">
@@ -318,7 +95,7 @@
           <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
         </li>
         <li class="nav-item mt-1 d-none d-sm-inline-block">
-          <b class=""><?php echo date("h:i A, jS F, Y"); ?></b>
+          <b id="live-datetime"></b>
         </li>
       </ul>
       <div class="right_section">
