@@ -23,6 +23,7 @@ $route['product-type/(:any)'] = 'Home/product_type/$1';
 /** Admin Routes */
 $route['admin'] = 'AdminController/index';
 $route['admin/dashboard'] = 'AdminController/dashboard';
+$route['admin/premiumOnly'] = 'AdminController/premiumOnly';
 /** other dashboard routes */
 $route['admin/dashboard/due_customers'] = 'AdminController/ajax_due_customers';
 $route['admin/dashboard/due_suppliers'] = 'AdminController/ajax_due_suppliers';

@@ -43,6 +43,97 @@
   <script src="<?php echo base_url('assets/admin/plugins/') ?>datatables-responsive/js/responsive.bootstrap4.min.js"></script>
 
   <style>
+    .navbar {
+      padding: 0px !important;
+    }
+
+    @media (min-width: 768px) {
+
+      body:not(.sidebar-mini-md):not(.sidebar-mini-xs):not(.layout-top-nav) .content-wrapper,
+      body:not(.sidebar-mini-md):not(.sidebar-mini-xs):not(.layout-top-nav) .main-footer,
+      body:not(.sidebar-mini-md):not(.sidebar-mini-xs):not(.layout-top-nav) .main-header {
+        transition: margin-left .3s ease-in-out;
+        margin-left: 200px;
+      }
+    }
+
+    .main-sidebar,
+    .main-sidebar::before {
+      transition: margin-left .3s ease-in-out, width .3s ease-in-out;
+      width: 200px;
+    }
+
+    .sidebar-mini .main-sidebar .nav-link,
+    .sidebar-mini-md .main-sidebar .nav-link,
+    .sidebar-mini-xs .main-sidebar .nav-link {
+      width: calc(200px - .5rem * 2);
+      transition: width ease-in-out .3s;
+    }
+
+    .nav-sidebar .nav-link p {
+      font-size: 14px;
+    }
+
+    .icon-blue {
+      color: #3498db;
+    }
+
+    .icon-inventory {
+      color: rgb(189, 247, 90);
+    }
+
+    .icon-purple {
+      color: #8e44ad;
+    }
+
+    .icon-yellow {
+      color: rgb(233, 29, 161);
+    }
+
+    .icon-invoice {
+      color: rgb(246, 110, 205);
+    }
+
+    .icon-orange {
+      color: #f39c12;
+    }
+
+    .icon-deeporange {
+      color: #e67e22;
+    }
+
+    .icon-lightgreen {
+      color: #2ecc71;
+    }
+
+    .icon-red {
+      color: #e74c3c;
+    }
+
+    .icon-teal {
+      color: #16a085;
+    }
+
+    .icon-darkblue {
+      color: #2980b9;
+    }
+
+    .icon-gray {
+      color: #7f8c8d;
+    }
+
+    .icon-bluegray {
+      color: #34495e;
+    }
+
+    .icon-darkred {
+      color: #c0392b;
+    }
+
+    [class*=sidebar-dark-] .sidebar a {
+      color: #fff;
+    }
+
     .product-row {
       background: #efefef;
       box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
@@ -117,10 +208,14 @@
     .brand-link {
       display: block;
       font-size: 1.75rem;
-      line-height: 1.6;
-      padding: .8125rem .5rem;
+      line-height: 1;
+      padding: 4px;
       background-color: #000 !important;
       text-align: center;
+    }
+
+    .nav-link {
+      padding: 5px 10px;
     }
 
     .table td {
@@ -177,6 +272,39 @@
     .shake {
       animation: shake 0.5s;
     }
+
+    /**neww style for due list */
+    .due-scroll-container {
+      max-height: 350px;
+      overflow-y: auto;
+      padding-right: 10px;
+    }
+
+    .list-group-item {
+      border: none;
+      border-bottom: 1px solid #f1f1f1;
+      transition: background 0.3s;
+    }
+
+    .list-group-item:hover {
+      background: #f9f9f9;
+    }
+
+    .nav-tabs .nav-link {
+      font-weight: 500;
+      font-size: 15px;
+      color: #333;
+      background-color: #fff;
+    }
+
+    .nav-tabs .nav-link.active {
+      background-color: #e9ecef;
+      border-color: #dee2e6 #dee2e6 #fff;
+    }
+
+    .nav-tabs .badge {
+      font-size: 0.875rem;
+    }
   </style>
 </head>
 
@@ -189,18 +317,32 @@
         <li class="nav-item">
           <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
         </li>
-        <li class="nav-item d-none d-sm-inline-block">
-          <a href="<?php echo base_url() ?>" target="_blank" class="nav-link">Home</a>
+        <li class="nav-item mt-1 d-none d-sm-inline-block">
+          <b class=""><?php echo date("h:i A, jS F, Y"); ?></b>
         </li>
       </ul>
-
-      <div class="mr-2">
-        <!-- Calculator Icon -->
-        <a href="javascript:void(0);" id="openCalculator" class="nav-link">
-          <i class="nav-icon fas fa-calculator"></i> <!-- Calculator Icon -->
-        </a>
+      <div class="right_section">
+        <ul class="navbar-nav">
+          <li class="nav-item ">
+            <a href="<?php echo base_url() ?>" target="_blank" class="nav-link" title="Home"><i class="nav-icon fas fa-home"></i></a>
+          </li>
+          <li class="nav-item">
+            <a href="javascript:void(0);" id="openCalculator" class="nav-link" title="Calculator">
+              <i class="nav-icon fas fa-calculator"></i>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="<?php echo base_url('admin/password'); ?>" title="Change Password" class="nav-link <?php if ($activePage === 'password') echo 'active'; ?>">
+              <i class="nav-icon fas fa-key"></i>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="<?php echo base_url('logout'); ?>" class="nav-link" title="Logout">
+              <i class="nav-icon fas fa-power-off icon-darkred"></i>
+            </a>
+          </li>
+        </ul>
       </div>
-      <div class="mr-2"><b><?php echo date("h:i A, jS F, Y"); ?></b></div>
     </nav>
     <!-- /.navbar -->
     <div class="modal fade" id="calculatorModal" tabindex="-1" aria-labelledby="calculatorModalLabel" aria-hidden="true">

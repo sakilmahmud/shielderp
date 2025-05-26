@@ -54,9 +54,157 @@ class AdminController extends CI_Controller
             'monthly' => $this->get_purchase_total('monthly'),
         ];
 
+        // Load top categories by sales
+        $data['top_categories'] = $this->get_top_categories_sales();
+        $data['monthly_sales'] = $this->get_monthly_sales_data();
+        $data['monthly_purchases'] = $this->get_monthly_purchase_data();
+
+        $data['total_customer_due'] = $this->get_total_customer_due();
+        $data['total_supplier_due'] = $this->get_total_supplier_due();
+
+        // Add low stock summary
+        $stock_summary = $this->get_low_stock_summary(); // returns ['low' => 12, 'total' => 75]
+        $data['low_stock_count'] = $stock_summary['low'];
+        $data['total_products_count'] = $stock_summary['total'];
+
         $this->load->view('admin/header', $data);
         $this->load->view('admin/dashboard', $data);
         $this->load->view('admin/footer');
+    }
+
+    private function get_low_stock_summary()
+    {
+        $this->db->select('id, low_stock_alert');
+        $products = $this->db->get('products')->result_array();
+        $total = count($products);
+        $low = 0;
+
+        foreach ($products as $product) {
+            $product_id = $product['id'];
+
+            $this->db->select_sum('quantity');
+            $this->db->where('product_id', $product_id);
+            $stock_in = $this->db->get('stock_management')->row()->quantity ?? 0;
+
+            $this->db->select_sum('quantity');
+            $this->db->where('product_id', $product_id);
+            $stock_out = $this->db->get('invoice_details')->row()->quantity ?? 0;
+
+            $final_stock = $stock_in - $stock_out;
+
+            if ($final_stock < $product['low_stock_alert']) {
+                $low++;
+            }
+        }
+
+        return ['low' => $low, 'total' => $total];
+    }
+
+    private function get_total_customer_due()
+    {
+        $due_list = $this->due_customer_list();
+        $total = array_sum(array_column($due_list, 'due_amount'));
+        return $total;
+    }
+
+    private function get_total_supplier_due()
+    {
+        $due_list = $this->due_supplier_list();
+        $total = array_sum(array_column($due_list, 'due_amount'));
+        return $total;
+    }
+
+    private function get_monthly_sales_data()
+    {
+        $year = date('Y');
+        $monthly_sales = [];
+
+        for ($m = 1; $m <= 12; $m++) {
+            $start = date("{$year}-{$m}-01");
+            $end = date("{$year}-{$m}-t");
+
+            $this->db->select('SUM(total_amount) as total');
+            $this->db->from('invoices');
+            $this->db->where('invoice_date >=', $start);
+            $this->db->where('invoice_date <=', $end);
+            $result = $this->db->get()->row_array();
+
+            $monthly_sales[] = round($result['total'] ?? 0, 2);
+        }
+
+        return $monthly_sales;
+    }
+
+    private function get_monthly_purchase_data()
+    {
+        $year = date('Y');
+        $monthly_purchases = [];
+
+        for ($m = 1; $m <= 12; $m++) {
+            $start = date("{$year}-{$m}-01");
+            $end = date("{$year}-{$m}-t");
+
+            $this->db->select('SUM(total_amount) as total');
+            $this->db->from('purchase_orders');
+            $this->db->where('purchase_date >=', $start);
+            $this->db->where('purchase_date <=', $end);
+            $result = $this->db->get()->row_array();
+
+            $monthly_purchases[] = round($result['total'] ?? 0, 2);
+        }
+
+        return $monthly_purchases;
+    }
+
+    private function get_sales_total($range)
+    {
+        $this->db->select('SUM(total_amount) as total');
+        $this->db->from('invoices');
+
+        if ($range === 'daily') {
+            $this->db->where('DATE(invoice_date)', date('Y-m-d'));
+        } elseif ($range === 'weekly') {
+            $this->db->where('invoice_date >=', date('Y-m-d', strtotime('-7 days')));
+        } elseif ($range === 'monthly') {
+            $this->db->where('invoice_date >=', date('Y-m-d', strtotime('-30 days')));
+        }
+
+        $query = $this->db->get();
+        $result = $query->row_array();
+
+        return $result['total'] ?? 0;
+    }
+
+    private function get_purchase_total($range)
+    {
+        $this->db->select('SUM(total_amount) as total');
+        $this->db->from('purchase_orders');
+
+        if ($range === 'daily') {
+            $this->db->where('DATE(purchase_date)', date('Y-m-d'));
+        } elseif ($range === 'weekly') {
+            $this->db->where('purchase_date >=', date('Y-m-d', strtotime('-7 days')));
+        } elseif ($range === 'monthly') {
+            $this->db->where('purchase_date >=', date('Y-m-d', strtotime('-30 days')));
+        }
+
+        $query = $this->db->get();
+        $result = $query->row_array();
+
+        return $result['total'] ?? 0;
+    }
+
+    private function get_top_categories_sales()
+    {
+        $this->db->select('categories.name, SUM(invoice_details.final_price) as total_sales');
+        $this->db->from('invoice_details');
+        $this->db->join('products', 'products.id = invoice_details.product_id');
+        $this->db->join('categories', 'categories.id = products.category_id');
+        $this->db->group_by('categories.id');
+        $this->db->order_by('total_sales', 'DESC');
+        $this->db->limit(10);
+        $query = $this->db->get();
+        return $query->result_array();
     }
 
     public function ajax_low_stock()
@@ -97,22 +245,34 @@ class AdminController extends CI_Controller
         });
 
         // Load partial view
-        $html = '<div class="due-scroll-container"><ul class="list-group">';
-        foreach ($low_stocks as $stock) {
-            $html .= '<li class="list-group-item d-flex justify-content-between align-items-center">'
-                . htmlspecialchars($stock['name']) .
-                '<span class="badge badge-danger badge-pill">' . $stock['quantity'] . '</span>'
-                . '</li>';
-        }
-        $html .= '</ul></div>';
+        $html = '<div class="due-scroll-container">';
 
-        if (empty($low_stocks)) {
-            $html = '<p>All stocks are healthy.</p>';
+        if (!empty($low_stocks)) {
+            $html .= '<div class="list-group">';
+            foreach ($low_stocks as $stock) {
+                $html .= '
+        <div class="list-group-item d-flex justify-content-between align-items-center">
+            <div class="text-truncate" style="max-width: 75%;">
+                <i class="fas fa-box-open text-warning mr-2"></i> 
+                ' . htmlspecialchars(word_limiter($stock['name'], 6)) . '
+            </div>
+            <span class="badge badge-pill badge-danger px-3 py-2">
+                ' . $stock['quantity'] . '
+            </span>
+        </div>';
+            }
+            $html .= '</div>';
+        } else {
+            $html .= '<div class="alert alert-success text-center mb-0">
+            <i class="fas fa-check-circle mr-1"></i> All stocks are healthy.
+        </div>';
         }
+
+        $html .= '</div>';
+
 
         echo $html;
     }
-
 
     public function ajax_due_customers()
     {
@@ -127,7 +287,6 @@ class AdminController extends CI_Controller
         $html = $this->load->view('admin/dashboard/ajax_due_suppliers', ['due_suppliers' => $suppliers], true);
         echo $html;
     }
-
 
     private function due_customer_list()
     {
@@ -261,45 +420,6 @@ class AdminController extends CI_Controller
 
         return $due_suppliers;
     }
-
-    private function get_sales_total($range)
-    {
-        $this->db->select('SUM(total_amount) as total');
-        $this->db->from('invoices');
-
-        if ($range === 'daily') {
-            $this->db->where('DATE(invoice_date)', date('Y-m-d'));
-        } elseif ($range === 'weekly') {
-            $this->db->where('invoice_date >=', date('Y-m-d', strtotime('-7 days')));
-        } elseif ($range === 'monthly') {
-            $this->db->where('invoice_date >=', date('Y-m-d', strtotime('-30 days')));
-        }
-
-        $query = $this->db->get();
-        $result = $query->row_array();
-
-        return $result['total'] ?? 0;
-    }
-
-    private function get_purchase_total($range)
-    {
-        $this->db->select('SUM(total_amount) as total');
-        $this->db->from('purchase_orders');
-
-        if ($range === 'daily') {
-            $this->db->where('DATE(purchase_date)', date('Y-m-d'));
-        } elseif ($range === 'weekly') {
-            $this->db->where('purchase_date >=', date('Y-m-d', strtotime('-7 days')));
-        } elseif ($range === 'monthly') {
-            $this->db->where('purchase_date >=', date('Y-m-d', strtotime('-30 days')));
-        }
-
-        $query = $this->db->get();
-        $result = $query->row_array();
-
-        return $result['total'] ?? 0;
-    }
-
 
     public function taskDetails()
     {
@@ -634,5 +754,14 @@ class AdminController extends CI_Controller
                 redirect('admin/password'); // Redirect to avoid form resubmission
             }
         }
+    }
+
+    public function premiumOnly()
+    {
+        $data['activePage'] = 'premium_only';
+        $data['title'] = 'Premium Access Required';
+        $this->load->view('admin/header', $data);
+        $this->load->view('admin/premium_only');
+        $this->load->view('admin/footer');
     }
 }

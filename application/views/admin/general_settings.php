@@ -66,7 +66,7 @@
                                 </div>
                             </div>
 
-                            <!-- <div class="form-group">
+                            <div class="form-group">
                                 <label for="header_script">Header Script:</label>
                                 <textarea name="header_script" id="header_script" class="form-control" rows="5"><?php echo isset($settings['header_script']) ? $settings['header_script'] : ''; ?></textarea>
                             </div>
@@ -79,7 +79,7 @@
                             <div class="form-group">
                                 <label for="footer_script">Footer Script:</label>
                                 <textarea name="footer_script" id="footer_script" class="form-control" rows="5"><?php echo isset($settings['footer_script']) ? $settings['footer_script'] : ''; ?></textarea>
-                            </div> -->
+                            </div>
 
                             <!-- <div class="form-group">
                                 <label for="premium_account_commission">Premium Account Commission:</label>
