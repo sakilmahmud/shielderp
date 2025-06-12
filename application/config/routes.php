@@ -248,6 +248,40 @@ $route['doer/tasks'] = 'doer/tasks';
 
 
 /** Reports */
-$route['admin/reports/salesReport'] = 'admin/ReportsController/salesReport';
-$route['admin/reports/purchaseReport'] = 'admin/ReportsController/purchaseReport';
-$route['admin/reports/gstReport'] = 'admin/ReportsController/gstReport';
+$route['admin/reports/accounts'] = 'admin/reports/AccountController/index';
+$route['admin/reports/accounts/cashbook'] = 'admin/reports/AccountController/cashbook';
+$route['admin/reports/accounts/export_cashbook/(:any)'] = 'admin/reports/AccountController/export_cashbook/$1';
+
+$route['admin/reports/accounts/payment-paid'] = 'admin/reports/AccountController/payment_paid';
+$route['admin/reports/accounts/export_payment_paid/(:any)'] = 'admin/reports/AccountController/export_payment_paid/$1';
+
+$route['admin/reports/accounts/payment-received'] = 'admin/reports/AccountController/payment_received';
+$route['admin/reports/accounts/export_payment_received/(:any)'] = 'admin/reports/AccountController/export_payment_received/$1';
+
+$route['admin/reports/accounts/daily-summary'] = 'admin/reports/AccountController/daily_summary';
+$route['admin/reports/accounts/export_daily_summary/(:any)'] = 'admin/reports/AccountController/export_daily_summary/$1';
+
+$route['admin/reports/accounts/profit-loss'] = 'admin/reports/AccountController/profit_loss';
+$route['admin/reports/accounts/export_profit_loss/(:any)'] = 'admin/reports/AccountController/export_profit_loss/$1';
+
+$route['admin/reports/accounts/balance-sheet'] = 'admin/reports/AccountController/balance_sheet';
+$route['admin/reports/accounts/export_balance_sheet/(:any)'] = 'admin/reports/AccountController/export_balance_sheet/$1';
+
+$route['admin/reports/accounts/ledger'] = 'admin/reports/AccountController/ledger_dashboard';
+
+$route['admin/reports/accounts/ledger/customers'] = 'admin/reports/AccountController/customer_ledger';
+$route['admin/reports/accounts/export_customer_ledger/(:any)'] = 'admin/reports/AccountController/export_customer_ledger/$1';
+
+$route['admin/reports/accounts/ledger/suppliers'] = 'admin/reports/AccountController/supplier_ledger';
+$route['admin/reports/accounts/export_supplier_ledger/(:any)'] = 'admin/reports/AccountController/export_supplier_ledger/$1';
+
+$route['admin/reports/accounts/ledger/income'] = 'admin/reports/AccountController/income_ledger';
+$route['admin/reports/accounts/export_income_ledger/(:any)'] = 'admin/reports/AccountController/export_income_ledger/$1';
+
+$route['admin/reports/accounts/ledger/expense'] = 'admin/reports/AccountController/expense_ledger';
+$route['admin/reports/accounts/export_expense_ledger/(:any)'] = 'admin/reports/AccountController/export_expense_ledger/$1';
+
+
+
+$route['admin/reports/accounts/tax'] = 'admin/reports/AccountController/tax';
+$route['admin/reports/accounts/chart-of-accounts'] = 'admin/reports/AccountController/chart_of_accounts';

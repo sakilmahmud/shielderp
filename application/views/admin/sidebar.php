@@ -247,14 +247,17 @@
         </li>
 
         <!-- Reports -->
-        <li class="nav-item <?php if ($activePage === 'premium_only') echo 'menu-open'; ?>">
-          <a href="#" class="nav-link <?php if ($activePage === 'premium_only') echo 'active'; ?>">
+        <?php
+        $pages = ['premium_only', 'reports', 'cashbook', 'payment_paid', 'payment_received', 'daily_summary', 'ledger_dashboard', 'customer_ledger', 'supplier_ledger', 'income_ledger', 'expense_ledger', 'profit_loss', 'balance_sheet'];
+        ?>
+        <li class="nav-item <?php if (in_array($activePage, $pages)) echo 'menu-open'; ?>">
+          <a href="#" class="nav-link <?php if (in_array($activePage, $pages)) echo 'active'; ?>">
             <i class="nav-icon fas fa-chart-bar icon-darkblue"></i>
             <p>Reports <i class="fas fa-angle-left right"></i></p>
           </a>
           <ul class="nav nav-treeview">
             <li class="nav-item">
-              <a href="<?php echo base_url('admin/premiumOnly'); ?>" class="nav-link">
+              <a href="<?php echo base_url('admin/reports/accounts'); ?>" class="nav-link <?php if (in_array($activePage, $pages)) echo 'active'; ?>">
                 <i class="fas fa-file-invoice-dollar nav-icon"></i>
                 <p>Accounts</p>
               </a>
