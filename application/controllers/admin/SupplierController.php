@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class SupplierController extends CI_Controller
+class SupplierController extends MY_Controller
 {
     public function __construct()
     {
@@ -18,9 +18,8 @@ class SupplierController extends CI_Controller
     {
         $data['activePage'] = 'suppliers';
         $data['suppliers'] = $this->SupplierModel->get_all_suppliers();
-        $this->load->view('admin/header', $data);
-        $this->load->view('admin/suppliers/index', $data);
-        $this->load->view('admin/footer');
+
+        $this->render_admin('admin/suppliers/index', $data);
     }
 
     public function add()
@@ -32,9 +31,8 @@ class SupplierController extends CI_Controller
         $this->form_validation->set_rules('address', 'Address', 'required');
 
         if ($this->form_validation->run() === FALSE) {
-            $this->load->view('admin/header', $data);
-            $this->load->view('admin/suppliers/add', $data);
-            $this->load->view('admin/footer');
+
+            $this->render_admin('admin/suppliers/add', $data);
         } else {
             $supplierData = array(
                 'supplier_name' => $this->input->post('supplier_name'),
@@ -64,9 +62,8 @@ class SupplierController extends CI_Controller
         $this->form_validation->set_rules('address', 'Address', 'required');
 
         if ($this->form_validation->run() === FALSE) {
-            $this->load->view('admin/header', $data);
-            $this->load->view('admin/suppliers/edit', $data);
-            $this->load->view('admin/footer');
+
+            $this->render_admin('admin/suppliers/edit', $data);
         } else {
             $supplierData = array(
                 'supplier_name' => $this->input->post('supplier_name'),

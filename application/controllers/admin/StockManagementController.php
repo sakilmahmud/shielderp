@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class StockManagementController extends CI_Controller
+class StockManagementController extends MY_Controller
 {
     public function __construct()
     {
@@ -30,9 +30,7 @@ class StockManagementController extends CI_Controller
         $data['categories'] = $this->CategoryModel->get_all_categories();
         $data['brands'] = $this->BrandModel->get_all_brands();
 
-        $this->load->view('admin/header', $data);
-        $this->load->view('admin/stocks/index', $data);
-        $this->load->view('admin/footer');
+        $this->render_admin('admin/stocks/index', $data);
     }
 
     public function add()
@@ -49,9 +47,8 @@ class StockManagementController extends CI_Controller
         $this->form_validation->set_rules('quantity', 'Quantity', 'required');
 
         if ($this->form_validation->run() === FALSE) {
-            $this->load->view('admin/header', $data);
-            $this->load->view('admin/stocks/add', $data);
-            $this->load->view('admin/footer');
+
+            $this->render_admin('admin/stocks/add', $data);
         } else {
             $stockData = array(
                 'product_id' => $this->input->post('product_id'),
@@ -88,9 +85,8 @@ class StockManagementController extends CI_Controller
         $this->form_validation->set_rules('quantity', 'Quantity', 'required');
 
         if ($this->form_validation->run() === FALSE) {
-            $this->load->view('admin/header', $data);
-            $this->load->view('admin/stocks/edit', $data);
-            $this->load->view('admin/footer');
+
+            $this->render_admin('admin/stocks/edit', $data);
         } else {
 
             $stockData = array(

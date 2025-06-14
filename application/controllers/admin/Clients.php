@@ -1,6 +1,6 @@
 <?php
 
-class Clients extends CI_Controller
+class Clients extends MY_Controller
 {
 
     public function __construct()
@@ -20,9 +20,8 @@ class Clients extends CI_Controller
         $data['activePage'] = 'clients';
         $data['clients'] = $this->UserModel->get_all_clients();
 
-        $this->load->view('admin/header', $data);
-        $this->load->view('admin/clients/index', $data);
-        $this->load->view('admin/footer');
+
+        $this->render_admin('admin/clients/index', $data);
     }
 
     public function add()
@@ -38,9 +37,8 @@ class Clients extends CI_Controller
         if ($this->form_validation->run() === FALSE) {
             $data['isUpdate'] = false;
 
-            $this->load->view('admin/header', $data);
-            $this->load->view('admin/clients/add', $data);
-            $this->load->view('admin/footer');
+
+            $this->render_admin('admin/clients/add', $data);
         } else {
             $userData = array(
                 'user_role' => 4, // client role
@@ -101,9 +99,8 @@ class Clients extends CI_Controller
             $data['isUpdate'] = true;
             $data['client'] = $this->UserModel->get_user($id);
 
-            $this->load->view('admin/header', $data);
-            $this->load->view('admin/clients/edit', $data);
-            $this->load->view('admin/footer');
+
+            $this->render_admin('admin/clients/edit', $data);
         } else {
             $userData = array(
                 'username' => $this->input->post('username'),

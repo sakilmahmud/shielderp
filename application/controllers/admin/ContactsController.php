@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class ContactsController extends CI_Controller
+class ContactsController extends MY_Controller
 {
     public function __construct()
     {
@@ -20,9 +20,8 @@ class ContactsController extends CI_Controller
         $data['activePage'] = 'contacts';
         $data['contacts'] = $this->ContactsModel->getAll();
 
-        $this->load->view('admin/header', $data);
-        $this->load->view('admin/contacts/index', $data);
-        $this->load->view('admin/footer');
+
+        $this->render_admin('admin/contacts/index', $data);
     }
 
     public function add()
@@ -37,9 +36,8 @@ class ContactsController extends CI_Controller
         if ($this->form_validation->run() === FALSE) {
             $data['isUpdate'] = false;
 
-            $this->load->view('admin/header', $data);
-            $this->load->view('admin/contacts/add', $data);
-            $this->load->view('admin/footer');
+
+            $this->render_admin('admin/contacts/add', $data);
         } else {
             $contactData = [
                 'contacts_group_id' => $this->input->post('contacts_group_id'),
@@ -70,9 +68,8 @@ class ContactsController extends CI_Controller
             $data['isUpdate'] = true;
             $data['contact'] = $this->ContactsModel->getById($id);
 
-            $this->load->view('admin/header', $data);
-            $this->load->view('admin/contacts/add', $data);
-            $this->load->view('admin/footer');
+
+            $this->render_admin('admin/contacts/add', $data);
         } else {
             $contactData = [
                 'contacts_group_id' => $this->input->post('contacts_group_id'),
@@ -135,9 +132,8 @@ class ContactsController extends CI_Controller
             }
         }
 
-        $this->load->view('admin/header', $data);
-        $this->load->view('admin/contacts/bulk_add', $data);
-        $this->load->view('admin/footer');
+
+        $this->render_admin('admin/contacts/bulk_add', $data);
     }
 
     public function getContacts()

@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class PurchaseEntryController extends CI_Controller
+class PurchaseEntryController extends MY_Controller
 {
     public function __construct()
     {
@@ -26,9 +26,8 @@ class PurchaseEntryController extends CI_Controller
         $data['activePage'] = 'purchase_entries';
         //$data['purchase_entries'] = $this->PurchaseOrderModel->get_all_purchase_orders();
         $data['suppliers'] = $this->SupplierModel->get_all_suppliers();
-        $this->load->view('admin/header', $data);
-        $this->load->view('admin/purchase_entries/index', $data);
-        $this->load->view('admin/footer');
+
+        $this->render_admin('admin/purchase_entries/index', $data);
     }
 
     public function fetchPurchases()
@@ -122,9 +121,8 @@ class PurchaseEntryController extends CI_Controller
         $this->form_validation->set_rules('invoice_no', 'Invoice Number', 'required');
 
         if ($this->form_validation->run() === FALSE) {
-            $this->load->view('admin/header', $data);
-            $this->load->view('admin/purchase_entries/add', $data);
-            $this->load->view('admin/footer');
+
+            $this->render_admin('admin/purchase_entries/add', $data);
         } else {
             /* echo "<pre>";
             print_r($_POST);
@@ -132,9 +130,9 @@ class PurchaseEntryController extends CI_Controller
             if ($this->input->post('total_amount') < 1) {
 
                 $this->session->set_flashdata('message', 'Please add some products');
-                $this->load->view('admin/header', $data);
-                $this->load->view('admin/purchase_entries/add', $data);
-                $this->load->view('admin/footer');
+
+                $this->render_admin('admin/purchase_entries/add', $data);
+
 
                 return;
             }
@@ -262,9 +260,8 @@ class PurchaseEntryController extends CI_Controller
         $this->form_validation->set_rules('invoice_no', 'Invoice Number', 'required');
 
         if ($this->form_validation->run() === FALSE) {
-            $this->load->view('admin/header', $data);
-            $this->load->view('admin/purchase_entries/edit', $data);
-            $this->load->view('admin/footer');
+
+            $this->render_admin('admin/purchase_entries/edit', $data);
         } else {
 
             /* echo "<pre>";
@@ -273,9 +270,9 @@ class PurchaseEntryController extends CI_Controller
 
             if ($this->input->post('total_amount') < 1) {
                 $this->session->set_flashdata('message', 'Please add some products');
-                $this->load->view('admin/header', $data);
-                $this->load->view('admin/purchase_entries/edit', $data);
-                $this->load->view('admin/footer');
+
+                $this->render_admin('admin/purchase_entries/edit', $data);
+
                 return;
             }
 

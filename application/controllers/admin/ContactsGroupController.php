@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class ContactsGroupController extends CI_Controller
+class ContactsGroupController extends MY_Controller
 {
     public function __construct()
     {
@@ -20,9 +20,8 @@ class ContactsGroupController extends CI_Controller
         $data['activePage'] = 'contacts_group';
         $data['groups'] = $this->ContactsGroupModel->getAll();
 
-        $this->load->view('admin/header', $data);
-        $this->load->view('admin/contacts/group/index', $data);
-        $this->load->view('admin/footer');
+
+        $this->render_admin('admin/contacts/group/index', $data);
     }
 
     // Add a new contact group
@@ -33,9 +32,8 @@ class ContactsGroupController extends CI_Controller
         $this->form_validation->set_rules('title', 'Group Title', 'required');
 
         if ($this->form_validation->run() === FALSE) {
-            $this->load->view('admin/header', $data);
-            $this->load->view('admin/contacts/group/add', $data);
-            $this->load->view('admin/footer');
+
+            $this->render_admin('admin/contacts/group/add', $data);
         } else {
             $postData = [
                 'title' => $this->input->post('title'),

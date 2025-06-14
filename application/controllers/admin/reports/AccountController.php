@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class AccountController extends CI_Controller
+class AccountController extends MY_Controller
 {
     public function __construct()
     {
@@ -16,9 +16,8 @@ class AccountController extends CI_Controller
     public function index()
     {
         $data['activePage'] = 'accounts';
-        $this->load->view('admin/header', $data);
-        $this->load->view('admin/reports/accounts/index', $data);
-        $this->load->view('admin/footer');
+
+        $this->render_admin('admin/reports/accounts/index', $data);
     }
 
     public function cashbook()
@@ -51,9 +50,8 @@ class AccountController extends CI_Controller
         $data['opening_balance'] = $opening_balance;
         $data['closing_balance'] = $running_balance;
 
-        $this->load->view('admin/header', $data);
-        $this->load->view('admin/reports/accounts/cashbook', $data);
-        $this->load->view('admin/footer');
+
+        $this->render_admin('admin/reports/accounts/cashbook', $data);
     }
 
     public function export_cashbook($format)
@@ -74,7 +72,7 @@ class AccountController extends CI_Controller
                 'to' => $to
             ];
 
-            $html = $this->load->view('admin/reports/accounts/exports/cashbook_pdf', $data, true);
+            $html = $this->render_admin('admin/reports/accounts/exports/cashbook_pdf', $data, true);
             $this->load->library('pdf');
             $this->pdf->loadHtml($html);
             $this->pdf->setPaper('A4', 'portrait');
@@ -94,7 +92,7 @@ class AccountController extends CI_Controller
                 'to' => $to
             ];
 
-            $this->load->view('admin/reports/accounts/exports/cashbook_excel', $data);
+            $this->render_admin('admin/reports/accounts/exports/cashbook_excel', $data);
         }
     }
 
@@ -114,9 +112,8 @@ class AccountController extends CI_Controller
         $data['selected_supplier'] = $supplier_id;
         $data['selected_invoice'] = $invoice_no;
 
-        $this->load->view('admin/header', $data);
-        $this->load->view('admin/reports/accounts/payment_paid', $data);
-        $this->load->view('admin/footer');
+
+        $this->render_admin('admin/reports/accounts/payment_paid', $data);
     }
 
     public function export_payment_paid($format)
@@ -134,7 +131,7 @@ class AccountController extends CI_Controller
                 'from' => $from,
                 'to' => $to
             ];
-            $html = $this->load->view('admin/reports/accounts/exports/payment_paid_pdf', $data, true);
+            $html = $this->render_admin('admin/reports/accounts/exports/payment_paid_pdf', $data, true);
 
             $this->load->library('pdf');
             $this->pdf->loadHtml($html);
@@ -152,7 +149,7 @@ class AccountController extends CI_Controller
                 'from' => $from,
                 'to' => $to
             ];
-            $this->load->view('admin/reports/accounts/exports/payment_paid_excel', $data);
+            $this->render_admin('admin/reports/accounts/exports/payment_paid_excel', $data);
         }
     }
 
@@ -173,9 +170,8 @@ class AccountController extends CI_Controller
         $data['customers'] = $this->AccountsModel->get_all_customers();
         $data['transactions'] = $this->AccountsModel->get_payment_received_entries($from, $to, $customer_id, $invoice_no);
 
-        $this->load->view('admin/header', $data);
-        $this->load->view('admin/reports/accounts/payment_received', $data);
-        $this->load->view('admin/footer');
+
+        $this->render_admin('admin/reports/accounts/payment_received', $data);
     }
 
     public function export_payment_received($format)
@@ -189,7 +185,7 @@ class AccountController extends CI_Controller
 
         if ($format == 'pdf') {
             $data = compact('transactions', 'from', 'to');
-            $html = $this->load->view('admin/reports/accounts/exports/payment_received_pdf', $data, true);
+            $html = $this->render_admin('admin/reports/accounts/exports/payment_received_pdf', $data, true);
             $this->load->library('pdf');
             $this->pdf->loadHtml($html);
             $this->pdf->setPaper('A4', 'portrait');
@@ -202,7 +198,7 @@ class AccountController extends CI_Controller
             header("Content-Disposition: attachment; filename=Payment_Received_{$from}_to_{$to}.xls");
 
             $data = compact('transactions', 'from', 'to');
-            $this->load->view('admin/reports/accounts/exports/payment_received_excel', $data);
+            $this->render_admin('admin/reports/accounts/exports/payment_received_excel', $data);
         }
     }
 
@@ -222,9 +218,8 @@ class AccountController extends CI_Controller
         print_r($data['summary']);
         die; */
 
-        $this->load->view('admin/header', $data);
-        $this->load->view('admin/reports/accounts/daily_summary', $data);
-        $this->load->view('admin/footer');
+
+        $this->render_admin('admin/reports/accounts/daily_summary', $data);
     }
 
     public function export_daily_summary($format)
@@ -241,7 +236,7 @@ class AccountController extends CI_Controller
         ];
 
         if ($format == 'pdf') {
-            $html = $this->load->view('admin/reports/accounts/exports/daily_summary_pdf', $data, true);
+            $html = $this->render_admin('admin/reports/accounts/exports/daily_summary_pdf', $data, true);
 
             $this->load->library('pdf');
             $this->pdf->loadHtml($html);
@@ -253,7 +248,7 @@ class AccountController extends CI_Controller
         if ($format == 'excel') {
             header("Content-Type: application/vnd.ms-excel");
             header("Content-Disposition: attachment; filename=Daily_Summary_{$from}_to_{$to}.xls");
-            $this->load->view('admin/reports/accounts/exports/daily_summary_excel', $data);
+            $this->render_admin('admin/reports/accounts/exports/daily_summary_excel', $data);
         }
     }
 
@@ -270,9 +265,8 @@ class AccountController extends CI_Controller
             'total_expense' => $this->AccountsModel->get_total_by_type(2, $from, $to),
         ];
 
-        $this->load->view('admin/header', $data);
-        $this->load->view('admin/reports/accounts/profit_loss', $data);
-        $this->load->view('admin/footer');
+
+        $this->render_admin('admin/reports/accounts/profit_loss', $data);
     }
 
     public function export_profit_loss($format)
@@ -293,7 +287,7 @@ class AccountController extends CI_Controller
         ];
 
         if ($format == 'pdf') {
-            $html = $this->load->view('admin/reports/accounts/exports/profit_loss_pdf', $data, true);
+            $html = $this->render_admin('admin/reports/accounts/exports/profit_loss_pdf', $data, true);
 
             $this->load->library('pdf');
             $this->pdf->loadHtml($html);
@@ -303,7 +297,7 @@ class AccountController extends CI_Controller
         } elseif ($format == 'excel') {
             header("Content-Type: application/vnd.ms-excel");
             header("Content-Disposition: attachment; filename=Profit_Loss_{$from}_to_{$to}.xls");
-            $this->load->view('admin/reports/accounts/exports/profit_loss_excel', $data);
+            $this->render_admin('admin/reports/accounts/exports/profit_loss_excel', $data);
         } else {
             show_404();
         }
@@ -321,9 +315,8 @@ class AccountController extends CI_Controller
             'equity' => $this->AccountsModel->get_balance_sheet_data('equity', $as_on),
         ];
 
-        $this->load->view('admin/header', $data);
-        $this->load->view('admin/reports/accounts/balance_sheet', $data);
-        $this->load->view('admin/footer');
+
+        $this->render_admin('admin/reports/accounts/balance_sheet', $data);
     }
 
     public function ledger_dashboard()
@@ -337,9 +330,8 @@ class AccountController extends CI_Controller
 
         // echo "<pre>"; print_r($data); die;
 
-        $this->load->view('admin/header', $data);
-        $this->load->view('admin/reports/accounts/ledger_dashboard', $data);
-        $this->load->view('admin/footer');
+
+        $this->render_admin('admin/reports/accounts/ledger_dashboard', $data);
     }
 
     public function customer_ledger()
@@ -357,9 +349,8 @@ class AccountController extends CI_Controller
         $data['parties'] = $this->AccountsModel->get_all_customers();
         $data['ledger'] = $this->AccountsModel->get_customer_ledger($from, $to, $party_id);
 
-        $this->load->view('admin/header', $data);
-        $this->load->view('admin/reports/accounts/ledger/customer_ledger', $data);
-        $this->load->view('admin/footer');
+
+        $this->render_admin('admin/reports/accounts/ledger/customer_ledger', $data);
     }
 
     public function export_customer_ledger($format)
@@ -379,7 +370,7 @@ class AccountController extends CI_Controller
         ];
 
         if ($format == 'pdf') {
-            $html = $this->load->view('admin/reports/accounts/exports/customer_ledger_pdf', $data, true);
+            $html = $this->render_admin('admin/reports/accounts/exports/customer_ledger_pdf', $data, true);
 
             $this->load->library('pdf');
             $this->pdf->loadHtml($html);
@@ -389,7 +380,7 @@ class AccountController extends CI_Controller
         } elseif ($format == 'excel') {
             header("Content-Type: application/vnd.ms-excel");
             header("Content-Disposition: attachment; filename=Customer_Ledger_{$from}_to_{$to}.xls");
-            $this->load->view('admin/reports/accounts/exports/customer_ledger_excel', $data);
+            $this->render_admin('admin/reports/accounts/exports/customer_ledger_excel', $data);
         } else {
             show_404();
         }
@@ -411,9 +402,8 @@ class AccountController extends CI_Controller
         $data['parties'] = $this->AccountsModel->get_all_suppliers();
         $data['ledger'] = $this->AccountsModel->get_supplier_ledger($from, $to, $party_id);
 
-        $this->load->view('admin/header', $data);
-        $this->load->view('admin/reports/accounts/ledger/supplier_ledger', $data);
-        $this->load->view('admin/footer');
+
+        $this->render_admin('admin/reports/accounts/ledger/supplier_ledger', $data);
     }
     public function export_supplier_ledger($format)
     {
@@ -432,7 +422,7 @@ class AccountController extends CI_Controller
         ];
 
         if ($format == 'pdf') {
-            $html = $this->load->view('admin/reports/accounts/exports/supplier_ledger_pdf', $data, true);
+            $html = $this->render_admin('admin/reports/accounts/exports/supplier_ledger_pdf', $data, true);
             $this->load->library('pdf');
             $this->pdf->loadHtml($html);
             $this->pdf->setPaper('A4', 'landscape');
@@ -441,7 +431,7 @@ class AccountController extends CI_Controller
         } elseif ($format == 'excel') {
             header("Content-Type: application/vnd.ms-excel");
             header("Content-Disposition: attachment; filename=Supplier_Ledger_{$from}_to_{$to}.xls");
-            $this->load->view('admin/reports/accounts/exports/supplier_ledger_excel', $data);
+            $this->render_admin('admin/reports/accounts/exports/supplier_ledger_excel', $data);
         } else {
             show_404();
         }
@@ -461,9 +451,8 @@ class AccountController extends CI_Controller
         $data['heads'] = $this->AccountsModel->get_income_heads();
         $data['ledger'] = $this->AccountsModel->get_income_ledger($from, $to, $head_id);
 
-        $this->load->view('admin/header', $data);
-        $this->load->view('admin/reports/accounts/ledger/income_ledger', $data);
-        $this->load->view('admin/footer');
+
+        $this->render_admin('admin/reports/accounts/ledger/income_ledger', $data);
     }
 
     public function export_income_ledger($format)
@@ -482,7 +471,7 @@ class AccountController extends CI_Controller
         ];
 
         if ($format == 'pdf') {
-            $html = $this->load->view('admin/reports/accounts/exports/income_ledger_pdf', $data, true);
+            $html = $this->render_admin('admin/reports/accounts/exports/income_ledger_pdf', $data, true);
             $this->load->library('pdf');
             $this->pdf->loadHtml($html);
             $this->pdf->setPaper('A4', 'landscape');
@@ -491,7 +480,7 @@ class AccountController extends CI_Controller
         } elseif ($format == 'excel') {
             header("Content-Type: application/vnd.ms-excel");
             header("Content-Disposition: attachment; filename=Income_Ledger_{$from}_to_{$to}.xls");
-            $this->load->view('admin/reports/accounts/exports/income_ledger_excel', $data);
+            $this->render_admin('admin/reports/accounts/exports/income_ledger_excel', $data);
         } else {
             show_404();
         }
@@ -511,9 +500,7 @@ class AccountController extends CI_Controller
         $data['heads'] = $this->AccountsModel->get_expense_heads();
         $data['ledger'] = $this->AccountsModel->get_expense_ledger($from, $to, $head_id);
 
-        $this->load->view('admin/header', $data);
-        $this->load->view('admin/reports/accounts/ledger/expense_ledger', $data);
-        $this->load->view('admin/footer');
+        $this->render_admin('admin/reports/accounts/ledger/expense_ledger', $data);
     }
 
     public function export_expense_ledger($format)
@@ -532,7 +519,7 @@ class AccountController extends CI_Controller
         ];
 
         if ($format == 'pdf') {
-            $html = $this->load->view('admin/reports/accounts/exports/expense_ledger_pdf', $data, true);
+            $html = $this->render_admin('admin/reports/accounts/exports/expense_ledger_pdf', $data, true);
             $this->load->library('pdf');
             $this->pdf->loadHtml($html);
             $this->pdf->setPaper('A4', 'landscape');
@@ -541,7 +528,7 @@ class AccountController extends CI_Controller
         } elseif ($format == 'excel') {
             header("Content-Type: application/vnd.ms-excel");
             header("Content-Disposition: attachment; filename=Expense_Ledger_{$from}_to_{$to}.xls");
-            $this->load->view('admin/reports/accounts/exports/expense_ledger_excel', $data);
+            $this->render_admin('admin/reports/accounts/exports/expense_ledger_excel', $data);
         } else {
             show_404();
         }

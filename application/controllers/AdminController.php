@@ -1,6 +1,6 @@
 <?php
 
-class AdminController extends CI_Controller
+class AdminController extends MY_Controller
 {
 
     public function __construct()
@@ -30,7 +30,6 @@ class AdminController extends CI_Controller
 
     public function index()
     {
-
         if ($this->session->userdata('username')) {
             redirect('admin/dashboard');
         }
@@ -38,12 +37,15 @@ class AdminController extends CI_Controller
 
     public function demoDashboard()
     {
-        $data['activePage'] = 'demo_dashboard';
+        $data = [
+            'title' => 'Admin Dashboard',
+            'activePage' => 'demo_dashboard',
+            'something' => 'Welcome to Admin Panel'
+        ];
 
-        //$this->load->view('admin/header', $data);
-        $this->load->view('admin/dashboard-demo', $data);
-        //$this->load->view('admin/footer');
+        $this->render_admin('admin/dashboard-demo', $data);
     }
+
 
     public function dashboard()
     {
@@ -76,9 +78,7 @@ class AdminController extends CI_Controller
         $data['low_stock_count'] = $stock_summary['low'];
         $data['total_products_count'] = $stock_summary['total'];
 
-        $this->load->view('admin/header', $data);
-        $this->load->view('admin/dashboard', $data);
-        $this->load->view('admin/footer');
+        $this->render_admin('admin/dashboard', $data);
     }
 
     private function get_low_stock_summary()
@@ -463,7 +463,6 @@ class AdminController extends CI_Controller
         }
     }
 
-
     public function whatsapp()
     {
         // Method logic for general settings
@@ -477,9 +476,8 @@ class AdminController extends CI_Controller
         // Load the model to get all posts
         $data['posts'] = $this->PostModel->getAllPosts();
 
-        $this->load->view('admin/header', $data);
-        $this->load->view('admin/whatsapp', $data);
-        $this->load->view('admin/footer');
+
+        $this->render_admin('admin/whatsapp', $data);
     }
 
     public function whatsappPost()
@@ -586,7 +584,6 @@ class AdminController extends CI_Controller
         redirect('admin/wa');
     }
 
-
     public function whatsappLog()
     {
         $data['activePage'] = 'whatsapp';
@@ -598,14 +595,9 @@ class AdminController extends CI_Controller
         $data['logs'] = $this->db->get()->result_array();
 
         // Load the view and pass the logs
-        $this->load->view('admin/header', $data);
-        $this->load->view('admin/whatsapp_log', $data);
-        $this->load->view('admin/footer');
+
+        $this->render_admin('admin/whatsapp_log', $data);
     }
-
-
-
-
 
     public function getContactsBySource()
     {
@@ -631,8 +623,6 @@ class AdminController extends CI_Controller
         echo json_encode($contacts);
     }
 
-
-
     public function generalSettings()
     {
         // Method logic for general settings
@@ -641,9 +631,8 @@ class AdminController extends CI_Controller
 
         $data['settings'] = $this->SettingsModel->getSettings();
 
-        $this->load->view('admin/header', $data);
-        $this->load->view('admin/general_settings', $data);
-        $this->load->view('admin/footer');
+
+        $this->render_admin('admin/general_settings', $data);
     }
 
     public function updateSettings()
@@ -697,24 +686,20 @@ class AdminController extends CI_Controller
         redirect('admin/settings');
     }
 
-
-
     public function companyDetails()
     {
         $data['activePage'] = 'company_details';
         $data['settings'] = $this->SettingsModel->getSettings();
-        $this->load->view('admin/header', $data);
-        $this->load->view('admin/company_details', $data);
-        $this->load->view('admin/footer');
+
+        $this->render_admin('admin/company_details', $data);
     }
 
     public function bankDetails()
     {
         $data['activePage'] = 'bank_details';
         $data['settings'] = $this->SettingsModel->getSettings();
-        $this->load->view('admin/header', $data);
-        $this->load->view('admin/bank_details', $data);
-        $this->load->view('admin/footer');
+
+        $this->render_admin('admin/bank_details', $data);
     }
 
     public function passwordChange()
@@ -722,9 +707,8 @@ class AdminController extends CI_Controller
         // Method logic for password change
         $data['activePage'] = 'password';
         $data['error'] = ''; // Initialize the error message
-        $this->load->view('admin/header', $data);
-        $this->load->view('admin/password_change', $data);
-        $this->load->view('admin/footer');
+
+        $this->render_admin('admin/password_change', $data);
     }
 
     public function updatePassword()
@@ -737,9 +721,8 @@ class AdminController extends CI_Controller
 
         if ($this->form_validation->run() == FALSE) {
             // Form validation failed, reload the change password page with validation errors
-            $this->load->view('admin/header', $data);
-            $this->load->view('admin/password_change', $data);
-            $this->load->view('admin/footer');
+
+            $this->render_admin('admin/password_change', $data);
         } else {
             // Form validation succeeded, update the user's password
             $current_password = $this->input->post('current_password');
@@ -769,8 +752,7 @@ class AdminController extends CI_Controller
     {
         $data['activePage'] = 'premium_only';
         $data['title'] = 'Premium Access Required';
-        $this->load->view('admin/header', $data);
-        $this->load->view('admin/premium_only');
-        $this->load->view('admin/footer');
+
+        $this->render_admin('admin/premium_only');
     }
 }

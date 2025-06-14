@@ -1,6 +1,6 @@
 <?php
 
-class Tasks extends CI_Controller
+class Tasks extends MY_Controller
 {
 
     public function __construct()
@@ -45,9 +45,7 @@ class Tasks extends CI_Controller
         $data['clients'] = $this->UserModel->get_all_clients();
         $data['doers'] = $this->UserModel->get_all_doers();
 
-        $this->load->view('admin/header', $data);
-        $this->load->view('admin/tasks/index', $data);
-        $this->load->view('admin/footer');
+        $this->render_admin('admin/tasks/index', $data);
     }
 
     public function addTask()
@@ -66,9 +64,8 @@ class Tasks extends CI_Controller
             $data['isUpdate'] = false;
             $data['categories'] = $this->TaskModel->get_all_categories();
 
-            $this->load->view('admin/header', $data);
-            $this->load->view('admin/tasks/add', $data);
-            $this->load->view('admin/footer');
+
+            $this->render_admin('admin/tasks/add', $data);
         } else {
             // Sanitize the title before inserting
             $title = htmlspecialchars($this->input->post('title'));
@@ -156,9 +153,8 @@ class Tasks extends CI_Controller
             $data['task'] = $this->TaskModel->get_task($id);
             $data['categories'] = $this->TaskModel->get_all_categories();
 
-            $this->load->view('admin/header', $data);
-            $this->load->view('admin/tasks/add', $data);
-            $this->load->view('admin/footer');
+
+            $this->render_admin('admin/tasks/add', $data);
         } else {
             $title = htmlspecialchars($this->input->post('title'));
             $description = htmlspecialchars($this->input->post('description'));

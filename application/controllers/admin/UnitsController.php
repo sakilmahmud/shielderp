@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class UnitsController extends CI_Controller
+class UnitsController extends MY_Controller
 {
     public function __construct()
     {
@@ -19,9 +19,7 @@ class UnitsController extends CI_Controller
         $data['activePage'] = 'units';
         $data['units'] = $this->UnitModel->get_all_units();
 
-        $this->load->view('admin/header', $data);
-        $this->load->view('admin/units/index', $data);
-        $this->load->view('admin/footer');
+        $this->render_admin('admin/units/index', $data);
     }
 
     public function add()
@@ -31,9 +29,8 @@ class UnitsController extends CI_Controller
 
         if ($this->form_validation->run() === FALSE) {
             $data['isUpdate'] = false;
-            $this->load->view('admin/header', $data);
-            $this->load->view('admin/units/add', $data);
-            $this->load->view('admin/footer');
+
+            $this->render_admin('admin/units/add', $data);
         } else {
             $unitData = array(
                 'name' => $this->input->post('name'),
@@ -54,9 +51,8 @@ class UnitsController extends CI_Controller
         if ($this->form_validation->run() === FALSE) {
             $data['isUpdate'] = true;
             $data['unit'] = $this->UnitModel->get_unit($id);
-            $this->load->view('admin/header', $data);
-            $this->load->view('admin/units/add', $data);
-            $this->load->view('admin/footer');
+
+            $this->render_admin('admin/units/add', $data);
         } else {
             $unitData = array(
                 'name' => $this->input->post('name'),

@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class AccountsController extends CI_Controller
+class AccountsController extends MY_Controller
 {
     public function __construct()
     {
@@ -30,10 +30,7 @@ class AccountsController extends CI_Controller
         $data['from_date'] = $from_date;
         $data['to_date'] = $to_date;
 
-        // Load the view
-        $this->load->view('admin/header', $data);
-        $this->load->view('admin/accounts/account_balance', $data);
-        $this->load->view('admin/footer');
+        $this->render_admin('admin/accounts/account_balance', $data);
     }
 
     public function get_payment_method_balance()
@@ -65,10 +62,7 @@ class AccountsController extends CI_Controller
         $this->form_validation->set_rules('transfer_date', 'Transfer Date', 'required');
 
         if ($this->form_validation->run() === FALSE) {
-            // Load the view
-            $this->load->view('admin/header', $data);
-            $this->load->view('admin/accounts/transfer_fund', $data);
-            $this->load->view('admin/footer');
+            $this->render_admin('admin/accounts/transfer_fund', $data);
         } else {
             // Get form input
             $postData = $this->input->post();
@@ -108,9 +102,8 @@ class AccountsController extends CI_Controller
     public function list_fund_transfers()
     {
         $data['activePage'] = 'list_fund_transfers';
-        $this->load->view('admin/header', $data);
-        $this->load->view('admin/accounts/list_fund_transfers', $data);
-        $this->load->view('admin/footer');
+
+        $this->render_admin('admin/accounts/list_fund_transfers', $data);
     }
 
     public function fetch_fund_transfers()

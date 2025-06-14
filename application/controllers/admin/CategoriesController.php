@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class CategoriesController extends CI_Controller
+class CategoriesController extends MY_Controller
 {
 
     public function __construct()
@@ -21,9 +21,8 @@ class CategoriesController extends CI_Controller
         $data['activePage'] = 'categories';
         $data['categories'] = $this->CategoryModel->get_all_categories();
 
-        $this->load->view('admin/header', $data);
-        $this->load->view('admin/categories/index', $data);
-        $this->load->view('admin/footer');
+
+        $this->render_admin('admin/categories/index', $data);
     }
 
     public function add()
@@ -35,9 +34,8 @@ class CategoriesController extends CI_Controller
         if ($this->form_validation->run() === FALSE) {
             $data['isUpdate'] = false;
 
-            $this->load->view('admin/header', $data);
-            $this->load->view('admin/categories/add', $data);
-            $this->load->view('admin/footer');
+
+            $this->render_admin('admin/categories/add', $data);
         } else {
             $upload_path = './uploads/categories/';
             // Check if the folder exists, if not create it
@@ -111,9 +109,8 @@ class CategoriesController extends CI_Controller
             $data['isUpdate'] = true;
             $data['category'] = $this->CategoryModel->get_category($id);
 
-            $this->load->view('admin/header', $data);
-            $this->load->view('admin/categories/add', $data);
-            $this->load->view('admin/footer');
+
+            $this->render_admin('admin/categories/add', $data);
         } else {
             $upload_path = './uploads/categories/';
             // Check if the folder exists, if not create it

@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class PostsController extends CI_Controller
+class PostsController extends MY_Controller
 {
     public function __construct()
     {
@@ -16,9 +16,7 @@ class PostsController extends CI_Controller
         $data['activePage'] = 'posts';
         $data['posts'] = $this->PostModel->getAllPosts();
 
-        $this->load->view('admin/header', $data);
-        $this->load->view('admin/posts/list', $data);
-        $this->load->view('admin/footer');
+        $this->render_admin('admin/posts/list', $data);
     }
 
     public function add()
@@ -64,9 +62,8 @@ class PostsController extends CI_Controller
             }
         }
 
-        $this->load->view('admin/header', $data);
-        $this->load->view('admin/posts/add', $data);
-        $this->load->view('admin/footer');
+
+        $this->render_admin('admin/posts/add', $data);
     }
 
 
@@ -97,9 +94,8 @@ class PostsController extends CI_Controller
             }
         }
 
-        $this->load->view('admin/header', $data);
-        $this->load->view('admin/posts/edit', $data);
-        $this->load->view('admin/footer');
+
+        $this->render_admin('admin/posts/edit', $data);
     }
 
     public function delete($id)

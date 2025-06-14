@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class InvoiceController extends CI_Controller
+class InvoiceController extends MY_Controller
 {
     public function __construct()
     {
@@ -25,9 +25,8 @@ class InvoiceController extends CI_Controller
     {
         $data['activePage'] = 'invoices';
         $data['users'] = $this->UserModel->getUsers(array(1, 2));
-        $this->load->view('admin/header', $data);
-        $this->load->view('admin/invoices/index', $data);
-        $this->load->view('admin/footer');
+
+        $this->render_admin('admin/invoices/index', $data);
     }
 
     public function fetchInvoices()
@@ -130,9 +129,8 @@ class InvoiceController extends CI_Controller
         if ($this->form_validation->run() === FALSE) {
 
             // Load the create invoice view
-            $this->load->view('admin/header', $data);
-            $this->load->view('admin/invoices/create', $data);
-            $this->load->view('admin/footer');
+
+            $this->render_admin('admin/invoices/create', $data);
         } else {
             /* echo "<pre>";
             print_r($_POST);
@@ -358,9 +356,8 @@ class InvoiceController extends CI_Controller
 
         if ($this->form_validation->run() === FALSE) {
             // Load the update invoice view
-            $this->load->view('admin/header', $data);
-            $this->load->view('admin/invoices/update', $data);
-            $this->load->view('admin/footer');
+
+            $this->render_admin('admin/invoices/update', $data);
         } else {
             /* echo "<pre>";
             print_r($_POST);
@@ -525,9 +522,8 @@ class InvoiceController extends CI_Controller
         // Fetch transaction history for this invoice
         $data['transactions'] = $this->InvoiceModel->get_invoice_transactions($invoice_id);
 
-        $this->load->view('admin/header', $data);
-        $this->load->view('admin/invoices/view', $data);
-        $this->load->view('admin/footer');
+
+        $this->render_admin('admin/invoices/view', $data);
     }
 
 
@@ -541,7 +537,7 @@ class InvoiceController extends CI_Controller
         }
 
         // Load the HTML view as a string
-        $html = $this->load->view('admin/invoices/print', $data, true);
+        $html = $this->render_admin('admin/invoices/print', $data, true);
 
         // Load the PDF library
         $this->load->library('pdf');
@@ -583,7 +579,7 @@ class InvoiceController extends CI_Controller
 
         $data['transactions'] = $this->InvoiceModel->get_invoice_transactions($invoice_id);
 
-        $html = $this->load->view('admin/invoices/print', $data, true);
+        $html = $this->render_admin('admin/invoices/print', $data, true);
         /* echo $html;
         die; */
         // Load the PDF library

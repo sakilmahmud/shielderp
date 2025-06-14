@@ -1,6 +1,6 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
-class ExpenseController extends CI_Controller
+class ExpenseController extends MY_Controller
 {
     public function __construct()
     {
@@ -21,10 +21,7 @@ class ExpenseController extends CI_Controller
         $data['categories'] = $this->ExpenseModel->getExpenseHeads(); // For dropdown filters
         $data['payment_methods'] = $this->PaymentMethodsModel->getAll(); // For dropdown filters
         $data['users'] = $this->UserModel->getUsers(array(1, 2));
-
-        $this->load->view('admin/header', $data);
-        $this->load->view('admin/expense/index', $data);
-        $this->load->view('admin/footer');
+        $this->render_admin('admin/expense/index', $data);
     }
 
     public function fetchExpenses()
@@ -114,9 +111,8 @@ class ExpenseController extends CI_Controller
         $this->form_validation->set_rules('transaction_amount', 'Transaction Amount', 'required|numeric');
 
         if ($this->form_validation->run() === FALSE) {
-            $this->load->view('admin/header', $data);
-            $this->load->view('admin/expense/add', $data);
-            $this->load->view('admin/footer');
+
+            $this->render_admin('admin/expense/add', $data);
         } else {
             $postData = $this->input->post();
             $saveData = [
@@ -169,9 +165,8 @@ class ExpenseController extends CI_Controller
         $this->form_validation->set_rules('transaction_amount', 'Transaction Amount', 'required|numeric');
 
         if ($this->form_validation->run() === FALSE) {
-            $this->load->view('admin/header', $data);
-            $this->load->view('admin/expense/add', $data);
-            $this->load->view('admin/footer');
+
+            $this->render_admin('admin/expense/add', $data);
         } else {
             $postData = $this->input->post();
             $updateData = [
@@ -270,9 +265,8 @@ class ExpenseController extends CI_Controller
     {
         $data['activePage'] = 'expense_head';
         $data['expenseHeads'] = $this->ExpenseModel->getAllExpenseHeads();
-        $this->load->view('admin/header', $data);
-        $this->load->view('admin/expense/head/index', $data);
-        $this->load->view('admin/footer');
+
+        $this->render_admin('admin/expense/head/index', $data);
     }
 
     public function addHead()
@@ -282,9 +276,8 @@ class ExpenseController extends CI_Controller
 
         $this->form_validation->set_rules('head_title', 'Head Title', 'required|is_unique[expense_heads.head_title]');
         if ($this->form_validation->run() === FALSE) {
-            $this->load->view('admin/header', $data);
-            $this->load->view('admin/expense/head/add', $data);
-            $this->load->view('admin/footer');
+
+            $this->render_admin('admin/expense/head/add', $data);
         } else {
             $postData = $this->input->post();
             $saveData = [
@@ -305,9 +298,8 @@ class ExpenseController extends CI_Controller
 
         $this->form_validation->set_rules('head_title', 'Head Title', 'required');
         if ($this->form_validation->run() === FALSE) {
-            $this->load->view('admin/header', $data);
-            $this->load->view('admin/expense/head/add', $data);
-            $this->load->view('admin/footer');
+
+            $this->render_admin('admin/expense/head/add', $data);
         } else {
             $postData = $this->input->post();
             $updateData = [

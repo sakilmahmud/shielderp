@@ -1,5 +1,5 @@
 <?php
-class AdminUsers extends CI_Controller
+class AdminUsers extends MY_Controller
 {
 
     public function __construct()
@@ -40,9 +40,8 @@ class AdminUsers extends CI_Controller
         $data['users'] = $this->UserModel->getUsers(2); // Assuming 2 is the role ID for admin users
 
         // Load the views
-        $this->load->view('admin/header', $data);
-        $this->load->view('admin/admin/list', $data);
-        $this->load->view('admin/footer');
+
+        $this->render_admin('admin/admin/list', $data);
     }
 
     public function addAdminUser()
@@ -55,9 +54,9 @@ class AdminUsers extends CI_Controller
         if ($this->session->userdata('role') != 1) :
             $data['error'] = "You don't have permission to do this action!";
 
-            $this->load->view('admin/header', $data);
-            $this->load->view('admin/admin/add', $data);
-            $this->load->view('admin/footer');
+
+            $this->render_admin('admin/admin/add', $data);
+
         endif;
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -68,9 +67,8 @@ class AdminUsers extends CI_Controller
 
             if ($this->form_validation->run() === FALSE) {
                 // Validation failed or first load of the page, show the form
-                $this->load->view('admin/header', $data);
-                $this->load->view('admin/admin/add', $data);
-                $this->load->view('admin/footer');
+
+                $this->render_admin('admin/admin/add', $data);
             } else {
                 $password = password_hash("123456", PASSWORD_DEFAULT);
                 $username = $this->input->post('username');
@@ -94,9 +92,8 @@ class AdminUsers extends CI_Controller
                 redirect('admin/adminAccounts');
             }
         } else {
-            $this->load->view('admin/header', $data);
-            $this->load->view('admin/admin/add');
-            $this->load->view('admin/footer');
+
+            $this->render_admin('admin/admin/add');
         }
     }
 
@@ -124,9 +121,8 @@ class AdminUsers extends CI_Controller
             // Pass the user data to the view
             $data['user'] = $userDetails;
 
-            $this->load->view('admin/header', $data);
-            $this->load->view('admin/admin/add', $data);
-            $this->load->view('admin/footer');
+
+            $this->render_admin('admin/admin/add', $data);
         } else {
             // Form validation passed, process the form submission and update the admin user
 

@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class ReportsController extends CI_Controller
+class ReportsController extends MY_Controller
 {
     public function __construct()
     {
@@ -28,9 +28,8 @@ class ReportsController extends CI_Controller
         $data['sales_data'] = $this->ReportModel->getSalesData(); // Fetch sales data
 
         // Load header, content, and footer views
-        $this->load->view('admin/header', $data);
-        $this->load->view('admin/reports/sales_report', $data);
-        $this->load->view('admin/footer');
+
+        $this->render_admin('admin/reports/sales_report', $data);
     }
 
     public function purchaseReport()
@@ -40,9 +39,8 @@ class ReportsController extends CI_Controller
         $data['purchase_data'] = $this->ReportModel->getPurchaseData();
 
         // Load the views
-        $this->load->view('admin/header', $data);
-        $this->load->view('admin/reports/purchase_report', $data);
-        $this->load->view('admin/footer');
+
+        $this->render_admin('admin/reports/purchase_report', $data);
     }
 
     public function gstReport()
@@ -59,8 +57,7 @@ class ReportsController extends CI_Controller
         }
 
         // Load the views
-        $this->load->view('admin/header', $data);
-        $this->load->view('admin/reports/gst_report', $data);
-        $this->load->view('admin/footer');
+
+        $this->render_admin('admin/reports/gst_report', $data);
     }
 }

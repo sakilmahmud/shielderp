@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class IncomeController extends CI_Controller
+class IncomeController extends MY_Controller
 {
     public function __construct()
     {
@@ -20,9 +20,7 @@ class IncomeController extends CI_Controller
         $data['activePage'] = 'income';
         $data['incomes'] = $this->IncomeModel->getAllIncomes();
 
-        $this->load->view('admin/header', $data);
-        $this->load->view('admin/income/index', $data);
-        $this->load->view('admin/footer');
+        $this->render_admin('admin/income/index', $data);
     }
 
     public function fetchIncomes()
@@ -99,9 +97,8 @@ class IncomeController extends CI_Controller
         $this->form_validation->set_rules('transaction_amount', 'Transaction Amount', 'required|numeric');
 
         if ($this->form_validation->run() === FALSE) {
-            $this->load->view('admin/header', $data);
-            $this->load->view('admin/income/add', $data);
-            $this->load->view('admin/footer');
+
+            $this->render_admin('admin/income/add', $data);
         } else {
             $postData = $this->input->post();
             $saveData = [
@@ -157,9 +154,8 @@ class IncomeController extends CI_Controller
         $this->form_validation->set_rules('transaction_amount', 'Transaction Amount', 'required|numeric');
 
         if ($this->form_validation->run() === FALSE) {
-            $this->load->view('admin/header', $data);
-            $this->load->view('admin/income/add', $data);
-            $this->load->view('admin/footer');
+
+            $this->render_admin('admin/income/add', $data);
         } else {
             $postData = $this->input->post();
             $updateData = [
@@ -260,9 +256,8 @@ class IncomeController extends CI_Controller
         $data['activePage'] = 'income_head';
         $data['income_heads'] = $this->IncomeModel->getIncomeHeads();
 
-        $this->load->view('admin/header', $data);
-        $this->load->view('admin/income/head/index', $data);
-        $this->load->view('admin/footer');
+
+        $this->render_admin('admin/income/head/index', $data);
     }
 
     public function addHead()
@@ -272,9 +267,8 @@ class IncomeController extends CI_Controller
         $this->form_validation->set_rules('head_title', 'Head Title', 'required|is_unique[income_heads.head_title]');
 
         if ($this->form_validation->run() === FALSE) {
-            $this->load->view('admin/header', $data);
-            $this->load->view('admin/income/head/add', $data);
-            $this->load->view('admin/footer');
+
+            $this->render_admin('admin/income/head/add', $data);
         } else {
             $saveData = [
                 'head_title' => $this->input->post('head_title'),
@@ -298,9 +292,8 @@ class IncomeController extends CI_Controller
         $this->form_validation->set_rules('head_title', 'Head Title', 'required');
 
         if ($this->form_validation->run() === FALSE) {
-            $this->load->view('admin/header', $data);
-            $this->load->view('admin/income/head/add', $data);
-            $this->load->view('admin/footer');
+
+            $this->render_admin('admin/income/head/add', $data);
         } else {
             $updateData = [
                 'head_title' => $this->input->post('head_title'),

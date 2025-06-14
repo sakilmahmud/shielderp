@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class DtpController extends CI_Controller
+class DtpController extends MY_Controller
 {
 
     public function __construct()
@@ -50,9 +50,7 @@ class DtpController extends CI_Controller
         $data['categories'] = $this->DtpModel->getCategories();
         $data['users'] = $this->UserModel->getUsers(array(1, 2)); // Assuming this method exists to fetch users
 
-        $this->load->view('admin/header', $data);
-        $this->load->view('admin/dtp/index', $data);
-        $this->load->view('admin/footer');
+        $this->render_admin('admin/dtp/index', $data);
     }
 
     public function fetchData()
@@ -142,9 +140,8 @@ class DtpController extends CI_Controller
         $this->form_validation->set_rules('payment_mode', 'Payment Mode', 'required'); // New validation rule
 
         if ($this->form_validation->run() === FALSE) {
-            $this->load->view('admin/header', $data);
-            $this->load->view('admin/dtp/add', $data);
-            $this->load->view('admin/footer');
+
+            $this->render_admin('admin/dtp/add', $data);
         } else {
             $postData = $this->input->post();
             $partial_paid = $postData['partial_paid'];
@@ -221,9 +218,8 @@ class DtpController extends CI_Controller
         $this->form_validation->set_rules('paid_status', 'Paid Status', 'required');
 
         if ($this->form_validation->run() === FALSE) {
-            $this->load->view('admin/header', $data);
-            $this->load->view('admin/dtp/add', $data);
-            $this->load->view('admin/footer');
+
+            $this->render_admin('admin/dtp/add', $data);
         } else {
             $postData = $this->input->post();
             $partial_paid = $postData['partial_paid'];
@@ -338,9 +334,8 @@ class DtpController extends CI_Controller
         $data['activePage'] = 'dtp_categories';
         $data['categories'] = $this->DtpModel->getCategories();
 
-        $this->load->view('admin/header', $data);
-        $this->load->view('admin/dtp/categories/index', $data);
-        $this->load->view('admin/footer');
+
+        $this->render_admin('admin/dtp/categories/index', $data);
     }
 
     public function addCategory()
@@ -351,9 +346,8 @@ class DtpController extends CI_Controller
         $this->form_validation->set_rules('category_name', 'Category Name', 'required|is_unique[dtp_service_categories.cat_title]');
 
         if ($this->form_validation->run() === FALSE) {
-            $this->load->view('admin/header', $data);
-            $this->load->view('admin/dtp/categories/add', $data);
-            $this->load->view('admin/footer');
+
+            $this->render_admin('admin/dtp/categories/add', $data);
         } else {
             $postData = $this->input->post();
             $saveData = [
@@ -391,9 +385,8 @@ class DtpController extends CI_Controller
         $this->form_validation->set_rules('category_name', 'Category Name', 'required');
 
         if ($this->form_validation->run() === FALSE) {
-            $this->load->view('admin/header', $data);
-            $this->load->view('admin/dtp/categories/add', $data);
-            $this->load->view('admin/footer');
+
+            $this->render_admin('admin/dtp/categories/add', $data);
         } else {
             $postData = $this->input->post();
             $updateData = [

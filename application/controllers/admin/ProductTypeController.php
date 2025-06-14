@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class ProductTypeController extends CI_Controller
+class ProductTypeController extends MY_Controller
 {
 
     public function __construct()
@@ -20,9 +20,7 @@ class ProductTypeController extends CI_Controller
         $data['activePage'] = 'product_types';
         $data['product_types'] = $this->ProductTypeModel->get_all_product_types();
 
-        $this->load->view('admin/header', $data);
-        $this->load->view('admin/product_types/index', $data);
-        $this->load->view('admin/footer');
+        $this->render_admin('admin/product_types/index', $data);
     }
 
     public function add()
@@ -34,9 +32,8 @@ class ProductTypeController extends CI_Controller
         if ($this->form_validation->run() === FALSE) {
             $data['isUpdate'] = false;
 
-            $this->load->view('admin/header', $data);
-            $this->load->view('admin/product_types/add', $data);
-            $this->load->view('admin/footer');
+
+            $this->render_admin('admin/product_types/add', $data);
         } else {
             $product_typeData = array(
                 'product_type_name' => $this->input->post('product_type_name'),
@@ -62,9 +59,8 @@ class ProductTypeController extends CI_Controller
             $data['isUpdate'] = true;
             $data['product_type'] = $this->ProductTypeModel->get_product_type($id);
 
-            $this->load->view('admin/header', $data);
-            $this->load->view('admin/product_types/add', $data);
-            $this->load->view('admin/footer');
+
+            $this->render_admin('admin/product_types/add', $data);
         } else {
             $product_typeData = array(
                 'product_type_name' => $this->input->post('product_type_name'),

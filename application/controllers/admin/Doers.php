@@ -1,6 +1,6 @@
 <?php
 
-class Doers extends CI_Controller
+class Doers extends MY_Controller
 {
 
     public function __construct()
@@ -20,9 +20,8 @@ class Doers extends CI_Controller
         $data['activePage'] = 'doers';
         $data['doers'] = $this->UserModel->get_all_doers();
 
-        $this->load->view('admin/header', $data);
-        $this->load->view('admin/doers/index', $data);
-        $this->load->view('admin/footer');
+
+        $this->render_admin('admin/doers/index', $data);
     }
 
     public function add()
@@ -36,9 +35,8 @@ class Doers extends CI_Controller
         if ($this->form_validation->run() === FALSE) {
             $data['isUpdate'] = false;
 
-            $this->load->view('admin/header', $data);
-            $this->load->view('admin/doers/add', $data);
-            $this->load->view('admin/footer');
+
+            $this->render_admin('admin/doers/add', $data);
         } else {
             $userData = array(
                 'user_role' => 3, // doer role
@@ -97,9 +95,8 @@ class Doers extends CI_Controller
             $data['isUpdate'] = true;
             $data['doer'] = $this->UserModel->get_user($id);
 
-            $this->load->view('admin/header', $data);
-            $this->load->view('admin/doers/add', $data);
-            $this->load->view('admin/footer');
+
+            $this->render_admin('admin/doers/add', $data);
         } else {
             $userData = array(
                 'username' => $this->input->post('username'),

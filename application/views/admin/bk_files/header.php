@@ -24,7 +24,7 @@
 
 
   <!-- Custom style -->
-  <!-- <link rel="stylesheet" href="<?php echo base_url('assets/admin/dist/css/styles.css') ?>"> -->
+  <link rel="stylesheet" href="<?php echo base_url('assets/admin/dist/css/styles.css') ?>">
   <link rel="stylesheet" href="<?php echo base_url('assets/admin/dist/css/calc.css') ?>">
   <link rel="stylesheet" href="<?php echo base_url('assets/admin/dist/css/chosen.min.css') ?>">
 
@@ -35,11 +35,9 @@
 
   <!-- jQuery -->
   <script src="<?php echo base_url('assets/admin/plugins/jquery/jquery.min.js') ?>"></script>
-  <script
-    src="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.10.1/browser/overlayscrollbars.browser.es6.min.js"></script>
-  <script
-    src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
-  <script src="<?php echo base_url('assets/admin/dist/js/bootstrap.min.js') ?>"></script>
+  <script src="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.10.1/browser/overlayscrollbars.browser.es6.min.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 
   <!-- jQuery UI -->
   <script src="<?php echo base_url('assets/admin/plugins/jquery-ui/jquery-ui.min.js') ?>"></script>
@@ -111,22 +109,24 @@
         </ul>
         <div class="right_section">
           <ul class="navbar-nav">
-            <li class="nav-item ">
-              <a href="<?php echo base_url() ?>" target="_blank" class="nav-link" title="Home"><i class="nav-icon fas fa-home"></i></a>
+            <li class="nav-item">
+              <a href="<?php echo base_url() ?>" target="_blank" class="nav-link" title="Home">
+                <i class="bi bi-house-door-fill"></i>
+              </a>
             </li>
             <li class="nav-item">
               <a href="javascript:void(0);" id="openCalculator" class="nav-link" title="Calculator">
-                <i class="nav-icon fas fa-calculator"></i>
+                <i class="bi bi-calculator-fill"></i>
               </a>
             </li>
             <li class="nav-item">
               <a href="<?php echo base_url('admin/password'); ?>" title="Change Password" class="nav-link <?php if ($activePage === 'password') echo 'active'; ?>">
-                <i class="nav-icon fas fa-key"></i>
+                <i class="bi bi-key-fill"></i>
               </a>
             </li>
             <li class="nav-item">
               <a href="<?php echo base_url('logout'); ?>" class="nav-link" title="Logout">
-                <i class="nav-icon fas fa-power-off icon-darkred"></i>
+                <i class="bi bi-power text-danger"></i>
               </a>
             </li>
             <li class="nav-item dropdown">
@@ -137,7 +137,7 @@
                 aria-expanded="false"
                 data-bs-toggle="dropdown"
                 data-bs-display="static">
-                <span class="theme-icon-active"> <i class="my-1"></i> </span>
+                <span class="theme-icon-active"><i class="my-1"></i></span>
                 <span class="d-lg-none ms-2" id="bd-theme-text">Toggle theme</span>
               </button>
               <ul
@@ -172,7 +172,7 @@
                     class="dropdown-item d-flex align-items-center"
                     data-bs-theme-value="auto"
                     aria-pressed="true">
-                    <i class="bi bi-circle-fill-half-stroke me-2"></i>
+                    <i class="bi bi-circle-half me-2"></i>
                     Auto
                     <i class="bi bi-check-lg ms-auto d-none"></i>
                   </button>
@@ -183,6 +183,7 @@
         </div>
       </div>
     </nav>
+
     <!-- /.navbar -->
     <div class="modal fade" id="calculatorModal" tabindex="-1" aria-labelledby="calculatorModalLabel" aria-hidden="true">
       <div class="modal-dialog">

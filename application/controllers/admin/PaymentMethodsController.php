@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class PaymentMethodsController extends CI_Controller
+class PaymentMethodsController extends MY_Controller
 {
     public function __construct()
     {
@@ -19,9 +19,7 @@ class PaymentMethodsController extends CI_Controller
         $data['activePage'] = 'payment_methods';
         $data['payment_methods'] = $this->PaymentMethodsModel->getAll();
 
-        $this->load->view('admin/header', $data);
-        $this->load->view('admin/payment_methods/index', $data);
-        $this->load->view('admin/footer');
+        $this->render_admin('admin/payment_methods/index', $data);
     }
 
     public function add()
@@ -34,9 +32,8 @@ class PaymentMethodsController extends CI_Controller
         if ($this->form_validation->run() === FALSE) {
             $data['isUpdate'] = false;
 
-            $this->load->view('admin/header', $data);
-            $this->load->view('admin/payment_methods/add', $data);
-            $this->load->view('admin/footer');
+
+            $this->render_admin('admin/payment_methods/add', $data);
         } else {
             $paymentMethodData = [
                 'title' => $this->input->post('title'),
@@ -65,9 +62,8 @@ class PaymentMethodsController extends CI_Controller
             $data['isUpdate'] = true;
             $data['payment_method'] = $this->PaymentMethodsModel->getById($id);
 
-            $this->load->view('admin/header', $data);
-            $this->load->view('admin/payment_methods/add', $data);
-            $this->load->view('admin/footer');
+
+            $this->render_admin('admin/payment_methods/add', $data);
         } else {
             $paymentMethodData = [
                 'title' => $this->input->post('title'),

@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class ProductsController extends CI_Controller
+class ProductsController extends MY_Controller
 {
 
     public function __construct()
@@ -29,9 +29,8 @@ class ProductsController extends CI_Controller
         $data['brands'] = $this->BrandModel->get_all_brands();
         $data['product_types'] = $this->ProductTypeModel->get_all_product_types();
 
-        $this->load->view('admin/header', $data);
-        $this->load->view('admin/products/index', $data);
-        $this->load->view('admin/footer');
+
+        $this->render_admin('admin/products/index', $data);
     }
 
     public function ajax_list()
@@ -161,9 +160,8 @@ class ProductsController extends CI_Controller
         if ($this->form_validation->run() === FALSE) {
             $data['isUpdate'] = false;
 
-            $this->load->view('admin/header', $data);
-            $this->load->view('admin/products/add', $data);
-            $this->load->view('admin/footer');
+
+            $this->render_admin('admin/products/add', $data);
         } else {
             $upload_path = './uploads/products/';
             // Check if the folder exists, if not create it
@@ -281,9 +279,8 @@ class ProductsController extends CI_Controller
             $data['isUpdate'] = true;
 
             // Load the views
-            $this->load->view('admin/header', $data);
-            $this->load->view('admin/products/add', $data);
-            $this->load->view('admin/footer');
+
+            $this->render_admin('admin/products/add', $data);
         } else {
             /* echo "<pre>";
             print_r($_FILES);
@@ -557,9 +554,8 @@ class ProductsController extends CI_Controller
     public function bulkUpload()
     {
         $data['activePage'] = 'products';
-        $this->load->view('admin/header', $data);
-        $this->load->view('admin/products/bulk_upload', $data);
-        $this->load->view('admin/footer');
+
+        $this->render_admin('admin/products/bulk_upload', $data);
     }
 
     public function processBulkUpload()
@@ -738,6 +734,6 @@ class ProductsController extends CI_Controller
         }
 
         // Load raw view
-        $this->load->view('admin/product_update', isset($data) ? $data : []);
+        $this->render_admin('admin/product_update', isset($data) ? $data : []);
     }
 }

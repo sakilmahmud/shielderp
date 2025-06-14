@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class CustomerController extends CI_Controller
+class CustomerController extends MY_Controller
 {
     public function __construct()
     {
@@ -18,9 +18,8 @@ class CustomerController extends CI_Controller
     {
         $data['activePage'] = 'customers';
         $data['customers'] = $this->CustomerModel->get_all_customers();
-        $this->load->view('admin/header', $data);
-        $this->load->view('admin/customers/index', $data);
-        $this->load->view('admin/footer');
+
+        $this->render_admin('admin/customers/index', $data);
     }
 
     public function add()
@@ -32,9 +31,8 @@ class CustomerController extends CI_Controller
         $this->form_validation->set_rules('address', 'Address', 'required');
 
         if ($this->form_validation->run() === FALSE) {
-            $this->load->view('admin/header', $data);
-            $this->load->view('admin/customers/add', $data);
-            $this->load->view('admin/footer');
+
+            $this->render_admin('admin/customers/add', $data);
         } else {
             $customerData = array(
                 'customer_name' => $this->input->post('customer_name'),
@@ -64,9 +62,8 @@ class CustomerController extends CI_Controller
         $this->form_validation->set_rules('address', 'Address', 'required');
 
         if ($this->form_validation->run() === FALSE) {
-            $this->load->view('admin/header', $data);
-            $this->load->view('admin/customers/edit', $data);
-            $this->load->view('admin/footer');
+
+            $this->render_admin('admin/customers/edit', $data);
         } else {
             $customerData = array(
                 'customer_name' => $this->input->post('customer_name'),

@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class BrandsController extends CI_Controller
+class BrandsController extends MY_Controller
 {
 
     public function __construct()
@@ -20,9 +20,8 @@ class BrandsController extends CI_Controller
         $data['activePage'] = 'brands';
         $data['brands'] = $this->BrandModel->get_all_brands();
 
-        $this->load->view('admin/header', $data);
-        $this->load->view('admin/brands/index', $data);
-        $this->load->view('admin/footer');
+
+        $this->render_admin('admin/brands/index', $data);
     }
 
     public function add()
@@ -34,9 +33,8 @@ class BrandsController extends CI_Controller
         if ($this->form_validation->run() === FALSE) {
             $data['isUpdate'] = false;
 
-            $this->load->view('admin/header', $data);
-            $this->load->view('admin/brands/add', $data);
-            $this->load->view('admin/footer');
+
+            $this->render_admin('admin/brands/add', $data);
         } else {
             $brandData = array(
                 'brand_name' => $this->input->post('brand_name'),
@@ -62,9 +60,8 @@ class BrandsController extends CI_Controller
             $data['isUpdate'] = true;
             $data['brand'] = $this->BrandModel->get_brand($id);
 
-            $this->load->view('admin/header', $data);
-            $this->load->view('admin/brands/add', $data);
-            $this->load->view('admin/footer');
+
+            $this->render_admin('admin/brands/add', $data);
         } else {
             $brandData = array(
                 'brand_name' => $this->input->post('brand_name'),
