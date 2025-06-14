@@ -37,9 +37,9 @@
                     <div class="footer_col footer_list">
                         <h5>Important Links</h5>
                         <ul>
-                            <li><a href="#"> Repair</a></li>
-                            <li><a href="#"> HUID</a></li>
-                            <li><a href="#"> Exchange</a></li>
+                            <li><a href="#"> No Cost EMI</a></li>
+                            <li><a href="#"> Billing Software</a></li>
+                            <li><a href="#"> ERP Systems</a></li>
                         </ul>
                     </div>
                 </div>
@@ -47,9 +47,10 @@
                     <div class="footer_col footer_list">
                         <h5>About</h5>
                         <ul>
-                            <li><a href="#">About Us</a></li>
-                            <li><a href="#">Refund Return Policy</a></li>
-                            <li><a href="#">Cancellation Policy</a></li>
+                            <li><a href="<?php echo base_url('about') ?>">About Us</a></li>
+                            <li><a href="<?php echo base_url('career') ?>"> Career</a></li>
+                            <li><a href="<?php echo base_url('refund-return-policy') ?>">Refund Return Policy</a></li>
+                            <li><a href="<?php echo base_url('cancellation-policy') ?>">Cancellation Policy</a></li>
                         </ul>
                     </div>
                 </div>
@@ -58,7 +59,7 @@
                         <h5>Follow Us</h5>
                         <ul>
                             <li>
-                                <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
+                                <a href="https://www.facebook.com/gcshop.in" target="_blank"><i class="fa-brands fa-facebook-f"></i></a>
                             </li>
                             <li>
                                 <a href="#"><i class="fa-brands fa-twitter"></i></a>
@@ -76,13 +77,13 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-6">
-                    <p>© Nandon Jewellers 2024 | All Rights Reserved</p>
+                    <p>© Global Computers <?= date('Y') ?> | All Rights Reserved</p>
                 </div>
                 <div class="col-lg-6">
                     <ul>
-                        <li><a href="https://nandon.softechplaza.com/terms">Trams & Condition</a></li>
-                        <li><a href="https://nandon.softechplaza.com/privacy">Privacy Policy</a></li>
-                        <li><a href="https://nandon.softechplaza.com/contact">Contact Us</a></li>
+                        <li><a href="<?php echo base_url('terms') ?>">Trams & Condition</a></li>
+                        <li><a href="<?php echo base_url('privacy') ?>">Privacy Policy</a></li>
+                        <li><a href="<?php echo base_url('contact') ?>">Contact Us</a></li>
                     </ul>
                 </div>
             </div>
@@ -97,6 +98,7 @@
 <script src="<?php echo base_url('assets/frontend/js/jquery.fancybox.min.js'); ?>"></script>
 <script src="<?php echo base_url('assets/frontend/js/owl.carousel.min.js'); ?>"></script>
 <script src="<?php echo base_url('assets/frontend/js/main.js'); ?>"></script>
+
 </body>
 
 </html>

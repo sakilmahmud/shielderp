@@ -25,31 +25,30 @@
             <div class="col-lg-10 m-auto">
                 <div class="data_area_color">
                     <div class="data_area">
-                        <img class="overlay_img" src="<?php echo base_url('assets/frontend/images/ram.png'); ?>" class="img-fluid" alt="Nondan">
+                        <img class="overlay_img" src="<?php echo base_url('assets/frontend/images/ram.png'); ?>" class="img-fluid" alt="Global Computers">
 
                         <div class="row">
                             <div class="col-lg-6">
                                 <div class="data data_1">
-                                    <h2>Zero deduction gold exchange</h2>
-                                    <p>When you exchange 22K gold with us, we give 100% value, without any deductions. <a href="#">Learn More</a></p>
+                                    <h2>One-Stop Computer Sales & Accessories</h2>
+                                    <p>From the latest laptops, desktops, and monitors to essential accessories, we offer top-quality tech at unbeatable prices. <a href="#">Browse Products</a></p>
                                 </div>
                             </div>
                             <div class="col-lg-6">
                                 <div class="data data_2">
-                                    <h2>100% HUID Compliment Gold</h2>
-                                    <p>The Bureau of Indian Standard (BIS) issues a hallmark in order to certify the purity of the gold. <a href="#">Learn More</a></p>
+                                    <h2>Expert Repair & AMC Services</h2>
+                                    <p>Fast and reliable service for all your computer needs — hardware, software, and annual maintenance contracts handled by certified experts. <a href="#">Book a Service</a></p>
                                 </div>
                             </div>
                         </div>
 
                     </div>
                 </div>
-
             </div>
-
         </div>
     </div>
 </div>
+
 
 <div class="latest_product_sec">
     <div class="container">

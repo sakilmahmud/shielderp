@@ -75,7 +75,7 @@
 
         .table-section td {
             border: 1px solid #ddd;
-            padding: 5px;
+            padding: 3px;
             text-align: left;
             font-size: 12px;
         }
@@ -158,6 +158,10 @@
         .terms h3 {
             color: #0073e6;
             margin-bottom: 10px;
+        }
+
+        .terms p {
+            padding: 0px;
         }
 
         .footer {
@@ -257,8 +261,8 @@
                     <p>GSTIN: <?php echo $biller['gstin']; ?></p>
                 </div>
                 <div class="right_sec">
-                    <h3>Bill To</h3>
-                    <h2><?php echo $invoice['customer_name']; ?></h2>
+                    <h3 style="margin-top: -5px;">Bill To</h3>
+                    <h2 style="margin-top: -5px;"><?php echo $invoice['customer_name']; ?></h2>
                     <p><?php echo ($invoice['address'] != "") ? $invoice['address'] : ""; ?></p>
                     <p><?php echo ($invoice['mobile'] != "") ? "Contact: " . $invoice['mobile'] : ""; ?></p>
                     <p><?php echo ($customer['gst_number'] != "") ? "GSTIN: " . $customer['gst_number'] : ""; ?></p>
@@ -317,7 +321,7 @@
             <div class="left_sec">
                 <?php if ($invoice['is_gst'] != 0): ?>
                     <div class="hsn_gst_sec">
-                        <table>
+                        <table width="300">
                             <tr>
                                 <th>HSN/SAC</th>
                                 <th>GST%</th>
@@ -356,12 +360,12 @@
                             // Render the grouped details
                             foreach ($groupedDetails as $hsn_code => $data) :
                             ?>
-                                <tr>
-                                    <td><?php echo $hsn_code; ?></td>
-                                    <td><?php echo $data['gst_rate']; ?>%</td>
-                                    <td><span style="font-family: DejaVu Sans; sans-serif;">&#8377;</span><?php echo number_format($data['amount'], 2); ?></td>
-                                    <td><span style="font-family: DejaVu Sans; sans-serif;">&#8377;</span><?php echo number_format($data['cgst'], 2); ?></td>
-                                    <td><span style="font-family: DejaVu Sans; sans-serif;">&#8377;</span><?php echo number_format($data['sgst'], 2); ?></td>
+                                <tr style="padding: 0;">
+                                    <td style="padding: 0;"><?php echo $hsn_code; ?></td>
+                                    <td style="padding: 0;"><?php echo $data['gst_rate']; ?>%</td>
+                                    <td style="padding: 0;"><span style="font-family: DejaVu Sans; sans-serif;">&#8377;</span><?php echo number_format($data['amount'], 2); ?></td>
+                                    <td style="padding: 0;"><span style="font-family: DejaVu Sans; sans-serif;">&#8377;</span><?php echo number_format($data['cgst'], 2); ?></td>
+                                    <td style="padding: 0;"><span style="font-family: DejaVu Sans; sans-serif;">&#8377;</span><?php echo number_format($data['sgst'], 2); ?></td>
                                 </tr>
                             <?php endforeach; ?>
                         </table>
@@ -393,18 +397,15 @@
 
         <div class="footer_sec">
             <div class="terms left_sec">
-                <h3>Terms / Declaration</h3>
-                <p><small><?php echo $terms; ?></small></p>
-                <p></p>
+                <h3>Terms / Declaration: <small class="color:#000"><?php echo $terms; ?></small></h3>
                 <p><strong>Bank Details -</strong></p>
                 <p>Bank Name: <?php echo $bank_details['bank_name']; ?></p>
                 <p>Account No.: <?php echo $bank_details['account_no']; ?></p>
-                <p>IFSC: <?php echo $bank_details['ifsc_code']; ?></p>
-                <p>Branch & IFSC: <?php echo $bank_details['branch']; ?></p>
+                <p>IFSC: <?php echo $bank_details['ifsc_code']; ?> | Branch: <?php echo $bank_details['branch']; ?></p>
             </div>
             <div class="footer right_sec">
-                <img src="<?php echo base_url('assets/frontend/images/sign.png'); ?>" alt="SMM" width="200">
                 <p>For <?php echo $biller['name']; ?></p>
+                <img src="<?php echo base_url('assets/frontend/images/sign.png'); ?>" alt="SMM" width="200">
             </div>
         </div>
     </div>

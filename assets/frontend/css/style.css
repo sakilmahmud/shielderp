@@ -232,7 +232,7 @@ header {
 
 .home_banner {
   padding: 0px 0px 30px 0px;
-  /* margin-top: 182px; */
+  margin-top: 150px;
 }
 .home_banner_Single {
   width: 100%;
@@ -2247,16 +2247,35 @@ ul.pagination li.active a {
   margin-top: 4px;
 }
 
+.mobile_header {
+  display: none;
+}
+.web_header {
+  display: block;
+}
+.web_header .nav-item:hover .sub-menu {
+  display: block;
+  /* Show submenu on hover */
+}
 @media (max-width: 767px) {
+  .data_sec {
+    display: none;
+  }
+  .latest_product_sec {
+    padding-top: 15px;
+  }
   .navbar-toggler-icon {
     width: 20px;
-    height: 20px;
+    height: 35px;
   }
   .header_bottom {
-    padding: 6px 0px;
+    padding: 0px;
   }
   header {
-    display: none;
+    display: none !important;
+  }
+  .mobile_header {
+    display: block !important;
   }
   header.header_mobile {
     display: block;
@@ -2282,7 +2301,7 @@ ul.pagination li.active a {
     margin-right: 25px;
   }
   .home_banner_Single {
-    height: 109px;
+    height: 170px;
     background-size: cover !important;
   }
   .latest_product_left {
@@ -2384,14 +2403,14 @@ ul.pagination li.active a {
   }
   .navbar-brand img {
     transition: all 0.5s ease-in-out;
-    width: 50px;
+    width: 170px;
   }
   .header_search {
     margin-left: 0px;
     width: 100%;
   }
   .home_banner {
-    margin-top: 134px;
+    margin-top: 15px !important;
   }
   .new_arrivals {
     padding: 50px 0px;

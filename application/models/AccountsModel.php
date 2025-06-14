@@ -153,4 +153,257 @@ class AccountsModel extends CI_Model
             'data' => $query->result_array()
         ];
     }
+
+    /** Reports */
+
+    /** Cashbook */
+
+    public function get_cashbook_entries($from, $to)
+    {
+        return $this->db->select('t.*, pm.title as payment_method')
+            ->from('transactions t')
+            ->join('payment_methods pm', 'pm.id = t.payment_method_id', 'left')
+            ->where('t.trans_date >=', $from)
+            ->where('t.trans_date <=', $to)
+            ->where('t.status', 1)
+            ->order_by('t.trans_date', 'ASC')
+            ->get()
+            ->result();
+    }
+
+    public function get_opening_balance($from_date)
+    {
+        $debit = $this->db->select_sum('amount')->where('trans_date <', $from_date)->where('trans_type', 2)->where('status', 1)->get('transactions')->row()->amount;
+        $credit = $this->db->select_sum('amount')->where('trans_date <', $from_date)->where('trans_type', 1)->where('status', 1)->get('transactions')->row()->amount;
+        return round($credit - $debit, 2);
+    }
+
+    public function get_closing_balance($to_date)
+    {
+        $debit = $this->db->select_sum('amount')->where('trans_date <=', $to_date)->where('trans_type', 2)->where('status', 1)->get('transactions')->row()->amount;
+        $credit = $this->db->select_sum('amount')->where('trans_date <=', $to_date)->where('trans_type', 1)->where('status', 1)->get('transactions')->row()->amount;
+        return round($credit - $debit, 2);
+    }
+
+    /** for Payment Paid */
+    public function get_all_suppliers()
+    {
+        return $this->db->get('suppliers')->result();
+    }
+
+    public function get_payment_paid($from, $to, $supplier_id = null, $invoice_no = null)
+    {
+        $this->db->select('t.trans_date, s.supplier_name, po.invoice_no, t.amount');
+        $this->db->from('transactions t');
+        $this->db->join('purchase_orders po', 'po.id = t.table_id', 'left');
+        $this->db->join('suppliers s', 's.id = po.supplier_id', 'left');
+        $this->db->where('t.trans_type', 2);
+        $this->db->where('t.transaction_for_table', 'purchase_orders');
+        $this->db->where('t.trans_date >=', $from);
+        $this->db->where('t.trans_date <=', $to);
+
+        if (!empty($supplier_id)) {
+            $this->db->where('po.supplier_id', $supplier_id);
+        }
+
+        if (!empty($invoice_no)) {
+            $this->db->where('po.invoice_no', $invoice_no);
+        }
+
+        return $this->db->get()->result();
+    }
+
+    /**for Payment Received */
+    public function get_payment_received_entries($from, $to, $customer_id = null, $invoice_no = null)
+    {
+        $this->db->select('t.trans_date, t.amount, inv.invoice_no, inv.customer_name')
+            ->from('transactions t')
+            ->join('invoices inv', 'inv.id = t.table_id')
+            ->join('customers c', 'c.id = inv.customer_id')
+            ->where('t.trans_type', 1)
+            ->where('t.transaction_for_table', 'invoices')
+            ->where('t.trans_date >=', $from)
+            ->where('t.trans_date <=', $to);
+
+        if ($customer_id) {
+            $this->db->where('c.id', $customer_id);
+        }
+
+        if ($invoice_no) {
+            $this->db->like('inv.invoice_no', $invoice_no);
+        }
+
+        return $this->db->get()->result();
+    }
+
+    public function get_all_customers()
+    {
+        $this->db->select("id, CASE WHEN id = 5 THEN 'Cash' ELSE customer_name END as name");
+        return $this->db->get('customers')->result();
+    }
+
+
+    /** for daily_summary*/
+    public function get_daily_summary($from, $to)
+    {
+        $this->db->select("
+            t.trans_date,
+            SUM(CASE WHEN t.trans_type = 1 THEN t.amount ELSE 0 END) AS total_in,
+            SUM(CASE WHEN t.trans_type = 2 THEN t.amount ELSE 0 END) AS total_out,
+            SUM(CASE WHEN t.trans_type = 1 AND pm.type = 1 THEN t.amount ELSE 0 END) AS cash_in,
+            SUM(CASE WHEN t.trans_type = 2 AND pm.type = 1 THEN t.amount ELSE 0 END) AS cash_out,
+            SUM(CASE WHEN t.trans_type = 1 AND pm.type = 2 THEN t.amount ELSE 0 END) AS bank_in,
+            SUM(CASE WHEN t.trans_type = 2 AND pm.type = 2 THEN t.amount ELSE 0 END) AS bank_out
+        ");
+        $this->db->from('transactions t');
+        $this->db->join('payment_methods pm', 't.payment_method_id = pm.id', 'left');
+        $this->db->where('t.trans_date >=', $from);
+        $this->db->where('t.trans_date <=', $to);
+        $this->db->where('t.status', 1); // Optional: only active transactions
+        $this->db->where('pm.status', 1); // Optional: only active payment methods
+        $this->db->group_by('t.trans_date');
+        $this->db->order_by('t.trans_date', 'ASC');
+
+        $query = $this->db->get();
+        return $query->result();
+    }
+
+    /** for profit_loss */
+    public function get_total_by_type($type, $from, $to)
+    {
+        return $this->db->select_sum('amount')
+            ->from('transactions')
+            ->where('trans_type', $type)
+            ->where('trans_date >=', $from)
+            ->where('trans_date <=', $to)
+            ->where('status', 1)
+            ->get()
+            ->row()
+            ->amount ?? 0;
+    }
+
+    /**  for balance_sheet*/
+    public function get_balance_sheet_data($type, $as_on)
+    {
+        // This is just a placeholder logic; adapt to your real structure.
+        if ($type == 'assets') {
+            return [
+                (object)['title' => 'Cash', 'amount' => 15000],
+                (object)['title' => 'Bank', 'amount' => 40000],
+                (object)['title' => 'Accounts Receivable', 'amount' => 12000],
+            ];
+        }
+
+        if ($type == 'liabilities') {
+            return [
+                (object)['title' => 'Accounts Payable', 'amount' => 10000],
+                (object)['title' => 'Loans', 'amount' => 20000],
+            ];
+        }
+
+        if ($type == 'equity') {
+            return [
+                (object)['title' => 'Owner’s Equity', 'amount' => 37000],
+            ];
+        }
+
+        return [];
+    }
+
+    /** for Ledger */
+    public function get_ledger_total($table)
+    {
+        $query = $this->db
+            ->select_sum('amount')
+            ->where('transaction_for_table', $table)
+            ->get('transactions');
+
+        return $query->row()->amount ?? 0;
+    }
+
+    // Customer Ledger
+    public function get_customer_ledger($from, $to, $party_id = null)
+    {
+        $this->db->select('t.*, i.invoice_no, i.customer_name');
+        $this->db->from('transactions t');
+        $this->db->join('invoices i', 'i.id = t.table_id', 'left');
+        $this->db->join('customers c', 'c.id = i.customer_id', 'left');
+        $this->db->where('t.transaction_for_table', 'invoices');
+        $this->db->where('t.trans_date >=', $from);
+        $this->db->where('t.trans_date <=', $to);
+        if ($party_id) {
+            $this->db->where('i.customer_id', $party_id);
+        }
+        $this->db->order_by('t.trans_date', 'ASC');
+        return $this->db->get()->result();
+    }
+
+
+    // Supplier Ledger
+    public function get_supplier_ledger($from, $to, $party_id = null)
+    {
+        $this->db->select('t.*, p.invoice_no, p.purchase_date, s.supplier_name')
+            ->from('transactions t')
+            ->join('purchase_orders p', 't.table_id = p.id', 'left')
+            ->join('suppliers s', 'p.supplier_id = s.id', 'left')
+            ->where('t.transaction_for_table', 'purchase_orders')
+            ->where('t.amount >', 0)
+            ->where('t.trans_date >=', $from)
+            ->where('t.trans_date <=', $to);
+
+        if (!empty($party_id)) {
+            $this->db->where('p.supplier_id', $party_id);
+        }
+
+        return $this->db->order_by('t.trans_date', 'asc')->get()->result();
+    }
+
+    // Income Ledger
+    public function get_income_ledger($from, $to, $head_id = null)
+    {
+        $this->db->select('t.*, i.invoice_no, i.income_title, ih.head_title, pm.type as pm_type')
+            ->from('transactions t')
+            ->join('incomes i', 't.table_id = i.id', 'left')
+            ->join('income_heads ih', 'i.income_head_id = ih.id', 'left')
+            ->join('payment_methods pm', 't.payment_method_id = pm.id', 'left')
+            ->where('t.transaction_for_table', 'incomes')
+            ->where('t.trans_date >=', $from)
+            ->where('t.trans_date <=', $to);
+
+        if ($head_id) {
+            $this->db->where('i.income_head_id', $head_id);
+        }
+
+        return $this->db->order_by('t.trans_date', 'asc')->get()->result();
+    }
+
+
+    public function get_income_heads()
+    {
+        return $this->db->get('income_heads')->result();
+    }
+
+    // Expense Ledger
+    public function get_expense_ledger($from, $to, $head_id = null)
+    {
+        $this->db->select('t.*, e.invoice_no, e.expense_title, eh.head_title, pm.type as pm_type')
+            ->from('transactions t')
+            ->join('expenses e', 't.table_id = e.id', 'left')
+            ->join('expense_heads eh', 'e.expense_head_id = eh.id', 'left')
+            ->join('payment_methods pm', 't.payment_method_id = pm.id', 'left')
+            ->where('t.transaction_for_table', 'expenses')
+            ->where('t.trans_date >=', $from)
+            ->where('t.trans_date <=', $to);
+
+        if ($head_id) {
+            $this->db->where('e.expense_head_id', $head_id);
+        }
+
+        return $this->db->order_by('t.trans_date', 'asc')->get()->result();
+    }
+
+    public function get_expense_heads()
+    {
+        return $this->db->get('expense_heads')->result();
+    }
 }

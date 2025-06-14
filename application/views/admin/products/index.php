@@ -260,7 +260,7 @@
         $('#stockUpdateModalLabel').text(`Update Stock: ${productName}`);
         $('#stockInfo').html(`Total Purchased: ${totalPurchased} | Current Stocks: ${currentStocks}`);
         $('#stock_product_id').val(productId);
-
+        $('#quantity').val(0);
         $.ajax({
             url: '<?php echo base_url('/'); ?>admin/products/get_product_prices', // Adjust the endpoint as needed
             type: 'POST',

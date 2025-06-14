@@ -1,5 +1,5 @@
-<div class="content-wrapper mt-3">
-    <section class="content">
+<main class="app-main">
+    <div class="app-content">
         <div class="container-fluid">
             <div class="row">
                 <div class="col-md-4">
@@ -170,8 +170,10 @@
                 }
             });
         </script>
-    </section>
-</div>
+    </div>
+    <!--end::App Content-->
+</main>
+
 <script>
     $(document).ready(function() {
         // Load customer due by default

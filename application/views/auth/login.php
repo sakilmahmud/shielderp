@@ -65,13 +65,17 @@
                 </label>
               </div>
             </div>
-            <!-- /.col -->
             <div class="col-4">
               <button type="submit" class="btn btn-primary btn-block">Sign In</button>
             </div>
-            <!-- /.col -->
           </div>
         </form>
+        <!-- <h1>We'll Be Back Soon!</h1>
+        <p>Our website is currently undergoing maintenance. We apologize for the inconvenience and appreciate your patience.</p>
+        <p>Estimated time: <strong>10AM, 01/01/2025</strong></p>
+        <div class="contact">
+          <p>If you need immediate assistance, please call us at <a href="tel:9732138374">9732138374</a>.</p>
+        </div> -->
       </div>
       <!-- /.card-body -->
     </div>

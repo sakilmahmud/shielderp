@@ -13,3 +13,6 @@ ALTER TABLE `invoices` DROP `gst`;
 ALTER TABLE `invoice_details` DROP `gst_rate`;
 ALTER TABLE `invoice_details` ADD `cgst` DECIMAL(9,2) NOT NULL DEFAULT '9' AFTER `discount`, ADD `sgst` DECIMAL(9,2) NOT NULL DEFAULT '9' AFTER `cgst`;
 ALTER TABLE `invoice_details` ADD `hsn_code` VARCHAR(50) NULL DEFAULT NULL AFTER `invoice_date`; 
+
+/*11062025*/
+ALTER TABLE `payment_methods` CHANGE `current_balance` `type` TINYINT(1) NULL DEFAULT '1' COMMENT '1=Cash,2=Bank,3=Wallet'; 

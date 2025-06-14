@@ -36,6 +36,15 @@ class AdminController extends CI_Controller
         }
     }
 
+    public function demoDashboard()
+    {
+        $data['activePage'] = 'demo_dashboard';
+
+        //$this->load->view('admin/header', $data);
+        $this->load->view('admin/dashboard-demo', $data);
+        //$this->load->view('admin/footer');
+    }
+
     public function dashboard()
     {
         $data['activePage'] = 'dashboard';

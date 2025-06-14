@@ -39,6 +39,39 @@ class Home extends CI_Controller
         $this->load->view('inc/footer', $data);
     }
 
+    public function contact_submit()
+    {
+        $this->load->library('email');
+
+        $name = $this->input->post('name');
+        $phone = $this->input->post('phone');
+        $email = $this->input->post('email');
+        $msg = $this->input->post('msg');
+
+        $from_name = 'Global Computers';
+        $from_email = 'info@gcshop.in';
+
+        // Email Setup
+        $this->email->from($from_email, $from_name);
+        $this->email->to('globalcomputers19@gmail.com');
+        $this->email->subject("New Contact Enquiry from $name");
+        $this->email->message("
+        Name: $name\n
+        Phone: $phone\n
+        Email: $email\n
+        Message: $msg
+    ");
+
+        if ($this->email->send()) {
+            // Optional: Send WhatsApp notification here
+            //$this->send_whatsapp_notification($name, $phone, $msg);
+            echo json_encode(['status' => 'success', 'message' => 'Thanks! We will get back to you.']);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Failed to send email.']);
+        }
+    }
+
+
     public function cart()
     {
         $data['title'] = "Cart :: Global Computers";

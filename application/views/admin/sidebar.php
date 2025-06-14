@@ -1,16 +1,28 @@
-<aside class="main-sidebar sidebar-dark-primary elevation-4">
-  <!-- Brand Logo -->
-  <h2 class="brand-link">
-    <a href="<?php echo base_url(); ?>" target="_blank">
-      <img src="<?php echo base_url(getSetting('admin_logo')); ?>" width="150px" alt="GC Logo" class="brand-image">
+<aside class="app-sidebar bg-light shadow" data-bs-theme="light">
+  <div class="sidebar-brand">
+    <!--begin::Brand Link-->
+    <a href="<?php echo base_url('admin/dashboard'); ?>" class="brand-link">
+      <!--begin::Brand Image-->
+      <img
+        src="<?php echo base_url(getSetting('admin_logo')); ?>"
+        alt="<?php echo getSetting('admin_title'); ?>"
+        class="brand-image opacity-75 shadow" />
+      <!--end::Brand Image-->
+      <!--begin::Brand Text-->
+      <span class="brand-text fw-light"><?php echo getSetting('admin_title'); ?></span>
+      <!--end::Brand Text-->
     </a>
-    <?php echo getSetting('admin_title'); ?>
-  </h2>
+    <!--end::Brand Link-->
+  </div>
+  <!-- Brand Logo -->
 
   <!-- Sidebar -->
-  <div class="sidebar">
+  <div class="sidebar-wrapper">
     <nav class="mt-2">
-      <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+      <ul class="nav sidebar-menu flex-column"
+        data-lte-toggle="treeview"
+        role="menu"
+        data-accordion="false">
 
         <!-- Dashboard -->
         <li class="nav-item">
@@ -247,14 +259,17 @@
         </li>
 
         <!-- Reports -->
-        <li class="nav-item <?php if ($activePage === 'premium_only') echo 'menu-open'; ?>">
-          <a href="#" class="nav-link <?php if ($activePage === 'premium_only') echo 'active'; ?>">
+        <?php
+        $pages = ['premium_only', 'reports', 'cashbook', 'payment_paid', 'payment_received', 'daily_summary', 'ledger_dashboard', 'customer_ledger', 'supplier_ledger', 'income_ledger', 'expense_ledger', 'profit_loss', 'balance_sheet'];
+        ?>
+        <li class="nav-item <?php if (in_array($activePage, $pages)) echo 'menu-open'; ?>">
+          <a href="#" class="nav-link <?php if (in_array($activePage, $pages)) echo 'active'; ?>">
             <i class="nav-icon fas fa-chart-bar icon-darkblue"></i>
             <p>Reports <i class="fas fa-angle-left right"></i></p>
           </a>
           <ul class="nav nav-treeview">
             <li class="nav-item">
-              <a href="<?php echo base_url('admin/premiumOnly'); ?>" class="nav-link">
+              <a href="<?php echo base_url('admin/reports/accounts'); ?>" class="nav-link <?php if (in_array($activePage, $pages)) echo 'active'; ?>">
                 <i class="fas fa-file-invoice-dollar nav-icon"></i>
                 <p>Accounts</p>
               </a>
