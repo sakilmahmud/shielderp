@@ -1,6 +1,69 @@
 <main class="app-main">
     <div class="app-content">
-        <div class="container-fluid">
+        <div class="container-fluid mt-3">
+            <div class="row">
+                <div class="col-12 col-sm-6 col-md-3">
+                    <div class="info-box">
+                        <span class="info-box-icon text-bg-primary shadow-sm">
+                            <i class="bi bi-gear-fill"></i>
+                        </span>
+                        <div class="info-box-content">
+                            <span class="info-box-text">CPU Traffic</span>
+                            <span class="info-box-number">
+                                10
+                                <small>%</small>
+                            </span>
+                        </div>
+                        <!-- /.info-box-content -->
+                    </div>
+                    <!-- /.info-box -->
+                </div>
+                <!-- /.col -->
+                <div class="col-12 col-sm-6 col-md-3">
+                    <div class="info-box">
+                        <span class="info-box-icon text-bg-danger shadow-sm">
+                            <i class="bi bi-hand-thumbs-up-fill"></i>
+                        </span>
+                        <div class="info-box-content">
+                            <span class="info-box-text">Likes</span>
+                            <span class="info-box-number">41,410</span>
+                        </div>
+                        <!-- /.info-box-content -->
+                    </div>
+                    <!-- /.info-box -->
+                </div>
+                <!-- /.col -->
+                <!-- fix for small devices only -->
+                <!-- <div class="clearfix hidden-md-up"></div> -->
+                <div class="col-12 col-sm-6 col-md-3">
+                    <div class="info-box">
+                        <span class="info-box-icon text-bg-success shadow-sm">
+                            <i class="bi bi-cart-fill"></i>
+                        </span>
+                        <div class="info-box-content">
+                            <span class="info-box-text">Sales</span>
+                            <span class="info-box-number">760</span>
+                        </div>
+                        <!-- /.info-box-content -->
+                    </div>
+                    <!-- /.info-box -->
+                </div>
+                <!-- /.col -->
+                <div class="col-12 col-sm-6 col-md-3">
+                    <div class="info-box">
+                        <span class="info-box-icon text-bg-warning shadow-sm">
+                            <i class="bi bi-people-fill"></i>
+                        </span>
+                        <div class="info-box-content">
+                            <span class="info-box-text">New Members</span>
+                            <span class="info-box-number">2,000</span>
+                        </div>
+                        <!-- /.info-box-content -->
+                    </div>
+                    <!-- /.info-box -->
+                </div>
+                <!-- /.col -->
+            </div>
             <div class="row">
                 <div class="col-md-4">
                     <div class="card card-min-height">
@@ -43,43 +106,16 @@
                     </div>
                 </div>
                 <div class="col-md-4">
-                    <div class="card card-min-height">
-                        <div class="card-header">
-                            <h3 class="card-title"><i class="nav-icon fas fa-receipt"></i> Due List</h3>
-                        </div>
-                        <div class="">
-                            <ul class="nav nav-tabs" id="dueTab" role="tablist">
-                                <li class="nav-item">
-                                    <a style="font-size: 13px;" class="nav-link active d-flex justify-content-between align-items-center" id="customers-tab" data-toggle="tab" href="#customers" role="tab">
-                                        <span><i class="fas fa-users text-primary mr-1"></i> Customers</span>
-                                        <span class="badge badge-pill badge-info ml-2">₹<?= round($total_customer_due ?? 0) ?></span>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a style="font-size: 13px;" class="nav-link d-flex justify-content-between align-items-center" id="suppliers-tab" data-toggle="tab" href="#suppliers" role="tab">
-                                        <span><i class="fas fa-truck text-warning mr-1"></i> Suppliers</span>
-                                        <span class="badge badge-pill badge-info ml-2">₹<?= round($total_supplier_due ?? 0) ?></span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="pl-1">
-                            <div class="tab-content" id="dueTabContent">
-                                <div class="tab-pane fade show active" id="customers" role="tabpanel">
-                                    <div id="ajax-customer-due-content" class="due-scroll-container">
-                                        <p>Loading...</p>
-                                    </div>
-                                </div>
-                                <div class="tab-pane fade" id="suppliers" role="tabpanel">
-                                    <div id="ajax-supplier-due-content" class="due-scroll-container">
-                                        <p>Loading...</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
+                    <div id="ajax-customer-due-content" class="due-scroll-container">
+                        <p>Loading...</p>
                     </div>
                 </div>
+                <div class="col-md-4">
+                    <div id="ajax-supplier-due-content" class="due-scroll-container">
+                        <p>Loading...</p>
+                    </div>
+                </div>
+
                 <div class="col-md-4">
                     <div class="card card-min-height">
                         <div class="card-header d-flex justify-content-between align-items-center">
@@ -178,14 +214,7 @@
     $(document).ready(function() {
         // Load customer due by default
         loadCustomerDue();
-
-        $('#customers-tab').on('click', function() {
-            loadCustomerDue();
-        });
-
-        $('#suppliers-tab').on('click', function() {
-            loadSupplierDue();
-        });
+        loadSupplierDue();
 
         function loadCustomerDue() {
             $('#ajax-customer-due-content').html('<p>Loading...</p>');

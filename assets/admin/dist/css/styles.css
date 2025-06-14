@@ -221,6 +221,16 @@ sup {
   background: #f9f9f9;
 }
 
+.nav-sidebar > .nav-item > .nav-treeview {
+  background-color: #666;
+}
+.bg-light .menu-open {
+  background: #efefef;
+}
+.bg-dark .menu-open {
+  background: #666 !important;
+  transition: background 0.3s;
+}
 .card-min-height {
   min-height: 370px;
 }
@@ -230,11 +240,10 @@ sup {
   font-size: 13px;
 }
 
-.due-scroll-container {
+/* .due-scroll-container {
   max-height: 300px;
   overflow-y: auto;
   overflow-x: hidden;
-  /* hide horizontal scrollbar */
   padding-right: 10px;
   scrollbar-width: thin;
   scrollbar-color: #ccc transparent;
@@ -242,7 +251,6 @@ sup {
   border-radius: 0.25rem;
 }
 
-/* Webkit (Chrome, Safari) Scrollbar Customization */
 .due-scroll-container::-webkit-scrollbar {
   width: 6px;
 }
@@ -260,7 +268,7 @@ sup {
   max-height: 300px;
   overflow-y: auto;
   padding-right: 5px;
-}
+} */
 
 .list-group-item {
   font-size: 14px;

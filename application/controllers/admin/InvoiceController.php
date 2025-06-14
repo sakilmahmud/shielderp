@@ -69,16 +69,16 @@ class InvoiceController extends MY_Controller
             $totalPaid += $invoice['paid_amount'];
             $totalDue += $invoice['due_amount'];
 
-            $actions = '<a href="' . base_url('admin/invoices/view/' . $invoice['id']) . '" class="btn btn-info btn-sm mr-1">View</a>';
-            $actions .= '<a href="' . base_url('admin/invoices/edit/' . $invoice['id']) . '" class="btn btn-warning btn-sm mr-1">Edit</a>';
-            $actions .= '<a href="' . base_url('admin/invoices/delete/' . $invoice['id']) . '" class="btn btn-danger btn-sm mr-1" onclick="return confirm(\'Are you sure you want to delete this invoice?\');">Delete</a>';
+            $actions = '<a href="' . base_url('admin/invoices/view/' . $invoice['id']) . '" class="btn btn-info btn-sm me-1">View</a>';
+            $actions .= '<a href="' . base_url('admin/invoices/edit/' . $invoice['id']) . '" class="btn btn-warning btn-sm me-1">Edit</a>';
+            $actions .= '<a href="' . base_url('admin/invoices/delete/' . $invoice['id']) . '" class="btn btn-danger btn-sm me-1" onclick="return confirm(\'Are you sure you want to delete this invoice?\');">Delete</a>';
             $actions .= '<a href="' . base_url('admin/invoices/print/' . $invoice['id']) . '" target="_blank" class="btn btn-primary btn-sm">Print</a>';
 
             $status_badge = match ($invoice['payment_status']) {
-                '1' => '<span class="badge badge-success">Paid</span>',
-                '0' => '<span class="badge badge-warning">Pending</span>',
-                '2' => '<span class="badge badge-info">Partial</span>',
-                '3' => '<span class="badge badge-danger">Return</span>',
+                '1' => '<span class="badge text-bg-success">Paid</span>',
+                '0' => '<span class="badge text-bg-warning">Pending</span>',
+                '2' => '<span class="badge text-bg-info">Partial</span>',
+                '3' => '<span class="badge text-bg-danger">Return</span>',
                 default => '<span class="badge badge-secondary">Unknown</span>',
             };
 

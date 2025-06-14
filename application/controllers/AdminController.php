@@ -70,9 +70,6 @@ class AdminController extends MY_Controller
         $data['monthly_sales'] = $this->get_monthly_sales_data();
         $data['monthly_purchases'] = $this->get_monthly_purchase_data();
 
-        $data['total_customer_due'] = $this->get_total_customer_due();
-        $data['total_supplier_due'] = $this->get_total_supplier_due();
-
         // Add low stock summary
         $stock_summary = $this->get_low_stock_summary(); // returns ['low' => 12, 'total' => 75]
         $data['low_stock_count'] = $stock_summary['low'];
@@ -285,15 +282,18 @@ class AdminController extends MY_Controller
 
     public function ajax_due_customers()
     {
-        $customers = $this->due_customer_list();
-        $html = $this->load->view('admin/dashboard/ajax_due_customers', ['due_customers' => $customers], true);
+        $data['total_customer_due'] = $this->get_total_customer_due();
+        $data['due_customers'] = $this->due_customer_list();
+        $html = $this->load->view('admin/dashboard/ajax_due_customers', $data);
         echo $html;
     }
 
     public function ajax_due_suppliers()
     {
-        $suppliers = $this->due_supplier_list();
-        $html = $this->load->view('admin/dashboard/ajax_due_suppliers', ['due_suppliers' => $suppliers], true);
+
+        $data['total_supplier_due'] = $this->get_total_supplier_due();
+        $data['due_suppliers'] = $this->due_supplier_list();
+        $html = $this->load->view('admin/dashboard/ajax_due_suppliers', $data);
         echo $html;
     }
 
