@@ -284,18 +284,22 @@ class AdminController extends MY_Controller
     {
         $data['total_customer_due'] = $this->get_total_customer_due();
         $data['due_customers'] = $this->due_customer_list();
-        $html = $this->load->view('admin/dashboard/ajax_due_customers', $data);
+
+        // Fix: Add true to return view content as string
+        $html = $this->load->view('admin/dashboard/ajax_due_customers', $data, true);
         echo $html;
     }
 
     public function ajax_due_suppliers()
     {
-
         $data['total_supplier_due'] = $this->get_total_supplier_due();
         $data['due_suppliers'] = $this->due_supplier_list();
-        $html = $this->load->view('admin/dashboard/ajax_due_suppliers', $data);
+
+        // Fix: Add true to return view content as string
+        $html = $this->load->view('admin/dashboard/ajax_due_suppliers', $data, true);
         echo $html;
     }
+
 
     private function due_customer_list()
     {

@@ -106,7 +106,7 @@
                     </div>
                 </div>
                 <div class="col-md-4">
-                    <div id="ajax-customer-due-content" class="due-scroll-container">
+                    <div id="ajax-customer-due-content">
                         <p>Loading...</p>
                     </div>
                 </div>

@@ -22,9 +22,9 @@
         </div>
         <!-- /.card-header -->
         <div class="card-body p-0">
-            <div class="table-responsive">
+            <div class="table-responsive table-body-scroll">
                 <table class="table m-0">
-                    <thead>
+                    <thead class="table-header">
                         <tr>
                             <th>Customer</th>
                             <th>Mobile</th>
@@ -35,13 +35,13 @@
                         <?php foreach ($due_customers as $cust): ?>
                             <tr>
                                 <td>
-                                    <a
-                                        href="pages/examples/invoice.html"
-                                        class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"><?= $cust['name'] ?></a>
+                                    <a href="pages/examples/invoice.html"
+                                        class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">
+                                        <?= $cust['name'] ?></a>
                                 </td>
                                 <td><?= $cust['mobile'] ?></td>
                                 <td>
-                                    <b class="">
+                                    <b>
                                         ₹<?= number_format($cust['due_amount'], 2) ?>
                                     </b>
                                 </td>
@@ -50,6 +50,7 @@
                     </tbody>
                 </table>
             </div>
+
             <!-- /.table-responsive -->
         </div>
         <div class="card-footer clearfix">
