@@ -579,7 +579,7 @@ class InvoiceController extends MY_Controller
 
         $data['transactions'] = $this->InvoiceModel->get_invoice_transactions($invoice_id);
 
-        $html = $this->render_admin('admin/invoices/print', $data, true);
+        $html = $this->load->view('admin/invoices/print', $data, true);
         /* echo $html;
         die; */
         // Load the PDF library
