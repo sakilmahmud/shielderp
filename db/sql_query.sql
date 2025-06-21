@@ -16,3 +16,6 @@ ALTER TABLE `invoice_details` ADD `hsn_code` VARCHAR(50) NULL DEFAULT NULL AFTER
 
 /*11062025*/
 ALTER TABLE `payment_methods` CHANGE `current_balance` `type` TINYINT(1) NULL DEFAULT '1' COMMENT '1=Cash,2=Bank,3=Wallet'; 
+
+/**22062025*/
+ALTER TABLE `customers` ADD `photo` VARCHAR(255) NULL AFTER `gst_number`;

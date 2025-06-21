@@ -13,10 +13,11 @@
                     <thead>
                         <tr>
                             <th>ID</th>
+                            <th>Photo</th>
                             <th>Customer Name</th>
                             <th>Phone</th>
                             <th>Email</th>
-                            <th>Address</th>
+                            <th>Balance</th>
                             <th>Action</th>
                         </tr>
                     </thead>

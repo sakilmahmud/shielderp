@@ -242,4 +242,18 @@ class InvoiceModel extends CI_Model
 
         return $query->result_array();
     }
+
+    public function get_transaction_by_id($id)
+    {
+        $this->db->select('
+            t.*,
+            pm.title as payment_method
+        ');
+        $this->db->from('transactions t');
+        $this->db->join('payment_methods pm', 'pm.id = t.payment_method_id', 'left');
+        $this->db->where('t.id', $id);
+        $this->db->where('t.trans_type', 1); // Payment only
+        $this->db->where('t.status', 1);
+        return $this->db->get()->row_array();
+    }
 }

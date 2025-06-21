@@ -165,6 +165,8 @@ $route['admin/customers/edit/(:num)'] = 'admin/CustomerController/edit/$1';
 $route['admin/customers/delete/(:num)'] = 'admin/CustomerController/delete/$1';
 $route['admin/customers/ajax-list']         = 'admin/CustomerController/ajax_list'; // NEW
 $route['admin/customers/show/(:num)'] = 'admin/CustomerController/show/$1';
+$route['admin/customers/upload_photo'] = 'admin/CustomerController/upload_photo';
+$route['admin/customers/remove_photo'] = 'admin/CustomerController/remove_photo';
 
 
 $route['admin/suppliers']                   = 'admin/SupplierController/index';
@@ -188,6 +190,7 @@ $route['admin/invoices/create']             = 'admin/InvoiceController/createInv
 $route['admin/invoices/edit/(:num)']        = 'admin/InvoiceController/updateInvoice/$1';
 $route['admin/invoices/view/(:num)']        = 'admin/InvoiceController/view/$1';
 $route['admin/invoices/print/(:num)']       = 'admin/InvoiceController/print/$1';
+$route['admin/payments/print_receipt/(:num)'] = 'admin/InvoiceController/print_receipt/$1';
 $route['admin/invoices/delete/(:num)'] = 'admin/InvoiceController/delete/$1';
 
 $route['admin/invoices/getLastestStocks']   = 'admin/InvoiceController/getLastestStocks';

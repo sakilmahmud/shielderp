@@ -1,23 +1,58 @@
-<h5>Payment History</h5>
-<?php if (!empty($payments)): ?>
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Date</th>
-                <th>Amount</th>
-                <th>Mode</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php foreach ($payments as $p): ?>
+<form method="get" class="row g-3 mb-3">
+    <input type="hidden" name="tab" value="payments">
+    <div class="col-md-3">
+        <label>From Date</label>
+        <input type="date" name="from_date" class="form-control" value="<?= $this->input->get('from_date') ?? date('Y-01-01') ?>">
+    </div>
+    <div class="col-md-3">
+        <label>To Date</label>
+        <input type="date" name="to_date" class="form-control" value="<?= $this->input->get('to_date') ?? date('Y-m-d') ?>">
+    </div>
+    <div class="col-md-3 d-flex align-items-end">
+        <button type="submit" class="btn btn-primary">Filter</button>
+    </div>
+</form>
+
+<div class="card">
+    <div class="card-header">
+        <h5 class="m-0">Payment History</h5>
+    </div>
+    <div class="card-body p-0">
+        <table class="table table-bordered table-sm mb-0">
+            <thead>
                 <tr>
-                    <td><?= date('d M Y', strtotime($p['date'])) ?></td>
-                    <td>₹<?= number_format($p['amount'], 2) ?></td>
-                    <td><?= esc($p['mode']) ?></td>
+                    <th>Date</th>
+                    <th>Invoice No</th>
+                    <th>Description</th>
+                    <th>Payment Mode</th>
+                    <th class="text-end">Amount</th>
+                    <th class="text-center">Action</th>
                 </tr>
-            <?php endforeach; ?>
-        </tbody>
-    </table>
-<?php else: ?>
-    <div class="alert alert-info">No payments found.</div>
-<?php endif; ?>
+            </thead>
+            <tbody>
+                <?php if (!empty($payments)): ?>
+                    <?php foreach ($payments as $p):
+                        if ($p['amount'] <= 0) continue;
+                    ?>
+                        <tr>
+                            <td><?= date('d-m-Y', strtotime($p['trans_date'])) ?></td>
+                            <td><?= $p['invoice_no'] ?? '-' ?></td>
+                            <td><?= $p['descriptions'] ?></td>
+                            <td><?= $p['payment_method'] ?? 'N/A' ?></td>
+                            <td class="text-end fw-bold text-success">₹<?= number_format($p['amount'], 2) ?></td>
+                            <td class="text-center">
+                                <a href="<?= base_url('admin/payments/print_receipt/' . $p['id']) ?>" class="btn btn-sm btn-secondary" target="_blank">
+                                    🖨️ Print
+                                </a>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <tr>
+                        <td colspan="6" class="text-center">No payment history available.</td>
+                    </tr>
+                <?php endif; ?>
+            </tbody>
+        </table>
+    </div>
+</div>

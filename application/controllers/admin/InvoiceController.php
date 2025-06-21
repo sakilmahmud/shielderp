@@ -459,8 +459,8 @@ class InvoiceController extends MY_Controller
                     'price' => $purchase_prices[$index],
                     'discount_type' => $discount_types[$index],
                     'discount' => $discounts[$index],
-                    'cgst' => $cgst[$index],
-                    'sgst' => $sgst[$index],
+                    'cgst' => $cgst[$index] ?? 9,
+                    'sgst' => $sgst[$index] ?? 9,
                     'gst_amount' => $gst_amounts[$index],
                     'final_price' => $final_prices[$index],
                     'hsn_code' => $hsn_codes[$index],
@@ -588,6 +588,65 @@ class InvoiceController extends MY_Controller
         $this->pdf->setPaper('A4', 'portrait');
         $this->pdf->render();
         $this->pdf->stream('Invoice_' . $customer_name_formatted . '_' . $invoice_id . '.pdf', array('Attachment' => 0));
+    }
+
+    public function print_receipt($transaction_id)
+    {
+        // Fetch payment transaction
+        $payment = $this->InvoiceModel->get_transaction_by_id($transaction_id);
+
+        if (!$payment) {
+            show_404();
+        }
+
+        // Fetch linked invoice (if any)
+        $invoice = null;
+        if (!empty($payment['table_id'])) {
+            $invoice = $this->InvoiceModel->get_invoice_by_id($payment['table_id']);
+        }
+
+        // Fetch customer (via invoice)
+        $customer = $invoice ? $this->CustomerModel->get_customer_by_id($invoice['customer_id']) : null;
+
+        // Biller details
+        $biller = [
+            'logo'     => base_url(getSetting('frontend_logo')),
+            'name'     => getSetting('site_title'),
+            'address'  => getSetting('company_address'),
+            'contact'  => getSetting('company_contact'),
+            'email'    => getSetting('company_email'),
+            'website'  => getSetting('company_website'),
+            'gstin'    => getSetting('company_gstin'),
+        ];
+
+        // Bank details
+        $bank_details = [
+            'bank_name'  => getSetting('bank_name'),
+            'account_no' => getSetting('account_no'),
+            'ifsc_code'  => getSetting('ifsc_code'),
+            'branch'     => getSetting('branch'),
+        ];
+
+        // Load view
+        $data = [
+            'payment'       => $payment,
+            'invoice'       => $invoice,
+            'customer'      => $customer,
+            'biller'        => $biller,
+            'bank_details'  => $bank_details,
+            'terms'         => getSetting('terms')
+        ];
+
+        $customer_name = $customer['customer_name'] ?? 'Payment';
+        $filename = 'Receipt_' . str_replace(' ', '_', ucwords(strtolower($customer_name))) . '_' . $transaction_id . '.pdf';
+
+        $html = $this->load->view('admin/payments/print_receipt', $data, true);
+
+        $this->load->library('pdf');
+        $this->pdf->loadHtml($html);
+        $this->pdf->setPaper('A4', 'portrait');
+        $this->pdf->render();
+        $this->pdf->stream($filename, ['Attachment' => 0]);
     }
 
     // Method to fetch last 5 stock entries
