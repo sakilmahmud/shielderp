@@ -13,17 +13,33 @@
                 <div class="col-md-3">
                     <div class="card text-center">
                         <div class="card-body">
-                            <img src="<?= $customer['photo'] ?? base_url('assets/img/default-user.png') ?>" class="img-fluid rounded-circle mb-3" width="100">
-                            <h4><?= esc($customer['customer_name']) ?></h4>
-                            <p>ID: <strong><?= $customer['id'] ?></strong></p>
-                            <p>Balance: <strong>₹<?= number_format($customer['balance'] ?? 0, 2) ?></strong></p>
-                            <p>Status: <strong class="text-success">Active</strong></p>
+                            <img src="<?= !empty($customer['photo']) ? $customer['photo'] : base_url('assets/img/default-user.png') ?>" class="img-fluid rounded-circle mb-3" width="100" alt="Customer Photo">
+
+                            <h4><?= !empty($customer['customer_name']) ? $customer['customer_name'] : 'Unnamed' ?></h4>
+
+                            <?php if (!empty($customer['id'])): ?>
+                                <p>ID: <strong><?= $customer['id'] ?></strong></p>
+                            <?php endif; ?>
+
+                            <p>Balance:
+                                <strong>
+                                    ₹<?= isset($customer['balance']) ? number_format($customer['balance'], 2) : '0.00' ?>
+                                </strong>
+                            </p>
+
+                            <p>Status:
+                                <strong class="<?= isset($customer['status']) && $customer['status'] == 'inactive' ? 'text-danger' : 'text-success' ?>">
+                                    <?= isset($customer['status']) ? ucfirst($customer['status']) : 'Active' ?>
+                                </strong>
+                            </p>
 
                             <div class="d-grid gap-2 mt-4">
-                                <a href="<?= base_url("admin/invoices/create?customer_id=" . $customer['id']) ?>" class="btn btn-primary">New Invoice</a>
-                                <a href="#" class="btn btn-warning">Send Reminder</a>
-                                <a href="#" class="btn btn-secondary">Disable A/c</a>
-                                <a href="<?= base_url("admin/customers/delete/" . $customer['id']) ?>" class="btn btn-danger" onclick="return confirm('Delete this account?')">Delete Account</a>
+                                <?php if (!empty($customer['id'])): ?>
+                                    <a href="<?= base_url("admin/invoices/create?customer_id=" . $customer['id']) ?>" class="btn btn-primary">New Invoice</a>
+                                    <a href="#" class="btn btn-warning">Send Reminder</a>
+                                    <a href="#" class="btn btn-secondary">Disable A/c</a>
+                                    <a href="<?= base_url("admin/customers/delete/" . $customer['id']) ?>" class="btn btn-danger" onclick="return confirm('Delete this account?')">Delete Account</a>
+                                <?php endif; ?>
                             </div>
                         </div>
                     </div>
@@ -50,7 +66,13 @@
                     <!-- Tab Content -->
                     <div class="card">
                         <div class="card-body">
-                            <?php $this->load->view("admin/customers/tabs/{$tab}"); ?>
+                            <?php
+                            if (!empty($tab) && in_array($tab, ['profile', 'accounts', 'payments', 'invoices'])) {
+                                $this->load->view("admin/customers/tabs/{$tab}");
+                            } else {
+                                echo '<div class="alert alert-warning">Invalid tab selected.</div>';
+                            }
+                            ?>
                         </div>
                     </div>
                 </div>
