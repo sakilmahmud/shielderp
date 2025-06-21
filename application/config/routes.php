@@ -159,10 +159,13 @@ $route['admin/stocks/add']                  = 'admin/StockManagementController/a
 $route['admin/stocks/edit/(:num)']          = 'admin/StockManagementController/edit/$1';
 $route['admin/stocks/delete/(:num)']        = 'admin/StockManagementController/delete/$1';
 
-$route['admin/customers']                   = 'admin/CustomerController/index';
-$route['admin/customers/add']               = 'admin/CustomerController/add';
-$route['admin/customers/edit/(:num)']       = 'admin/CustomerController/edit/$1';
-$route['admin/customers/delete/(:num)']     = 'admin/CustomerController/delete/$1';
+$route['admin/customers']             = 'admin/CustomerController/index';
+$route['admin/customers/add']         = 'admin/CustomerController/add';
+$route['admin/customers/edit/(:num)'] = 'admin/CustomerController/edit/$1';
+$route['admin/customers/delete/(:num)'] = 'admin/CustomerController/delete/$1';
+$route['admin/customers/ajax-list']         = 'admin/CustomerController/ajax_list'; // NEW
+$route['admin/customers/show/(:num)'] = 'admin/CustomerController/show/$1';
+
 
 $route['admin/suppliers']                   = 'admin/SupplierController/index';
 $route['admin/suppliers/add']               = 'admin/SupplierController/add';

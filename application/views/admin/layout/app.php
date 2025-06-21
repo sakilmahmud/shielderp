@@ -100,12 +100,16 @@
         <?php $this->load->view('admin/layout/sidebar'); ?>
 
         <!-- Main Content -->
-        <main>
-            <?php
-            if (isset($view)) {
-                $this->load->view($view, $data ?? []);
-            }
-            ?>
+        <main class="app-main">
+            <div class="app-content">
+                <?php
+                if (isset($view)) {
+                    $this->load->view($view, $data ?? []);
+                }
+                ?>
+
+            </div>
+            <!--end::App Content-->
         </main>
 
         <!-- Footer -->

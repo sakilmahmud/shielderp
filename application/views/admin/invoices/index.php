@@ -1,29 +1,8 @@
-<script>
-    setTimeout(function() {
-        const toggleButton = document.querySelector('[data-widget="pushmenu"]');
-        if (toggleButton) {
-            toggleButton.click();
-        }
-    }, 100); // 1 second delay
-</script>
-<style>
-    .btn-group-sm>.btn,
-    .btn-sm {
-        padding: .15rem .25rem;
-        font-size: .675rem;
-    }
-</style>
 <div class="content-wrapper">
     <section class="content-header">
-        <div class="container-fluid">
-            <div class="row mb-2">
-                <div class="col-sm-6">
-                    <h2>Invoices</h2>
-                </div>
-                <div class="col-sm-6 text-right">
-                    <a href="<?php echo base_url('admin/invoices/create'); ?>" class="btn btn-primary">Create Invoice</a>
-                </div>
-            </div>
+        <div class="container-fluid d-flex justify-content-between align-items-center my-2">
+            <h2>Invoices</h2>
+            <a href="<?php echo base_url('admin/invoices/create'); ?>" class="btn btn-primary">Create Invoice</a>
         </div>
     </section>
     <section class="content">
