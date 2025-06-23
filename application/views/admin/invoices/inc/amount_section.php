@@ -1,4 +1,4 @@
-<div class="d-flex gap-3 justify-content-end">
+<div class="d-flex gap-3 justify-content-end mb-3">
     <div class="form-group">
         <label for="sub_total">Sub Total</label>
     </div>
@@ -7,7 +7,7 @@
     </div>
 </div>
 
-<div class="d-flex gap-3 justify-content-end">
+<div class="d-flex gap-3 justify-content-end mb-3">
     <div class="form-group">
         <label for="total_discount">Total Discount</label>
     </div>
@@ -16,7 +16,7 @@
     </div>
 </div>
 
-<div class="d-flex gap-3 justify-content-end">
+<div class="d-flex gap-3 justify-content-end mb-3">
     <div class="form-group">
         <label for="total_gst">Total GST Amount</label>
     </div>
@@ -25,7 +25,7 @@
     </div>
 </div>
 
-<div class="d-flex gap-3 justify-content-end">
+<div class="d-flex gap-3 justify-content-end mb-3">
     <div class="form-group">
         <label for="round_off">Round Off</label>
     </div>
@@ -34,7 +34,7 @@
     </div>
 </div>
 
-<div class="d-flex gap-3 justify-content-end">
+<div class="d-flex gap-3 justify-content-end mb-3">
     <div class="form-group">
         <label for="total_amount">Grand Total</label>
     </div>

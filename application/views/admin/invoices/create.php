@@ -1,22 +1,8 @@
-<script>
-    setTimeout(function() {
-        const toggleButton = document.querySelector('[data-widget="pushmenu"]');
-        if (toggleButton) {
-            toggleButton.click();
-        }
-    }, 1000); // 1 second delay
-</script>
 <div class="content-wrapper">
     <section class="content-header">
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-sm-6">
-                    <h2>Invoices</h2>
-                </div>
-                <div class="col-sm-6 text-right">
-                    <a href="<?php echo base_url('admin/invoices'); ?>" class="btn btn-primary">All Invoices</a>
-                </div>
-            </div>
+        <div class="container-fluid d-flex justify-content-between align-items-center my-2">
+            <h2>Create Invoices</h2>
+            <a href="<?php echo base_url('admin/invoices'); ?>" class="btn btn-primary">All Invoices</a>
         </div>
     </section>
     <section class="content">
@@ -89,7 +75,7 @@
                                     <!-- Payment Section -->
                                     <div id="payment-section">
                                         <div class="payment-row">
-                                            <div class="d-flex gap-3 justify-content-end">
+                                            <div class="d-flex gap-3 justify-content-end mb-3">
                                                 <div class="form-group payment_method_section">
                                                     <select class="form-control" name="payment_mode[]">
                                                         <?php if (!empty($paymentModes)) :
@@ -106,7 +92,9 @@
                                                     <input type="number" class="form-control payment_amount" name="payment_amount[]" placeholder="Enter Amount">
                                                 </div>
                                                 <div class="form-group">
-                                                    <button type="button" class="btn btn-primary add-payment"><i class="fa fa-plus"></i></button>
+                                                    <button type="button" class="btn btn-primary add-payment">
+                                                        <i class="bi bi-plus-lg"></i>
+                                                    </button>
                                                 </div>
                                             </div>
                                         </div>

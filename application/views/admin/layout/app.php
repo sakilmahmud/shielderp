@@ -89,6 +89,15 @@
             setInterval(updateDateTime, 1000); // Update every second
         });
     </script>
+    <style>
+        .chosen-container-single .chosen-single {
+            height: 35px;
+        }
+
+        .chosen-container-single .chosen-single {
+            line-height: 34px;
+        }
+    </style>
 </head>
 
 <body class="layout-fixed sidebar-expand-lg bg-body-tertiary">

@@ -2,15 +2,11 @@
 <script src="<?php echo base_url('assets/admin/dist/js/summernote.min.js') ?>"></script>
 <div class="content-wrapper">
     <section class="content-header">
-        <div class="container-fluid">
-            <div class="row mb-2">
-                <div class="col-sm-6">
-                    <h2><?php echo ($isUpdate) ? "Edit " : "Add " ?>Product</h2>
-                </div>
-                <div class="col-sm-6 text-right">
-                    <a href="<?php echo base_url('admin/products/bulk-upload'); ?>" class="btn btn-info">Bulk Upload</a>
-                    <a href="<?php echo base_url('admin/products'); ?>" class="btn btn-primary">All Products</a>
-                </div>
+        <div class="container-fluid d-flex justify-content-between align-items-center my-2">
+            <h2><?php echo ($isUpdate) ? "Edit " : "Add " ?>Product</h2>
+            <div>
+                <a href="<?php echo base_url('admin/products/bulk-upload'); ?>" class="btn btn-info">Bulk Upload</a>
+                <a href="<?php echo base_url('admin/products'); ?>" class="btn btn-primary">All Products</a>
             </div>
         </div>
     </section>
@@ -30,7 +26,7 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="row">
-                                            <div class="col-md-12">
+                                            <div class="col-md-12 mb-3">
                                                 <div class="form-group">
                                                     <label for="name">Product Name <sup>*</sup></label>
                                                     <input type="text" class="form-control" id="name" name="name" value="<?php echo set_value('name', isset($product['name']) ? $product['name'] : ''); ?>">
@@ -42,7 +38,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-md-4 col-sm-12">
+                                            <div class="col-md-4 col-sm-12 mb-3">
                                                 <!-- Purchase Price Field -->
                                                 <div class="form-group">
                                                     <label for="purchase_price">Purchase Price <sup>*</sup></label>
@@ -50,7 +46,7 @@
                                                     <?php echo form_error('purchase_price'); ?>
                                                 </div>
                                             </div>
-                                            <div class="col-md-4 col-sm-12">
+                                            <div class="col-md-4 col-sm-12 mb-3">
                                                 <!-- Sale Price Field -->
                                                 <div class="form-group">
                                                     <label for="sale_price">Sale Price <sup>*</sup></label>
@@ -58,7 +54,7 @@
                                                     <?php echo form_error('sale_price'); ?>
                                                 </div>
                                             </div>
-                                            <div class="col-md-4 col-sm-12">
+                                            <div class="col-md-4 col-sm-12 mb-3">
                                                 <!-- Regular Price Field -->
                                                 <div class="form-group">
                                                     <label for="regular_price">Regular Price <sup>*</sup></label>
@@ -66,7 +62,7 @@
                                                     <?php echo form_error('regular_price'); ?>
                                                 </div>
                                             </div>
-                                            <div class="col-md-6 col-sm-12">
+                                            <div class="col-md-6 col-sm-12 mb-3">
                                                 <div class="form-group">
                                                     <div class="mt-1 d-flex justify-content-between">
                                                         <label for="category_id">Category <sup>*</sup></label>
@@ -81,7 +77,7 @@
                                                     <?php echo form_error('category_id'); ?>
                                                 </div>
                                             </div>
-                                            <div class="col-md-6 col-sm-12">
+                                            <div class="col-md-6 col-sm-12 mb-3">
                                                 <div class="form-group">
                                                     <div class="mt-1 d-flex justify-content-between">
                                                         <label for="brand_id">Brand <sup>*</sup></label>
@@ -96,7 +92,7 @@
                                                     <?php echo form_error('brand_id'); ?>
                                                 </div>
                                             </div>
-                                            <div class="col-md-4 col-sm-12">
+                                            <div class="col-md-4 col-sm-12 mb-3">
                                                 <div class="form-group">
                                                     <label for="hsn_code">HSN Code <sup>*</sup></label>
                                                     <input type="text" class="form-control" id="hsn_code" name="hsn_code"
@@ -105,7 +101,7 @@
                                                 </div>
                                             </div>
 
-                                            <div class="col-md-4 col-sm-12">
+                                            <div class="col-md-4 col-sm-12 mb-3">
                                                 <div class="form-group">
                                                     <label for="cgst">CGST (%) <sup>*</sup></label>
                                                     <input type="number" step="0.01" class="form-control" id="cgst" name="cgst"
@@ -123,7 +119,7 @@
                                                 </div>
                                             </div>
 
-                                            <div class="col-md-4 col-sm-12">
+                                            <div class="col-md-4 col-sm-12 mb-3">
                                                 <div class="form-group">
                                                     <div class="mt-1 d-flex justify-content-between">
                                                         <label for="product_type_id">Type</label>
@@ -143,7 +139,7 @@
                                                 </div>
                                             </div>
 
-                                            <div class="col-md-4 col-sm-12">
+                                            <div class="col-md-4 col-sm-12 mb-3">
                                                 <div class="form-group">
                                                     <label for="low_stock_alert">Low Stock Alert</label>
                                                     <input type="number" class="form-control" id="low_stock_alert" name="low_stock_alert"
@@ -154,7 +150,7 @@
                                             <?php
                                             $selectedUnitId = isset($product['unit_id']) ? $product['unit_id'] : 1;
                                             ?>
-                                            <div class="col-md-4 col-sm-12">
+                                            <div class="col-md-4 col-sm-12 mb-3">
                                                 <div class="form-group">
                                                     <div class="mt-1 d-flex justify-content-between">
                                                         <label for="unit_id">Unit</label>
@@ -175,9 +171,9 @@
 
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-6 mb-3">
                                         <!-- Featured Image Upload -->
-                                        <div class="form-group">
+                                        <div class="form-group mb-3">
                                             <label for="featured_image">Featured Image</label>
                                             <input type="file" name="featured_image" id="featured_image" class="form-control" accept="image/*">
 
@@ -192,7 +188,7 @@
                                         </div>
 
                                         <!-- Gallery Images Upload -->
-                                        <div class="form-group">
+                                        <div class="form-group mb-3">
                                             <label for="gallery_images">Gallery Images (you can select multiple)</label>
                                             <input type="file" name="gallery_images[]" id="gallery_images" class="form-control" accept="image/*" multiple>
 
@@ -208,7 +204,7 @@
                                             <div id="gallery_images_preview" style="margin-top: 10px;"></div>
                                         </div>
                                     </div>
-                                    <div class="col-md-12">
+                                    <div class="col-md-12 mb-3">
                                         <div class="form-group">
                                             <label for="highlight_text">Highlight</label>
                                             <textarea class="form-control" id="highlight_text" name="highlight_text"><?php echo set_value('highlight_text', isset($product['highlight_text']) ? $product['highlight_text'] : ''); ?></textarea>
@@ -222,13 +218,15 @@
                                             <?php echo form_error('description'); ?>
                                         </div>
                                     </div> -->
+                                    <div class="col-md-2 mb-3">
+                                        <?php if ($isUpdate) { ?>
+                                            <input type="hidden" name="product_id" value="<?php echo $product['id']; ?>">
+                                            <button type="submit" class="btn btn-primary">Update</button>
+                                        <?php } else { ?>
+                                            <button type="submit" class="btn btn-primary">Add</button>
+                                        <?php } ?>
+                                    </div>
 
-                                    <?php if ($isUpdate) { ?>
-                                        <input type="hidden" name="product_id" value="<?php echo $product['id']; ?>">
-                                        <button type="submit" class="btn btn-primary">Update</button>
-                                    <?php } else { ?>
-                                        <button type="submit" class="btn btn-primary">Add</button>
-                                    <?php } ?>
                                 </div>
                             </form>
                             <!-- <div class="col-md-4">

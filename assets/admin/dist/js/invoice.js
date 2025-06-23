@@ -85,11 +85,11 @@ $(document).ready(function () {
       '<input type="hidden" name="discount[]" value="' +
       discountAmount +
       '">' +
-      '<input type="hidden" name="cgst_rate[]" value="' +
+      '<input type="hidden" name="cgst[]" value="' +
       cgstRate +
       '">' +
       "" +
-      '<input type="hidden" name="sgst_rate[]" value="' +
+      '<input type="hidden" name="sgst[]" value="' +
       sgstRate +
       '">' +
       "" +
@@ -136,7 +136,7 @@ $(document).ready(function () {
       "<td>₹" +
       total.toFixed(2) +
       "</td>" +
-      "<td class='text-center'><button type='button' class='btn btn-info btn-sm edit-item'>Edit</button><button type='button' class='btn btn-danger btn-sm remove-item'>X</button></td>" +
+      "<td class='text-center'><button type='button' class='btn btn-info btn-sm edit-item me-2'>Edit</button><button type='button' class='btn btn-danger btn-sm remove-item'>X</button></td>" +
       hiddenFields +
       "</tr>";
 
@@ -289,9 +289,9 @@ function addProductToTable() {
     discountType +
     '"><input type="hidden" name="discount[]" value="' +
     discountAmount +
-    '"><input type="hidden" name="cgst_rate[]" value="' +
+    '"><input type="hidden" name="cgst[]" value="' +
     cgstRate +
-    '"><input type="hidden" name="sgst_rate[]" value="' +
+    '"><input type="hidden" name="sgst[]" value="' +
     sgstRate +
     '"><input type="hidden" name="gst_amount[]" value="' +
     gst_amount +
@@ -359,10 +359,8 @@ function updateTotals() {
     var discountType = $(this).find("input[name='discount_type[]']").val();
     var discount =
       parseFloat($(this).find("input[name='discount[]']").val()) || 0;
-    var cgstRate =
-      parseFloat($(this).find("input[name='cgst_rate[]']").val()) || 0;
-    var sgstRate =
-      parseFloat($(this).find("input[name='sgst_rate[]']").val()) || 0;
+    var cgstRate = parseFloat($(this).find("input[name='cgst[]']").val()) || 0;
+    var sgstRate = parseFloat($(this).find("input[name='sgst[]']").val()) || 0;
 
     var discountedPrice = price;
     if (discountType == "2") {
@@ -556,9 +554,14 @@ $(document).on("click", ".edit-item", function () {
   var hsn_code = $row.find('input[name="hsn_code[]"]').val();
   var gstRate = $row.find('input[name="gst_rate[]"]').val();
 
-  let productRow = $(".product-row");
+  /* let productRow = $(".product-row");
   productRow.find(".cgst_rate").val(cgst_rate);
-  productRow.find(".sgst_rate").val(sgst_rate);
+  productRow.find(".sgst_rate").val(sgst_rate); */
+
+  console.log("productId", productId);
+  console.log("price", price);
+  console.log("cgst_rate", cgst_rate);
+  console.log("sgst_rate", sgst_rate);
 
   $(".price").val(price).trigger("change");
 
@@ -589,7 +592,7 @@ $(document).ready(function () {
       .find(".add-payment")
       .removeClass("btn-primary add-payment")
       .addClass("btn-danger remove-payment")
-      .html('<i class="fa fa-minus"></i>');
+      .html('<i class="bi bi-dash-lg"></i>');
 
     // Append the cloned payment row to the payment section
     $("#payment-section").append(newPaymentRow);

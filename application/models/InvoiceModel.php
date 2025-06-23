@@ -232,7 +232,7 @@ class InvoiceModel extends CI_Model
 
     public function get_invoice_transactions($invoice_id)
     {
-        $this->db->select('transactions.amount, transactions.trans_type, transactions.payment_method_id, transactions.descriptions, transactions.trans_date, payment_methods.title');
+        $this->db->select('transactions.id, transactions.amount, transactions.trans_type, transactions.payment_method_id, transactions.descriptions, transactions.trans_date, payment_methods.title');
         $this->db->from('transactions');
         $this->db->join('payment_methods', 'transactions.payment_method_id = payment_methods.id', 'left');
         $this->db->where('transactions.transaction_for_table', 'invoices');

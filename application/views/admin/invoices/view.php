@@ -1,15 +1,11 @@
 <div class="content-wrapper">
     <section class="content-header">
-        <div class="container-fluid">
-            <div class="row mb-2">
-                <div class="col-sm-6">
-                    <h2>Invoice #<?php echo $invoice['invoice_no']; ?></h2>
-                </div>
-                <div class="col-sm-6 text-right">
-                    <a href="<?php echo base_url('admin/invoices'); ?>" class="btn btn-secondary">Back to Invoices</a>
-                    <a href="<?php echo base_url('admin/invoices/edit/' . $invoice['id']); ?>" class="btn btn-info">Edit Invoice</a>
-                    <a href="<?php echo base_url('admin/invoices/print/' . $invoice['id']); ?>" target="_blank" class="btn btn-primary">Print Invoice</a>
-                </div>
+        <div class="container-fluid d-flex justify-content-between align-items-center my-2">
+            <h2>Invoice #<?php echo $invoice['invoice_no']; ?></h2>
+            <div class="">
+                <a href="<?php echo base_url('admin/invoices'); ?>" class="btn btn-secondary">Back to Invoices</a>
+                <a href="<?php echo base_url('admin/invoices/edit/' . $invoice['id']); ?>" class="btn btn-info">Edit Invoice</a>
+                <a href="<?php echo base_url('admin/invoices/print/' . $invoice['id']); ?>" target="_blank" class="btn btn-primary">Print Invoice</a>
             </div>
         </div>
     </section>
@@ -96,11 +92,13 @@
                                         <th>Payment Method</th>
                                         <th>Description</th>
                                         <th>Transaction Date</th>
+                                        <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <?php if (!empty($transactions)) : ?>
-                                        <?php foreach ($transactions as $transaction) : ?>
+                                        <?php foreach ($transactions as $transaction) :
+                                            if ($transaction['amount'] <= 0) continue; ?>
                                             <tr>
                                                 <td>₹<?php echo number_format($transaction['amount'], 2); ?></td>
                                                 <td>
@@ -117,6 +115,11 @@
                                                 <td><?php echo $transaction['title']; ?></td>
                                                 <td><?php echo $transaction['descriptions']; ?></td>
                                                 <td><?php echo date('d-m-Y', strtotime($transaction['trans_date'])); ?></td>
+                                                <td class="text-center">
+                                                    <a href="<?= base_url('admin/payments/print_receipt/' . $transaction['id']) ?>" class="btn btn-sm btn-secondary" target="_blank">
+                                                        🖨️ Print
+                                                    </a>
+                                                </td>
                                             </tr>
                                         <?php endforeach; ?>
                                     <?php else : ?>

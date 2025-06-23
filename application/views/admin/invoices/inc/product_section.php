@@ -72,11 +72,11 @@
     <div class="col-md-1">
         <button type="button" class="mt-4 btn btn-secondary add-product">+</button>
     </div>
-    <div class="col-md-12 product_extra_section" style="display: none;">
-        HSN Code: <span class="hsn_code"></span>|<small class="highlight_text"></small>
-        <input type="text" class="hsn_code_val">
+    <div class="col-md-12 product_extra_section d-none" style="display: none;">
+        HSN Code: <span class="hsn_code"></span><small class="highlight_text"></small>
+        <input type="hidden" class="hsn_code_val">
     </div>
-    <div class="col-md-12 product_extra_section" style="display: none;">
+    <div class="col-md-12 product_extra_section mt-3" style="display: none;">
         <input type="text" class="form-control product_descriptions" placeholder="Write Product Details">
     </div>
     <div class="col-md-12 last_purchase_prices"></div>

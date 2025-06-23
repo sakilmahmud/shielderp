@@ -8,15 +8,11 @@
 </script>
 <div class="content-wrapper">
     <section class="content-header">
-        <div class="container-fluid">
-            <div class="row mb-2">
-                <div class="col-sm-6">
-                    <h2>Update Invoice : #<?= $invoice['invoice_no'] ?></h2>
-                </div>
-                <div class="col-sm-6 text-right">
-                    <a href="<?php echo base_url('admin/invoices/view/' . $invoice['id']); ?>" class="btn btn-info">View Invoice</a>
-                    <a href="<?php echo base_url('admin/invoices'); ?>" class="btn btn-primary">All Invoices</a>
-                </div>
+        <div class="container-fluid d-flex justify-content-between align-items-center my-2">
+            <h2>Update Invoice : #<?= $invoice['invoice_no'] ?></h2>
+            <div>
+                <a href="<?php echo base_url('admin/invoices/view/' . $invoice['id']); ?>" class="btn btn-info">View Invoice</a>
+                <a href="<?php echo base_url('admin/invoices'); ?>" class="btn btn-primary">All Invoices</a>
             </div>
         </div>
     </section>
