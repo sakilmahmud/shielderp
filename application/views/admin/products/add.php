@@ -57,7 +57,7 @@
                                             <div class="col-md-4 col-sm-12 mb-3">
                                                 <!-- Regular Price Field -->
                                                 <div class="form-group">
-                                                    <label for="regular_price">Regular Price <sup>*</sup></label>
+                                                    <label for="regular_price">MRP<sup>*</sup></label>
                                                     <input type="number" class="form-control" id="regular_price" name="regular_price" value="<?php echo set_value('regular_price', isset($product['regular_price']) ? $product['regular_price'] : '0.00'); ?>" required>
                                                     <?php echo form_error('regular_price'); ?>
                                                 </div>

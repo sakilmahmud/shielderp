@@ -51,6 +51,12 @@
     <script src="<?php echo base_url('assets/admin/plugins/') ?>datatables-responsive/js/dataTables.responsive.min.js"></script>
     <script src="<?php echo base_url('assets/admin/plugins/') ?>datatables-responsive/js/responsive.bootstrap4.min.js"></script>
     <script src="<?php echo base_url('assets/admin/plugins/') ?>chart.js/Chart.min.js"></script>
+
+    <script>
+        let addProduct_url = "<?php echo base_url('admin/products/add-ajax'); ?>";
+        let addCategory_url = "<?php echo base_url('admin/categories/add-ajax'); ?>";
+        let addBrand_url = "<?php echo base_url('admin/brands/add-ajax'); ?>";
+    </script>
     <script>
         function updateDateTime() {
             const now = new Date();
@@ -128,7 +134,167 @@
     <script>
         $(document).ready(function() {
             $(".product_id, .category_id, .brand_id, .client_id, .doer_id, .payment_method_id").chosen().trigger("chosen:updated");
+            // Open the modal when clicking on "Add Product"
+            $(".add_product").click(function() {
+                $(".category_id").chosen().trigger("chosen:updated");
+                $("#addProductModal").modal("show");
+            });
+            // Handle the form submission
+            $("#addProductForm").submit(function(e) {
+                e.preventDefault();
+
+                var formData = $(this).serialize();
+
+                $.ajax({
+                    url: addProduct_url, // Replace with your correct controller/method
+                    type: "POST",
+                    data: formData,
+                    success: function(response) {
+                        response =
+                            typeof response === "string" ? JSON.parse(response) : response;
+                        console.log(response);
+                        if (response.success) {
+                            // Append the new product to the dropdown
+                            var newOption = $("<option></option>")
+                                .attr("value", response.product.id)
+                                .text(response.product.name);
+                            $(".product_id").append(newOption);
+
+                            // Set the new product as the selected option
+                            $(".product_id")
+                                .val(response.product.id)
+                                .chosen()
+                                .trigger("chosen:updated");
+
+                            // Close the modal
+                            $("#addProductModal").modal("hide");
+
+                            // Clear the form for the next time
+                            $("#addProductForm")[0].reset();
+                        } else {
+                            alert("There was an error adding the product. Please try again.");
+                        }
+                    },
+                    error: function() {
+                        alert("An error occurred. Please try again.");
+                    },
+                });
+            });
+
+            // Show the modal when the "Add Category" link is clicked
+            $(".add_category").on("click", function() {
+                $("#addCategoryModal").modal("show");
+            });
+
+            // Handle the form submission for adding a new category
+            $("#addCategoryForm").on("submit", function(e) {
+                e.preventDefault();
+
+                $.ajax({
+                    url: addCategory_url, // Replace with your correct URL
+                    method: "POST",
+                    data: $(this).serialize(),
+                    dataType: "json",
+                    success: function(response) {
+                        console.log(response);
+
+                        //response = typeof response === "string" ? JSON.parse(response) : response;
+
+                        if (response.success) {
+                            // Append the new category to the dropdown
+                            var newOption = $("<option></option>")
+                                .attr("value", response.category.id)
+                                .text(response.category.name);
+                            $(".category_id").append(newOption);
+
+                            // Set the new category as the selected option
+                            $(".category_id").val(response.category.id).trigger("chosen:updated");
+
+                            // Close the modal
+                            $("#addCategoryModal").modal("hide");
+
+                            // Clear the form for the next time
+                            $("#addCategoryForm")[0].reset();
+                        } else {
+                            alert("There was an error adding the category. Please try again.");
+                        }
+                    },
+                    error: function() {
+                        alert("An error occurred. Please try again.");
+                    },
+                });
+            });
+
+            // Show the modal when the "Add Brand" link is clicked
+            $(".add_brand").on("click", function() {
+                $("#addBrandModal").modal("show");
+            });
+
+            // Handle the form submission for adding a new brand
+            $("#addBrandForm").on("submit", function(e) {
+                e.preventDefault();
+
+                $.ajax({
+                    url: addBrand_url, // Replace with your correct URL
+                    method: "POST",
+                    data: $(this).serialize(),
+                    dataType: "json",
+                    success: function(response) {
+                        console.log(response);
+
+                        if (response.success) {
+                            // Append the new brand to the dropdown
+                            var newOption = $("<option></option>")
+                                .attr("value", response.brand.id)
+                                .text(response.brand.name);
+                            $(".brand_id").append(newOption);
+
+                            // Set the new brand as the selected option
+                            $(".brand_id").val(response.brand.id).trigger("chosen:updated");
+                            updateProductName();
+                            // Close the modal
+                            $("#addBrandModal").modal("hide");
+
+                            // Clear the form for the next time
+                            $("#addBrandForm")[0].reset();
+                        } else {
+                            alert("There was an error adding the brand. Please try again.");
+                        }
+                    },
+                    error: function() {
+                        alert("An error occurred. Please try again.");
+                    },
+                });
+            });
+
+            $("#brand_id").change(function() {
+                updateProductName();
+            });
+
+            $(".category_id").change(function() {
+                var categoryId = $(this).val();
+                if (categoryId) {
+                    $.ajax({
+                        url: "<?php echo base_url('admin/products/getProductsByCategory'); ?>",
+                        type: "POST",
+                        data: {
+                            category_id: categoryId,
+                        },
+                        success: function(response) {
+                            $(".all_products_of_category").html(response);
+                        },
+                    });
+                } else {
+                    $(".all_products_of_category").html("");
+                }
+            });
         });
+
+        function updateProductName() {
+            var brandName = $("#brand_id option:selected").text();
+            var productName = $.trim($("#name").val());
+            $("#name").val(brandName + " ");
+        }
     </script>
     <script src="<?php echo base_url('assets/admin/dist/js/demo.js') ?>"></script>
     <script>

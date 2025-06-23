@@ -47,7 +47,7 @@ class DtpController extends MY_Controller
         $data['total_paid_amount'] = array_sum(array_column($dtp_services, 'paid_amount'));
 
         // Get all categories and users for filters
-        $data['categories'] = $this->DtpModel->getCategories();
+        $data['dtp_categories'] = $this->DtpModel->getCategories();
         $data['users'] = $this->UserModel->getUsers(array(1, 2)); // Assuming this method exists to fetch users
 
         $this->render_admin('admin/dtp/index', $data);
@@ -129,7 +129,7 @@ class DtpController extends MY_Controller
     public function add()
     {
         $data['activePage'] = 'dtp';
-        $data['categories'] = $this->DtpModel->getCategories();
+        $data['dtp_categories'] = $this->DtpModel->getCategories();
         $data['payment_methods'] = $this->PaymentMethodsModel->getAll();
         $data['isUpdate'] = false;
 
@@ -207,7 +207,7 @@ class DtpController extends MY_Controller
     public function edit($id)
     {
         $data['activePage'] = 'dtp';
-        $data['categories'] = $this->DtpModel->getCategories();
+        $data['dtp_categories'] = $this->DtpModel->getCategories();
         $data['payment_methods'] = $this->PaymentMethodsModel->getAll();
         $data['service'] = $this->DtpModel->getService($id);
         $data['isUpdate'] = true;
@@ -332,7 +332,7 @@ class DtpController extends MY_Controller
     public function categories()
     {
         $data['activePage'] = 'dtp_categories';
-        $data['categories'] = $this->DtpModel->getCategories();
+        $data['dtp_categories'] = $this->DtpModel->getCategories();
 
 
         $this->render_admin('admin/dtp/categories/index', $data);

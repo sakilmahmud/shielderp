@@ -25,7 +25,7 @@
                                     <?php echo $this->session->flashdata('message'); ?>
                                 </div>
                             <?php endif; ?>
-                            <?php if (!empty($categories)) : ?>
+                            <?php if (!empty($dtp_categories)) : ?>
                                 <table id="commonTable" class="table table-bordered table-striped">
                                     <thead>
                                         <tr>
@@ -35,7 +35,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <?php foreach ($categories as $category) : ?>
+                                        <?php foreach ($dtp_categories as $category) : ?>
                                             <tr>
                                                 <td><?php echo $category['id']; ?></td>
                                                 <td><?php echo $category['cat_title']; ?></td>

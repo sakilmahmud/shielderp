@@ -153,9 +153,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="addPaymentModalLabel">Add Payment for Invoice #<span id="invoice_number_modal"></span></h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <div>Balance Amount: <span class="balance_amount">₹<?php echo number_format(($balance > 0) ? $balance : 0, 2); ?></span></div>
@@ -184,7 +182,7 @@
                     </div>
                     <input type="hidden" id="payment_id" name="payment_id">
                     <input type="hidden" id="invoice_id" name="invoice_id" value="<?= $invoice['id'] ?>">
-                    <button type="submit" class="btn btn-primary" id="add_payment_btn">Add Payment</button>
+                    <button type="submit" class="btn btn-primary mt-3" id="add_payment_btn">Add Payment</button>
                 </form>
             </div>
         </div>

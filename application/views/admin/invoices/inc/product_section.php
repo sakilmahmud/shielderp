@@ -2,7 +2,10 @@
     <!-- Input fields for adding a new product -->
     <div class="col-md-3">
         <div class="form-group">
-            <label for="product_id">Product</label>
+            <div class="mb-1 d-flex justify-content-between">
+                <label for="product_id">Product</label>
+                <a href="javascript:void(0)" class="text-sm add_product"><span class="badge text-bg-success">Add Product</span></a>
+            </div>
             <select class="form-control product_id">
                 <option value="">Select Product</option>
                 <?php foreach ($products as $product) : ?>
