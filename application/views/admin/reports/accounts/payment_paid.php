@@ -1,14 +1,8 @@
 <div class="content-wrapper">
     <section class="content-header">
-        <div class="container-fluid">
-            <div class="row mb-2">
-                <div class="col-sm-6">
-                    <h1><i class="fas fa-money-bill-wave"></i> Payment Paid</h1>
-                </div>
-                <div class="col-sm-6 text-right">
-                    <a href="<?php echo base_url('admin/reports/accounts'); ?>" class="btn btn-primary">Accounts</a>
-                </div>
-            </div>
+        <div class="container-fluid d-flex justify-content-between align-items-center my-2">
+            <h2><i class="bi bi-stack"></i> Payment Paid</h2>
+            <a href="<?php echo base_url('admin/reports/accounts'); ?>" class="btn btn-primary">Accounts</a>
         </div>
     </section>
 
@@ -38,11 +32,11 @@
                                     <?php endforeach ?>
                                 </select>
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-2">
                                 <label>Invoice No</label>
                                 <input type="text" name="invoice_no" class="form-control" value="<?= $selected_invoice ?>">
                             </div>
-                            <div class="col-md-2 mt-4">
+                            <div class="col-md-3 align-content-end">
                                 <button type="submit" class="btn btn-primary mt-2">Filter</button>
                                 <a href="<?= base_url('admin/reports/accounts/payment-paid') ?>" class="btn btn-danger mt-2">Reset</a>
                             </div>

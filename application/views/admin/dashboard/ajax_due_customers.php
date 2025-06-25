@@ -1,5 +1,5 @@
 <?php if (!empty($due_customers)): ?>
-    <div class="card">
+    <div class="card card-min-height">
         <div class="card-header">
             <h3 class="card-title">Customer Due <span class="ms-3 badge text-bg-info">
                     ₹<?= round($total_customer_due ?? 0) ?>

@@ -4,6 +4,9 @@
         <h1>Bank Details</h1>
     </section>
 
+    <?php if ($this->session->flashdata('success')): ?>
+        <div class="alert alert-success"><?= $this->session->flashdata('success') ?></div>
+    <?php endif; ?>
     <section class="content">
         <div class="card">
             <div class="card-body">
@@ -38,8 +41,9 @@
                     <label for="terms">Terms:</label>
                     <textarea name="terms" class="form-control"><?php echo $settings['terms']; ?></textarea>
                 </div>
+                <input type="hidden" name="page_url" value="<?= base_url('admin/settings/bank_details') ?>">
 
-                <button type="submit" class="btn btn-primary">Save Bank Details</button>
+                <button type="submit" class="btn btn-primary mt-3">Save Bank Details</button>
                 <?php echo form_close(); ?>
             </div>
         </div>

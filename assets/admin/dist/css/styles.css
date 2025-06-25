@@ -199,7 +199,7 @@ sup {
   transition: background 0.3s;
 }
 .card-min-height {
-  min-height: 370px;
+  min-height: 300px;
 }
 
 #ajax-low-stock-content .list-group-item {
@@ -217,7 +217,7 @@ sup {
 }
 
 .table-body-scroll {
-  max-height: 300px;
+  max-height: 190px;
   overflow-y: auto;
   display: block;
 }

@@ -1,14 +1,8 @@
 <div class="content-wrapper">
     <section class="content-header">
-        <div class="container-fluid">
-            <div class="row mb-2">
-                <div class="col-sm-6">
-                    <h1><i class="fas fa-money-bill-wave"></i> Payment Received</h1>
-                </div>
-                <div class="col-sm-6 text-right">
-                    <a href="<?php echo base_url('admin/reports/accounts'); ?>" class="btn btn-primary">Accounts</a>
-                </div>
-            </div>
+        <div class="container-fluid d-flex justify-content-between align-items-center my-2">
+            <h2><i class="bi bi-currency-dollar"></i> Payment Received</h2>
+            <a href="<?php echo base_url('admin/reports/accounts'); ?>" class="btn btn-primary">Accounts</a>
         </div>
     </section>
 
@@ -16,7 +10,7 @@
         <div class="container-fluid">
             <!-- Filter Form -->
             <div class="row">
-                <div class="col-md-9">
+                <div class="col-md-12">
                     <form method="get" class="mb-3">
                         <div class="row">
                             <div class="col-md-2">
@@ -27,7 +21,7 @@
                                 <label>To Date</label>
                                 <input type="date" name="to" class="form-control" value="<?= $to ?>">
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-2">
                                 <label>Customer</label>
                                 <select name="customer_id" class="form-control">
                                     <option value="">All</option>
@@ -38,22 +32,18 @@
                                     <?php endforeach ?>
                                 </select>
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-2">
                                 <label>Invoice No</label>
                                 <input type="text" name="invoice_no" class="form-control" value="<?= $selected_invoice ?>">
                             </div>
-                            <div class="col-md-2 mt-4">
-                                <button type="submit" class="btn btn-primary mt-2">Filter</button>
-                                <a href="<?= base_url('admin/reports/accounts/payment-received') ?>" class="btn btn-danger mt-2">Reset</a>
+                            <div class="col-md-4 align-content-end">
+                                <button type="submit" class="btn btn-primary btn-sm">Filter</button>
+                                <a href="<?= base_url('admin/reports/accounts/payment-received') ?>" class="btn btn-danger btn-sm">Reset</a> -
+                                <a target="_blank" href="<?= base_url('admin/reports/accounts/export_payment_received/pdf?from=' . $from . '&to=' . $to . '&customer_id=' . $selected_customer . '&invoice_no=' . $selected_invoice) ?>" class="btn btn-info btn-sm"><i class="bi bi-file-pdf"></i> Export PDF</a>
+                                <a target="_blank" href="<?= base_url('admin/reports/accounts/export_payment_received/excel?from=' . $from . '&to=' . $to . '&customer_id=' . $selected_customer . '&invoice_no=' . $selected_invoice) ?>" class="btn btn-success btn-sm"><i class="bi bi-file-excel"></i> Export Excel</a>
                             </div>
                         </div>
                     </form>
-                </div>
-                <div class="col-md-3 text-right mt-4">
-                    <div class="mb-3">
-                        <a target="_blank" href="<?= base_url('admin/reports/accounts/export_payment_received/pdf?from=' . $from . '&to=' . $to . '&customer_id=' . $selected_customer . '&invoice_no=' . $selected_invoice) ?>" class="btn btn-info btn-sm"><i class="fas fa-file-pdf"></i> Export PDF</a>
-                        <a target="_blank" href="<?= base_url('admin/reports/accounts/export_payment_received/excel?from=' . $from . '&to=' . $to . '&customer_id=' . $selected_customer . '&invoice_no=' . $selected_invoice) ?>" class="btn btn-success btn-sm"><i class="fas fa-file-excel"></i> Export Excel</a>
-                    </div>
                 </div>
             </div>
 

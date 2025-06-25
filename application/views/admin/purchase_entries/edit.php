@@ -1,19 +1,8 @@
-<script>
-    setTimeout(function() {
-        const toggleButton = document.querySelector('[data-widget="pushmenu"]');
-        if (toggleButton) {
-            toggleButton.click();
-        }
-    }, 1000); // 1 second delay
-</script>
 <div class="content-wrapper">
     <section class="content-header">
-        <div class="container-fluid">
-            <div class="row mb-2">
-                <div class="col-sm-6">
-                    <h2>Edit Purchase Entry</h2>
-                </div>
-            </div>
+        <div class="container-fluid d-flex justify-content-between align-items-center my-2">
+            <h2>Edit Purchase Entry</h2>
+            <a href="<?php echo base_url('admin/purchase_entries'); ?>" class="btn btn-primary">All Purchases</a>
         </div>
     </section>
     <section class="content">
@@ -31,7 +20,7 @@
                             <form autocomplete="off" action="<?php echo base_url('admin/purchase_entries/edit/' . $purchase_entry['id']); ?>" method="post">
                                 <div class="row">
                                     <div class="col-md-3">
-                                        <div class="form-group">
+                                        <div class="form-group mb-3">
                                             <label for="is_gst">GST/Non-GST</label>
                                             <select class="form-control" id="is_gst" name="is_gst" readonly>
                                                 <option value="1" <?php echo $purchase_entry['is_gst'] == 1 ? 'selected' : ''; ?>>GST</option>
@@ -41,14 +30,14 @@
                                     </div>
 
                                     <div class="col-md-3">
-                                        <div class="form-group">
+                                        <div class="form-group mb-3">
                                             <label for="purchase_date">Purchase Date</label>
                                             <input type="date" class="form-control" id="purchase_date" name="purchase_date" value="<?php echo $purchase_entry['purchase_date']; ?>">
                                         </div>
                                     </div>
 
                                     <div class="col-md-3">
-                                        <div class="form-group">
+                                        <div class="form-group mb-3">
                                             <label for="supplier_id">Supplier</label>
                                             <select class="form-control" id="supplier_id" name="supplier_id" readonly>
                                                 <option value="">Choose a Supplier</option>
@@ -60,7 +49,7 @@
                                     </div>
 
                                     <div class="col-md-3">
-                                        <div class="form-group">
+                                        <div class="form-group mb-3">
                                             <label for="invoice_no">Invoice Number</label>
                                             <input type="text" class="form-control" id="invoice_no" name="invoice_no" value="<?php echo $purchase_entry['invoice_no']; ?>" readonly>
                                         </div>
@@ -70,7 +59,7 @@
                                 <h4>Products</h4>
                                 <div class="row product-row">
                                     <div class="col-md-3">
-                                        <div class="form-group">
+                                        <div class="form-group mb-3">
                                             <div class="mt-1 d-flex justify-content-between">
                                                 <label for="product_id">Product</label>
                                                 <a href="javascript:void(0)" class="text-sm add_product">Add Product</a>
@@ -84,13 +73,13 @@
                                         </div>
                                     </div>
                                     <div class="col-md-1">
-                                        <div class="form-group">
+                                        <div class="form-group mb-3">
                                             <label for="qnt">Qnt</label>
                                             <input type="number" min="1" value="1" step="1" class="form-control qnt">
                                         </div>
                                     </div>
                                     <div class="col-md-2">
-                                        <div class="form-group">
+                                        <div class="form-group mb-3">
                                             <label for="purchase_price">Price</label>
                                             <input type="number" autocomplete="false" min="1" class="form-control purchase_price">
                                             <input type="hidden" class="single_net_price">
@@ -98,7 +87,7 @@
                                         </div>
                                     </div>
                                     <div class="col-md-1">
-                                        <div class="form-group">
+                                        <div class="form-group mb-3">
                                             <label for="discount_type">Disc Type</label>
                                             <select class="form-control discount_type">
                                                 <option value="">No</option>
@@ -108,13 +97,13 @@
                                         </div>
                                     </div>
                                     <div class="col-md-1">
-                                        <div class="form-group">
+                                        <div class="form-group mb-3">
                                             <label for="discount">Discount</label>
                                             <input type="text" class="form-control discount" value="0" readonly>
                                         </div>
                                     </div>
                                     <div class="col-md-1">
-                                        <div class="form-group">
+                                        <div class="form-group mb-3">
                                             <label for="gst_rate">GST Rate</label>
                                             <select class="form-control gst_rate">
                                                 <option value="0">0%</option>
@@ -125,14 +114,14 @@
                                         </div>
                                     </div>
                                     <div class="col-md-1">
-                                        <div class="form-group">
+                                        <div class="form-group mb-3">
                                             <label for="gst_amount">GST Amount</label>
                                             <input type="text" class="form-control gst_amount" readonly>
                                         </div>
                                     </div>
                                     <div class="col-md-2">
                                         <div class="d-flex gap-3">
-                                            <div class="form-group">
+                                            <div class="form-group mb-3">
                                                 <label for="final_price">Final Price</label>
                                                 <input type="text" class="form-control final_price" readonly>
                                             </div>
@@ -181,46 +170,46 @@
                                 </div>
                                 <div class="total_amount_section">
                                     <div class="d-flex gap-3 justify-content-end">
-                                        <div class="form-group">
+                                        <div class="form-group mb-3">
                                             <label for="sub_total">Sub Total</label>
                                         </div>
-                                        <div class="form-group">
+                                        <div class="form-group mb-3">
                                             <input type="text" class="form-control" id="sub_total" name="sub_total" value="<?php echo $purchase_entry['sub_total']; ?>" readonly>
                                         </div>
                                     </div>
 
                                     <div class="d-flex gap-3 justify-content-end">
-                                        <div class="form-group">
+                                        <div class="form-group mb-3">
                                             <label for="total_discount">Total Discount</label>
                                         </div>
-                                        <div class="form-group">
+                                        <div class="form-group mb-3">
                                             <input type="text" class="form-control" id="total_discount" name="total_discount" value="<?php echo $purchase_entry['total_discount']; ?>" readonly>
                                         </div>
                                     </div>
 
                                     <div class="d-flex gap-3 justify-content-end">
-                                        <div class="form-group">
+                                        <div class="form-group mb-3">
                                             <label for="total_gst">Total GST Amount</label>
                                         </div>
-                                        <div class="form-group">
+                                        <div class="form-group mb-3">
                                             <input type="text" class="form-control" id="total_gst" name="total_gst" value="<?php echo $purchase_entry['total_gst']; ?>" readonly>
                                         </div>
                                     </div>
 
                                     <div class="d-flex gap-3 justify-content-end">
-                                        <div class="form-group">
+                                        <div class="form-group mb-3">
                                             <label for="round_off">Round Off</label>
                                         </div>
-                                        <div class="form-group">
+                                        <div class="form-group mb-3">
                                             <input type="text" id="round_off" name="round_off" class="form-control" value="<?php echo isset($purchase_entry['round_off']) ? $purchase_entry['round_off'] : ''; ?>" readonly>
                                         </div>
                                     </div>
 
                                     <div class="d-flex gap-3 justify-content-end">
-                                        <div class="form-group">
+                                        <div class="form-group mb-3">
                                             <label for="total_amount">Grand Total</label>
                                         </div>
-                                        <div class="form-group">
+                                        <div class="form-group mb-3">
                                             <input type="text" class="form-control" id="total_amount" name="total_amount" value="<?php echo $purchase_entry['total_amount']; ?>" readonly>
                                         </div>
                                     </div>
@@ -302,7 +291,7 @@
             </div>
             <div class="modal-body">
                 <form id="addProductForm">
-                    <div class="form-group">
+                    <div class="form-group mb-3">
                         <div class="mt-1 d-flex justify-content-between">
                             <label for="category_id">Category</label>
                             <a href="javascript:void(0)" class="text-sm add_category">Add Category</a>
@@ -315,7 +304,7 @@
                         </select>
                     </div>
 
-                    <div class="form-group">
+                    <div class="form-group mb-3">
                         <div class="mt-1 d-flex justify-content-between">
                             <label for="brand_id">Brand</label>
                             <a href="javascript:void(0)" class="text-sm add_brand">Add Brand</a>
@@ -328,11 +317,11 @@
                         </select>
                         <?php echo form_error('brand_id'); ?>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group mb-3">
                         <label for="name">Product Name</label>
                         <input type="text" class="form-control" id="name" name="name">
                     </div>
-                    <div class="form-group">
+                    <div class="form-group mb-3">
                         <label for="description">Description</label>
                         <textarea class="form-control" id="description" name="description"></textarea>
                     </div>
@@ -354,7 +343,7 @@
             </div>
             <div class="modal-body">
                 <form id="addCategoryForm">
-                    <div class="form-group">
+                    <div class="form-group mb-3">
                         <label for="category_name">Category Name</label>
                         <input type="text" class="form-control" id="category_name" name="name" required>
                     </div>
@@ -377,7 +366,7 @@
             </div>
             <div class="modal-body">
                 <form id="addBrandForm">
-                    <div class="form-group">
+                    <div class="form-group mb-3">
                         <label for="brand_name">Brand Name</label>
                         <input type="text" class="form-control" id="brand_name" name="brand_name" required>
                     </div>
@@ -400,7 +389,7 @@
                 <div>Balance Amount: <span class="balance_amount">₹<?php echo number_format(($balance > 0) ? $balance : 0, 2); ?></span></div>
                 <input type="hidden" id="balance_amount" value="<?php echo ($balance > 0) ? $balance : 0; ?>">
                 <form id="addPaymentForm">
-                    <div class="form-group payment_method_section">
+                    <div class="form-group mb-3 payment_method_section">
                         <select class="form-control payment_method_id" id="payment_method" name="payment_method" required>
                             <?php if (!empty($paymentModes)) :
                                 foreach ($paymentModes as $index => $paymentMode) :
@@ -409,15 +398,15 @@
                             endif; ?>
                         </select>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group mb-3">
                         <label for="payment_amount">Amount</label>
                         <input type="number" class="form-control" min="1" id="payment_amount" name="payment_amount" required>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group mb-3">
                         <label for="payment_date">Date</label>
                         <input type="date" class="form-control" id="payment_date" name="payment_date" value="<?= date('Y-m-d') ?>" required>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group mb-3">
                         <label for="payment_note">Payment Note</label>
                         <textarea class="form-control" id="payment_note" name="payment_note" rows="2"></textarea>
                     </div>

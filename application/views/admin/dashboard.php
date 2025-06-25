@@ -68,35 +68,80 @@
                 <div class="card-header">
                     <h3 class="card-title"><i class="nav-icon fas fa-chart-bar"></i> Quick Reports</h3>
                 </div>
-                <div class="">
-                    <ul class="nav nav-tabs" id="reportTabs" role="tablist">
-                        <li class="nav-item">
-                            <a class="nav-link active" id="sale-tab" data-toggle="tab" href="#sale" role="tab" aria-controls="sale" aria-selected="true"><i class="nav-icon fas fa-shopping-cart icon-yellow"></i> Sales</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" id="purchase-tab" data-toggle="tab" href="#purchase" role="tab" aria-controls="purchase" aria-selected="false"><i class="nav-icon fas fa-truck icon-blue"></i> Purchases</a>
-                        </li>
-                    </ul>
-                </div>
-                <div class="pl-1">
 
-                    <div class="tab-content" id="reportTabsContent">
-                        <!-- Sale Tab -->
-                        <div class="tab-pane fade show active" id="sale" role="tabpanel" aria-labelledby="sale-tab">
-                            <ul class="list-group">
-                                <li class="list-group-item">Today Sale: ₹<?= number_format($sales_report['daily'], 2) ?></li>
-                                <li class="list-group-item">Last 7 Days Sale: ₹<?= number_format($sales_report['weekly'], 2) ?></li>
-                                <li class="list-group-item">Last 30 Days Sale: ₹<?= number_format($sales_report['monthly'], 2) ?></li>
-                            </ul>
+                <!-- Quick Reports Tabs -->
+                <ul class="nav nav-tabs mb-3" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#sale" type="button" role="tab">
+                            <i class="bi bi-currency-rupee"></i> Sales
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#purchase" type="button" role="tab">
+                            <i class="bi bi-cart-check"></i> Purchases
+                        </button>
+                    </li>
+                </ul>
+
+                <!-- Tab Content -->
+                <div class="tab-content">
+                    <!-- Sales Tab -->
+                    <div class="tab-pane fade show active" id="sale" role="tabpanel">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="card text-white bg-success mx-2 mb-2">
+                                    <div class="card-body d-flex justify-content-center align-items-center gap-3 p-2">
+                                        <h5 class="card-title"><i class="bi bi-calendar-day"></i> Today’s Sale</h5>
+                                        <p class="card-text fs-4">₹<?= number_format($sales_report['daily'], 2) ?></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="card text-white bg-primary mx-2 mb-2">
+                                    <div class="card-body d-flex justify-content-center align-items-center gap-3 p-2">
+                                        <h5 class="card-title"><i class="bi bi-calendar-week"></i> Last 7 Days</h5>
+                                        <p class="card-text fs-4">₹<?= number_format($sales_report['weekly'], 2) ?></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="card text-white bg-info mx-2 mb-2">
+                                    <div class="card-body d-flex justify-content-center align-items-center gap-3 p-2">
+                                        <h5 class="card-title"><i class="bi bi-calendar3"></i> Last 30 Days</h5>
+                                        <p class="card-text fs-4">₹<?= number_format($sales_report['monthly'], 2) ?></p>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
+                    </div>
 
-                        <!-- Purchase Tab -->
-                        <div class="tab-pane fade" id="purchase" role="tabpanel" aria-labelledby="purchase-tab">
-                            <ul class="list-group">
-                                <li class="list-group-item">Today Purchase: ₹<?= number_format($purchase_report['daily'], 2) ?></li>
-                                <li class="list-group-item">Last 7 Days Purchase: ₹<?= number_format($purchase_report['weekly'], 2) ?></li>
-                                <li class="list-group-item">Last 30 Days Purchase: ₹<?= number_format($purchase_report['monthly'], 2) ?></li>
-                            </ul>
+                    <!-- Purchase Tab -->
+                    <div class="tab-pane fade" id="purchase" role="tabpanel">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="card text-dark bg-warning mx-2 mb-2">
+                                    <div class="card-body d-flex justify-content-center align-items-center gap-3 p-2">
+                                        <h5 class="card-title"><i class="bi bi-bag-plus"></i> Today’s Purchase</h5>
+                                        <p class="card-text fs-4">₹<?= number_format($purchase_report['daily'], 2) ?></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="card text-white bg-secondary mx-2 mb-2">
+                                    <div class="card-body d-flex justify-content-center align-items-center gap-3 p-2">
+                                        <h5 class="card-title"><i class="bi bi-calendar-week"></i> Last 7 Days</h5>
+                                        <p class="card-text fs-4">₹<?= number_format($purchase_report['weekly'], 2) ?></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="card text-white bg-dark mx-2 mb-2">
+                                    <div class="card-body d-flex justify-content-center align-items-center gap-3 p-2">
+                                        <h5 class="card-title"><i class="bi bi-calendar3"></i> Last 30 Days</h5>
+                                        <p class="card-text fs-4">₹<?= number_format($purchase_report['monthly'], 2) ?></p>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -114,7 +159,7 @@
             </div>
         </div>
 
-        <div class="col-md-4">
+        <?php /*<div class="col-md-4">
             <div class="card card-min-height">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h3 class="card-title mb-0">
@@ -129,9 +174,9 @@
                 </div>
             </div>
         </div>
-
+        */ ?>
     </div>
-    <div class="row">
+    <div class="row mt-3">
         <div class="col-md-8">
             <div class="card">
                 <div class="card-body">

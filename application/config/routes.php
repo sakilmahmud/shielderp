@@ -32,9 +32,9 @@ $route['admin/ajax/low-stock'] = 'AdminController/ajax_low_stock';
 /** end of other dashboard routes */
 
 $route['admin/settings'] = 'AdminController/generalSettings';
-$route['admin/settings/update'] = 'AdminController/updateSettings';
 $route['admin/settings/company_details'] = 'AdminController/companyDetails';
 $route['admin/settings/bank_details'] = 'AdminController/bankDetails';
+$route['admin/settings/update'] = 'AdminController/updateSettings';
 
 
 $route['admin/password'] = 'AdminController/passwordChange';

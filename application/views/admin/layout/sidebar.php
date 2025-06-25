@@ -353,6 +353,12 @@
                                 <p>Company Details</p>
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a href="<?php echo base_url('admin/settings/bank_details'); ?>" class="nav-link <?php if ($activePage === 'bank_details') echo 'active'; ?>">
+                                <i class="bi bi-bank nav-icon"></i>
+                                <p>Bank Details</p>
+                            </a>
+                        </li>
                     </ul>
                 </li>
 

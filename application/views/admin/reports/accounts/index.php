@@ -1,11 +1,7 @@
 <div class="content-wrapper">
     <section class="content-header">
-        <div class="container-fluid">
-            <div class="row mb-2">
-                <div class="col-sm-6">
-                    <h1 class="mb-4"><i class="bi bi-graph-up"></i> Accounts Reports</h1>
-                </div>
-            </div>
+        <div class="container-fluid my-2">
+            <h2 class="mb-4"><i class="bi bi-graph-up"></i> Accounts Reports</h2>
         </div>
     </section>
     <section class="content">

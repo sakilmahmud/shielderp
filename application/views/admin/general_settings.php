@@ -10,6 +10,10 @@
         </div>
     </section>
 
+    <?php if ($this->session->flashdata('success')): ?>
+        <div class="alert alert-success"><?= $this->session->flashdata('success') ?></div>
+    <?php endif; ?>
+
     <section class="content">
         <div class="container-fluid">
             <div class="row">
@@ -86,7 +90,7 @@
                                 <input type="text" name="premium_account_commission" id="premium_account_commission" class="form-control" value="<?php echo isset($settings['premium_account_commission']) ? $settings['premium_account_commission'] : ''; ?>" >
                             </div> -->
 
-                            <button type="submit" class="btn btn-primary">Save Settings</button>
+                            <button type="submit" class="btn btn-primary mt-3">Save Settings</button>
                             <?php echo form_close(); ?>
                         </div>
                     </div>

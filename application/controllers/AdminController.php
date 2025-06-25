@@ -643,6 +643,7 @@ class AdminController extends MY_Controller
     {
         // Process the form submission and update the settings
         $settings = $this->input->post();
+        $r_url = $this->input->post('page_url') ?? base_url('admin/settings');
         unset($settings['submit']); // Remove the submit button from the settings array
 
         // Handle file uploads for frontend_logo and admin_logo
@@ -687,7 +688,7 @@ class AdminController extends MY_Controller
 
         // Redirect back to the settings page with a success message
         $this->session->set_flashdata('success', 'Settings updated successfully.');
-        redirect('admin/settings');
+        redirect($r_url);
     }
 
     public function companyDetails()

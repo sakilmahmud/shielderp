@@ -1,14 +1,8 @@
 <div class="content-wrapper">
     <section class="content-header">
-        <div class="container-fluid">
-            <div class="row mb-2">
-                <div class="col-sm-6">
-                    <h1>DTP Categories</h1>
-                </div>
-                <div class="col-sm-6 text-right">
-                    <a href="<?php echo base_url('admin/dtp/categories/add'); ?>" class="btn btn-primary">Add Category</a>
-                </div>
-            </div>
+        <div class="container-fluid d-flex justify-content-between align-items-center my-2">
+            <h2>DTP Categories</h2>
+            <a href="<?php echo base_url('admin/dtp/categories/add'); ?>" class="btn btn-primary">Add Category</a>
         </div>
     </section>
     <section class="content">

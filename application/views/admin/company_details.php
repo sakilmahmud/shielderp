@@ -3,7 +3,9 @@
     <section class="content-header">
         <h1>Company Details</h1>
     </section>
-
+    <?php if ($this->session->flashdata('success')): ?>
+        <div class="alert alert-success"><?= $this->session->flashdata('success') ?></div>
+    <?php endif; ?>
     <section class="content">
         <div class="card">
             <div class="card-body">
@@ -38,8 +40,9 @@
                     <label for="company_gstin">GSTIN:</label>
                     <input type="text" name="company_gstin" value="<?php echo $settings['company_gstin']; ?>" class="form-control">
                 </div>
+                <input type="hidden" name="page_url" value="<?= base_url('admin/settings/company_details') ?>">
 
-                <button type="submit" class="btn btn-primary">Save Company Details</button>
+                <button type="submit" class="btn btn-primary mt-3">Save Company Details</button>
                 <?php echo form_close(); ?>
             </div>
         </div>

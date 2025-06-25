@@ -1,14 +1,8 @@
 <div class="content-wrapper">
     <section class="content-header">
-        <div class="container-fluid">
-            <div class="row mb-2">
-                <div class="col-sm-6">
-                    <h2>All DTP Sales</h2>
-                </div>
-                <div class="col-sm-6 text-right">
-                    <a href="<?php echo base_url('admin/dtp/add'); ?>" class="btn btn-primary">Add New</a>
-                </div>
-            </div>
+        <div class="container-fluid d-flex justify-content-between align-items-center my-2">
+            <h2>All DTP Sales</h2>
+            <a href="<?php echo base_url('admin/dtp/add'); ?>" class="btn btn-primary">Add New</a>
         </div>
     </section>
 
@@ -44,7 +38,7 @@
                                     <label for="category">Category</label>
                                     <select class="form-control filter-input" id="category" name="category">
                                         <option value="">All</option>
-                                        <?php foreach ($categories as $category): ?>
+                                        <?php foreach ($dtp_categories as $category): ?>
                                             <option value="<?php echo $category['id']; ?>" <?php echo ($this->input->get('category') == $category['id']) ? 'selected' : ''; ?>>
                                                 <?php echo $category['cat_title']; ?>
                                             </option>

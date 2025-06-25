@@ -1,14 +1,8 @@
 <div class="content-wrapper">
     <section class="content-header">
-        <div class="container-fluid">
-            <div class="row mb-2">
-                <div class="col-sm-6">
-                    <h2><?php echo ($isUpdate) ? "Edit " : "Add " ?>Brand</h2>
-                </div>
-                <div class="col-sm-6 text-right">
-                    <a href="<?php echo base_url('admin/brands'); ?>" class="btn btn-primary">All Brand</a>
-                </div>
-            </div>
+        <div class="container-fluid d-flex justify-content-between align-items-center my-2">
+            <h2><?php echo ($isUpdate) ? "Edit " : "Add " ?>Brand</h2>
+            <a href="<?php echo base_url('admin/brands'); ?>" class="btn btn-primary">All Brand</a>
         </div>
     </section>
     <section class="content">
@@ -24,12 +18,12 @@
                             }
                             ?>
                             <form action="<?php echo $action; ?>" method="post">
-                                <div class="form-group">
+                                <div class="form-group mb-3">
                                     <label for="brand_name">Brand Name</label>
                                     <input type="text" class="form-control" id="brand_name" name="brand_name" value="<?php echo set_value('brand_name', isset($brand['brand_name']) ? $brand['brand_name'] : ''); ?>">
                                     <?php echo form_error('brand_name'); ?>
                                 </div>
-                                <div class="form-group">
+                                <div class="form-group mb-3">
                                     <label for="brand_descriptions">Description</label>
                                     <textarea class="form-control" id="brand_descriptions" name="brand_descriptions"><?php echo set_value('brand_descriptions', isset($brand['brand_descriptions']) ? $brand['brand_descriptions'] : ''); ?></textarea>
                                     <?php echo form_error('brand_descriptions'); ?>

@@ -1,14 +1,8 @@
 <div class="content-wrapper">
     <section class="content-header">
-        <div class="container-fluid">
-            <div class="row mb-2">
-                <div class="col-sm-6">
-                    <h1><i class="fas fa-calendar-day"></i> Daily Summary</h1>
-                </div>
-                <div class="col-sm-6 text-right">
-                    <a href="<?php echo base_url('admin/reports/accounts'); ?>" class="btn btn-primary">Accounts</a>
-                </div>
-            </div>
+        <div class="container-fluid d-flex justify-content-between align-items-center my-2">
+            <h2><i class="fas fa-calendar-day"></i> Daily Summary</h2>
+            <a href="<?php echo base_url('admin/reports/accounts'); ?>" class="btn btn-primary">Accounts</a>
         </div>
     </section>
 
@@ -24,13 +18,12 @@
                         <label>To</label>
                         <input type="date" name="to" value="<?= $to ?>" class="form-control">
                     </div>
-                    <div class="col-md-2 mt-4">
-                        <button type="submit" class="btn btn-primary mt-2">Filter</button>
-                        <a href="<?= base_url('admin/reports/accounts/daily-summary') ?>" class="btn btn-danger mt-2">Reset</a>
-                    </div>
-                    <div class="col-md-4 text-right mt-4">
-                        <a target="_blank" href="<?= base_url("admin/reports/accounts/export_daily_summary/pdf?from=$from&to=$to") ?>" class="btn btn-info btn-sm mt-2"><i class="fas fa-file-pdf"></i> Export PDF</a>
-                        <a target="_blank" href="<?= base_url("admin/reports/accounts/export_daily_summary/excel?from=$from&to=$to") ?>" class="btn btn-success btn-sm mt-2"><i class="fas fa-file-excel"></i> Export Excel</a>
+                    <div class="col-md-4 mt-4">
+                        <button type="submit" class="btn btn-primary btn-sm">Filter</button>
+                        <a href="<?= base_url('admin/reports/accounts/daily-summary') ?>" class="btn btn-danger btn-sm">Reset</a>
+                        -
+                        <a target="_blank" href="<?= base_url("admin/reports/accounts/export_daily_summary/pdf?from=$from&to=$to") ?>" class="btn btn-info btn-sm"><i class="bi bi-file-pdf"></i> Export PDF</a>
+                        <a target="_blank" href="<?= base_url("admin/reports/accounts/export_daily_summary/excel?from=$from&to=$to") ?>" class="btn btn-success btn-sm "><i class="bi bi-file-excel"></i> Export Excel</a>
                     </div>
                 </div>
             </form>

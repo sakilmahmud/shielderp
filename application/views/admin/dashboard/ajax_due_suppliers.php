@@ -1,5 +1,5 @@
 <?php if (!empty($due_suppliers)): ?>
-    <div class="card">
+    <div class="card card-min-height">
         <div class="card-header">
             <h3 class="card-title">Suppliers Due <span class="ms-3 text-right badge text-bg-info">₹<?= round($total_supplier_due ?? 0) ?></span></h3>
             <div class="card-tools">

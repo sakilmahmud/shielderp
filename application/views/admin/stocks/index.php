@@ -1,14 +1,8 @@
 <div class="content-wrapper">
     <section class="content-header">
-        <div class="container-fluid">
-            <div class="row mb-2">
-                <div class="col-sm-6">
-                    <h2>Stock Managements</h2>
-                </div>
-                <div class="col-sm-6 text-right">
-                    <a href="<?php echo base_url('admin/stocks/add'); ?>" class="btn btn-primary">Add Stock</a>
-                </div>
-            </div>
+        <div class="container-fluid d-flex justify-content-between align-items-center my-2">
+            <h2>Stock Managements</h2>
+            <a href="<?php echo base_url('admin/stocks/add'); ?>" class="btn btn-primary">Add Stock</a>
         </div>
     </section>
     <section class="content">

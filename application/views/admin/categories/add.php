@@ -1,15 +1,8 @@
 <div class="content-wrapper">
     <section class="content-header">
-        <div class="container-fluid">
-            <div class="row mb-2">
-                <div class="col-sm-6">
-                    <?php if ($isUpdate) { ?>
-                        <h2>Edit Category</h2>
-                    <?php } else { ?>
-                        <h2>Add Category</h2>
-                    <?php } ?>
-                </div>
-            </div>
+        <div class="container-fluid d-flex justify-content-between align-items-center my-2">
+            <h2><?php echo ($isUpdate) ? "Edit " : "Add " ?>Category</h2>
+            <a href="<?php echo base_url('admin/categories'); ?>" class="btn btn-primary">Categories</a>
         </div>
     </section>
     <section class="content">
@@ -26,7 +19,7 @@
                             ?>
                             <form action="<?php echo $action; ?>" method="post" enctype="multipart/form-data">
 
-                                <div class="form-group">
+                                <div class="form-group mb-3">
                                     <label for="name">Category Name</label>
                                     <input type="text" class="form-control" id="name" name="name" value="<?php echo set_value('name', isset($category['name']) ? $category['name'] : ''); ?>">
                                     <?php echo form_error('name'); ?>
@@ -36,14 +29,14 @@
                                         <input type="hidden" id="slug" name="slug" value="<?php echo set_value('slug', isset($category['slug']) ? $category['slug'] : ''); ?>" readonly>
                                     </div>
                                 </div>
-                                <div class="form-group">
+                                <div class="form-group mb-3">
                                     <label for="description">Description</label>
                                     <textarea class="form-control" id="description" name="description"><?php echo set_value('description', isset($category['description']) ? $category['description'] : ''); ?></textarea>
                                     <?php echo form_error('description'); ?>
                                 </div>
 
                                 <!-- Featured Image Upload -->
-                                <div class="form-group">
+                                <div class="form-group mb-3">
                                     <label for="featured_image">Featured Image</label>
                                     <input type="file" name="featured_image" id="featured_image" class="form-control" accept="image/*">
 
