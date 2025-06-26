@@ -1,10 +1,13 @@
-<div class="row product-row mb-3 py-3">
-    <!-- Input fields for adding a new product -->
-    <div class="col-md-3">
+<div class="row product-row p-2 border rounded bg-light shadow-sm">
+
+    <!-- Product Selector -->
+    <div class="col-12 col-md-3 mb-2">
         <div class="form-group">
-            <div class="mb-1 d-flex justify-content-between">
-                <label for="product_id">Product</label>
-                <a href="javascript:void(0)" class="text-sm add_product"><span class="badge text-bg-success">Add Product</span></a>
+            <div class="d-flex justify-content-between align-items-center mb-1">
+                <label for="product_id" class="form-label mb-0">Product</label>
+                <a href="javascript:void(0)" class="text-sm add_product">
+                    <span class="badge bg-success">Add Product</span>
+                </a>
             </div>
             <select class="form-control product_id">
                 <option value="">Select Product</option>
@@ -14,76 +17,89 @@
             </select>
         </div>
     </div>
-    <div class="col-md-1">
-        <div class="form-group">
-            <label for="quantity">Qnty <span class="product_unit"></span></label>
-            <input type="number" min="1" class="form-control quantity" value="1">
-            <input type="hidden" class="unit">
-        </div>
+
+    <!-- Quantity -->
+    <div class="col-6 col-md-1 mb-2">
+        <label class="form-label">Qty <span class="product_unit text-muted small"></span></label>
+        <input type="number" min="1" class="form-control quantity" value="1">
+        <input type="hidden" class="unit">
     </div>
-    <div class="col-md-1">
-        <div class="form-group">
-            <label for="price">Price</label>
-            <input type="number" class="form-control price" value="0" id="modal_price">
-        </div>
+
+    <!-- Price -->
+    <div class="col-6 col-md-1 mb-2">
+        <label class="form-label">Price</label>
+        <input type="number" class="form-control price" value="0" id="modal_price">
     </div>
-    <div class="col-md-1">
-        <div class="form-group">
-            <label for="plus">With GST</label>
-            <input type="number" class="form-control" value="0" id="modal_net_price">
-        </div>
+
+    <!-- With GST -->
+    <div class="col-6 col-md-1 mb-2">
+        <label class="form-label">With GST</label>
+        <input type="number" class="form-control" value="0" id="modal_net_price">
     </div>
-    <div class="col-md-1">
-        <div class="form-group">
-            <label for="discount_type">Disc Type</label>
-            <select class="form-control discount_type">
-                <option value="0">No</option>
-                <option value="1">Flat</option>
-                <option value="2">Percent</option>
-            </select>
-        </div>
+
+    <!-- Discount Type -->
+    <div class="col-6 col-md-1 mb-2">
+        <label class="form-label">Disc Type</label>
+        <select class="form-control discount_type">
+            <option value="0">No</option>
+            <option value="1">Flat</option>
+            <option value="2">%</option>
+        </select>
     </div>
-    <div class="col-md-1">
-        <div class="form-group">
-            <label for="discount_amount">Disc Amnt</label>
-            <input type="text" class="form-control discount_amount" readonly>
-        </div>
+
+    <!-- Discount Amount -->
+    <div class="col-6 col-md-1 mb-2">
+        <label class="form-label">Disc Amt</label>
+        <input type="text" class="form-control discount_amount" readonly>
     </div>
-    <div class="col-md-1">
-        <div class="form-group">
-            <label for="cgst">CGST</label>
-            <input type="number" class="form-control cgst_rate" value="0">
-        </div>
+
+    <!-- CGST -->
+    <div class="col-6 col-md-1 mb-2">
+        <label class="form-label">CGST</label>
+        <input type="number" class="form-control cgst_rate" value="0">
         <input type="hidden" class="cgst_amount">
     </div>
-    <div class="col-md-1">
-        <div class="form-group">
-            <label for="sgst">SGST</label>
-            <input type="number" class="form-control sgst_rate" value="0">
-        </div>
+
+    <!-- SGST -->
+    <div class="col-6 col-md-1 mb-2">
+        <label class="form-label">SGST</label>
+        <input type="number" class="form-control sgst_rate" value="0">
         <input type="hidden" class="sgst_amount">
         <input type="hidden" class="gst_amount">
     </div>
-    <div class="col-md-1">
-        <div class="d-flex">
-            <div class="form-group">
-                <label for="total">Total</label>
-                <input type="text" class="form-control total" readonly>
-            </div>
+
+    <!-- Total -->
+    <div class="col-6 col-md-1 mb-2">
+        <label class="form-label">Total</label>
+        <input type="text" class="form-control total" readonly>
+    </div>
+
+    <!-- Add Button -->
+    <div class="col-6 col-md-1">
+        <label class="form-label"><small>(Ctrl+A)</small></label>
+        <button type="button" class="btn btn-outline-secondary btn-sm add-product w-100 d-inline-block mb-1">+</button>
+    </div>
+
+
+    <!-- Extra Section: HSN Code -->
+    <div class="col-12 product_extra_section d-none">
+        <div class="text-muted small">
+            HSN Code: <span class="hsn_code"></span>
+            <small class="highlight_text ms-2"></small>
         </div>
-    </div>
-    <div class="col-md-1">
-        <button type="button" class="mt-4 btn btn-secondary add-product">+</button>
-    </div>
-    <div class="col-md-12 product_extra_section d-none" style="display: none;">
-        HSN Code: <span class="hsn_code"></span><small class="highlight_text"></small>
         <input type="hidden" class="hsn_code_val">
     </div>
-    <div class="col-md-12 product_extra_section mt-3" style="display: none;">
+
+    <!-- Extra Section: Description -->
+    <div class="col-12 product_extra_section mt-3 d-none">
         <input type="text" class="form-control product_descriptions" placeholder="Write Product Details">
     </div>
-    <div class="col-md-12 last_purchase_prices"></div>
+
+    <!-- Last Purchase Prices -->
+    <div class="col-12 last_purchase_prices"></div>
+
 </div>
+
 
 <div class="no_stocks p-2 mb-3 border rounded-3" style="display: none;">
     <p class="no_stock_txt"></p>

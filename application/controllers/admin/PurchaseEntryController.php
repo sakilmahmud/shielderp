@@ -69,8 +69,8 @@ class PurchaseEntryController extends MY_Controller
             $totalPaid += $invoice['paid_amount'];
             $totalDue += $invoice['due_amount'];
 
-            $actions = '<a href="' . base_url('admin/purchase_entries/edit/' . $invoice['id']) . '" class="btn btn-warning btn-sm mr-1">Edit</a>';
-            $actions .= '<a href="' . base_url('admin/purchase_entries/delete/' . $invoice['id']) . '" class="btn btn-danger btn-sm mr-1" onclick="return confirm(\'Are you sure you want to delete this purchase entry?\');">Delete</a>';
+            $actions = '<a href="' . base_url('admin/purchase_entries/edit/' . $invoice['id']) . '" class="btn btn-warning btn-sm me-2">Edit</a>';
+            $actions .= '<a href="' . base_url('admin/purchase_entries/delete/' . $invoice['id']) . '" class="btn btn-danger btn-sm" onclick="return confirm(\'Are you sure you want to delete this purchase entry?\');">Delete</a>';
 
             /* $status_badge = match ($invoice['payment_status']) {
                 '1' => '<span class="badge badge-success">Paid</span>',

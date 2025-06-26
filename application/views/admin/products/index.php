@@ -17,85 +17,77 @@
     </section>
     <section class="content">
         <div class="container-fluid">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="card_header">
-                                <form id="filterForm">
-                                    <div class="row mb-3">
-                                        <div class="col-md-3">
-                                            <label for="category_id">Category</label>
-                                            <select class="form-control filter-input category_id" id="category_id">
-                                                <option value="">All</option>
-                                                <?php foreach ($categories as $category): ?>
-                                                    <option value="<?php echo $category['id']; ?>" <?php echo ($this->input->get('category_id') == $category['id']) ? 'selected' : ''; ?>>
-                                                        <?php echo $category['name']; ?>
-                                                    </option>
-                                                <?php endforeach; ?>
-                                            </select>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <label for="brand_id">Brand</label>
-                                            <select class="form-control filter-input brand_id" id="brand_id">
-                                                <option value="">All</option>
-                                                <?php foreach ($brands as $brand): ?>
-                                                    <option value="<?php echo $brand['id']; ?>" <?php echo ($this->input->get('brand_id') == $brand['id']) ? 'selected' : ''; ?>>
-                                                        <?php echo $brand['brand_name']; ?>
-                                                    </option>
-                                                <?php endforeach; ?>
-                                            </select>
-                                        </div>
-                                        <div class="col-md-2">
-                                            <label for="product_type_id">Product Type</label>
-                                            <select class="form-control filter-input" id="product_type_id">
-                                                <option value="">All</option>
-                                                <?php foreach ($product_types as $product_type): ?>
-                                                    <option value="<?php echo $product_type['id']; ?>" <?php echo ($this->input->get('product_type_id') == $product_type['id']) ? 'selected' : ''; ?>>
-                                                        <?php echo $product_type['product_type_name']; ?>
-                                                    </option>
-                                                <?php endforeach; ?>
-                                            </select>
-                                        </div>
-                                        <div class="col-md-2">
-                                            <label for="stock">Stock</label>
-                                            <select class="form-control filter-input" id="stock_filter">
-                                                <option value="">All</option>
-                                                <option value="positive">Available</option>
-                                                <option value="zero">No Stock</option>
-                                                <option value="negative">Negative</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-md-2 mt-4">
-                                            <button type="button" id="resetFilter" class="btn btn-secondary">Reset</button>
-                                        </div>
-                                    </div>
-                                </form>
+            <div class="card">
+                <div class="card-body">
+                    <form id="filterForm" class="mb-2 bg-light p-1">
+                        <div class="row">
+                            <div class="col-6 col-md-3">
+                                <select class="form-control filter-input category_id" id="category_id">
+                                    <option value="">All Category</option>
+                                    <?php foreach ($categories as $category): ?>
+                                        <option value="<?php echo $category['id']; ?>" <?php echo ($this->input->get('category_id') == $category['id']) ? 'selected' : ''; ?>>
+                                            <?php echo $category['name']; ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
                             </div>
-
-                            <table class="table table-sm table-striped table-bordered" id="productsTable" style="width: 100% !important;">
-                                <thead>
-                                    <tr>
-                                        <th>ID</th>
-                                        <th></th>
-                                        <th>Name</th>
-                                        <th>Category</th>
-                                        <th>Brand</th>
-                                        <th>Price</th>
-                                        <th>Stocks</th>
-                                        <th>Action</th>
-                                    </tr>
-                                </thead>
-                                <tfoot>
-                                    <tr>
-                                        <th colspan="5" class="text-right">Total:</th>
-                                        <th id="totalAmount">₹0.00</th>
-                                        <th id="totalStock">0</th>
-                                        <th></th>
-                                    </tr>
-                                </tfoot>
-                            </table>
+                            <div class="col-6 col-md-3">
+                                <select class="form-control filter-input brand_id" id="brand_id">
+                                    <option value="">All Brand</option>
+                                    <?php foreach ($brands as $brand): ?>
+                                        <option value="<?php echo $brand['id']; ?>" <?php echo ($this->input->get('brand_id') == $brand['id']) ? 'selected' : ''; ?>>
+                                            <?php echo $brand['brand_name']; ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                            <div class="d-none d-md-block col-md-2 mt-md-0">
+                                <select class="form-control filter-input" id="product_type_id">
+                                    <option value="">All Type</option>
+                                    <?php foreach ($product_types as $product_type): ?>
+                                        <option value="<?php echo $product_type['id']; ?>" <?php echo ($this->input->get('product_type_id') == $product_type['id']) ? 'selected' : ''; ?>>
+                                            <?php echo $product_type['product_type_name']; ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                            <div class="col-6 col-md-2 mt-2 mt-md-0">
+                                <select class="form-control filter-input" id="stock_filter">
+                                    <option value="">All Stock</option>
+                                    <option value="positive">Available</option>
+                                    <option value="zero">No Stock</option>
+                                    <option value="negative">Negative</option>
+                                </select>
+                            </div>
+                            <div class="col-6 col-md-2 mt-2 mt-md-0">
+                                <button type="button" id="resetFilter" class="btn btn-secondary btn-sm">Reset</button>
+                            </div>
                         </div>
+                    </form>
+                    <hr>
+                    <div class="table-responsive">
+                        <table class="table table-sm table-striped" id="productsTable" style="width: 100% !important;">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th></th>
+                                    <th>Name</th>
+                                    <th>Category</th>
+                                    <th>Brand</th>
+                                    <th>Price</th>
+                                    <th>Stocks</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tfoot>
+                                <tr>
+                                    <th colspan="5" class="text-right">Total:</th>
+                                    <th id="totalAmount">₹0.00</th>
+                                    <th id="totalStock">0</th>
+                                    <th></th>
+                                </tr>
+                            </tfoot>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -106,7 +98,8 @@
     const table = $('#productsTable').DataTable({
         processing: true,
         serverSide: true,
-        order: false,
+        responsive: true,
+        order: true,
         pageLength: 40,
         lengthMenu: [
             [40, 100, -1], // Options for number of items per page
@@ -167,81 +160,93 @@
 
 
 <!-- Stock Update Modal -->
-<div class="modal fade" id="stockUpdateModal" tabindex="-1" role="dialog" aria-labelledby="stockUpdateModalLabel" aria-hidden="true">
+<div class="modal fade" id="stockUpdateModal">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="stockUpdateModalLabel">Update Stock</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <p id="stockInfo"></p>
+                <p id="stockInfo" class="mb-3 text-muted"></p>
+
                 <form id="stockUpdateForm">
-                    <div class="form-group">
-                        <label>Action:</label><br>
-                        <input type="radio" name="action" value="increase" id="increase" required>
-                        <label for="increase">Increase</label><br>
-                        <input type="radio" name="action" value="decrease" id="decrease" required>
-                        <label for="decrease">Decrease</label>
+                    <div class="mb-3">
+                        <label class="form-label d-block">Action:</label>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="action" value="increase" id="increase" required>
+                            <label class="form-check-label" for="increase">Increase</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="action" value="decrease" id="decrease" required>
+                            <label class="form-check-label" for="decrease">Decrease</label>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="quantity">Quantity</label>
+
+                    <div class="mb-3">
+                        <label for="quantity" class="form-label">Quantity</label>
                         <input type="number" class="form-control" id="quantity" name="quantity" required>
                     </div>
-                    <div class="form-group">
-                        <label for="sale_price">Sale Price</label>
+
+                    <div class="mb-3">
+                        <label for="st_sale_price" class="form-label">Sale Price</label>
                         <input type="number" class="form-control" id="st_sale_price" name="sale_price" required>
                     </div>
-                    <div class="form-group">
-                        <label for="purchase_price">Purchase Price</label>
+
+                    <div class="mb-3">
+                        <label for="st_purchase_price" class="form-label">Purchase Price</label>
                         <input type="number" class="form-control" id="st_purchase_price" name="purchase_price" required>
                     </div>
+
                     <input type="hidden" id="stock_product_id" name="product_id">
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
                 <button type="button" class="btn btn-primary" id="updateStock">Update Stock</button>
             </div>
+
         </div>
     </div>
 </div>
+
 <!-- Modal -->
-<div class="modal fade" id="quickEditModal" tabindex="-1" role="dialog" aria-labelledby="quickEditModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+<div class="modal fade" id="quickEditModal" tabindex="-1" aria-labelledby="quickEditModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered"> <!-- Centered modal -->
         <div class="modal-content">
+
             <div class="modal-header">
                 <h5 class="modal-title" id="quickEditModalLabel">Edit Product</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
+
             <div class="modal-body">
                 <form id="quickEditForm">
-                    <div class="form-group">
-                        <label for="mrp">MRP</label>
+                    <div class="mb-3">
+                        <label for="mrp" class="form-label">MRP</label>
                         <input type="number" class="form-control" id="mrp" name="mrp" step="0.01" required>
                     </div>
-                    <div class="form-group">
-                        <label for="sale_price">Sale Price</label>
+                    <div class="mb-3">
+                        <label for="sale_price" class="form-label">Sale Price</label>
                         <input type="number" class="form-control" id="sale_price" name="sale_price" step="0.01" required>
                     </div>
-                    <div class="form-group">
-                        <label for="purchase_price">Purchase Price</label>
+                    <div class="mb-3">
+                        <label for="purchase_price" class="form-label">Purchase Price</label>
                         <input type="number" class="form-control" id="purchase_price" name="purchase_price" step="0.01" required>
                     </div>
                     <input type="hidden" id="product_id" name="product_id">
                 </form>
             </div>
+
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
                 <button type="button" class="btn btn-primary" id="updateProduct">Update</button>
             </div>
+
         </div>
     </div>
 </div>
+
 <script>
     // Show modal with product data
     $(document).on('click', '.quick-stock-update', function() {

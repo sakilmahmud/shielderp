@@ -29,18 +29,62 @@ $(document).ready(function () {
     calculateTotalForRow(row);
   });
 
-  // Event: Add product to table
-  // Event: Add product to table
+  // Event: Add product to table with button
   $(".add-product").on("click", function () {
-    let total_stocks = parseFloat($("#total_stocks").val());
-    let productRow = $(".product-row");
-    let quantity = parseFloat(productRow.find(".quantity").val());
-
-    addOrUpdateProductInTable(); // Update the product logic
-    $(".product_id").chosen().trigger("chosen:updated");
-    $(".product_details").hide(); // Hide if no product is selected
-    $(".last_purchase_prices").html(""); // Hide if no product is selected
+    handleAddProduct();
   });
+
+  // Event: Add product to table with Ctrl + A
+  $(document).on("keydown", function (e) {
+    if (e.ctrlKey && e.key.toLowerCase() === "a") {
+      e.preventDefault();
+      handleAddProduct();
+    }
+  });
+
+  // Validation & Add function
+  function handleAddProduct() {
+    let productRow = $(".product-row");
+    let productId = productRow.find(".product_id").val();
+    let quantity = parseFloat(productRow.find(".quantity").val());
+    let price = parseFloat(productRow.find(".price").val());
+
+    let isValid = true;
+
+    // Validation: Product
+    if (!productId) {
+      shakeField(productRow.find(".product_id").closest(".form-group"));
+      isValid = false;
+    }
+
+    // Validation: Quantity
+    if (isNaN(quantity) || quantity < 1) {
+      shakeField(productRow.find(".quantity").closest(".form-group"));
+      isValid = false;
+    }
+
+    // Validation: Price
+    if (isNaN(price) || price < 1) {
+      shakeField(productRow.find(".price").closest(".form-group"));
+      isValid = false;
+    }
+
+    if (!isValid) return;
+
+    // All good → Add product
+    addOrUpdateProductInTable();
+    $(".product_id").chosen().trigger("chosen:updated");
+    $(".product_details").hide();
+    $(".last_purchase_prices").html("");
+  }
+
+  // Helper: Shake field
+  function shakeField($el) {
+    $el.addClass("shake border border-danger");
+    setTimeout(() => {
+      $el.removeClass("shake border border-danger");
+    }, 600);
+  }
 
   // Function to add or update a product in the table
   function addOrUpdateProductInTable() {
@@ -454,6 +498,7 @@ $(document).ready(function () {
 
             productRow.find(".cgst_rate").val(cgstRate);
             productRow.find(".sgst_rate").val(sgstRate);
+            productRow.find("#modal_net_price").val(product_details.sale_price);
             productRow.find(".unit").val(product_details.symbol);
 
             productRow
@@ -465,7 +510,8 @@ $(document).ready(function () {
               .find(".highlight_text")
               .text(product_details.highlight_text);
             productRow.find(".product_extra_section").show();
-            productRow.find(".price").change();
+            //productRow.find(".price").change();
+            productRow.find("#modal_net_price").change();
           }
         },
       });

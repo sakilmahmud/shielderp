@@ -58,44 +58,57 @@ class ProductsController extends MY_Controller
             $totalAmount += $purchase_price * $total_available_stocks;
             $totalStock += $total_available_stocks;
 
-            //
+            // Image
+            $image_url = ($product['featured_image'] != "")
+                ? base_url('uploads/products/' . $product['featured_image'])
+                : base_url('assets/uploads/no_image.jpeg');
 
-            $image_url = ($product['featured_image'] != "") ? base_url('uploads/products/' . $product['featured_image']) : base_url('assets/uploads/no_image.jpeg');
+            $image = '<img src="' . $image_url . '" alt="' . $product['name'] . '" width="100" class="img-thumbnail">';
 
-            $image = '<img src="' . $image_url . '" alt="' . $product['name'] . '" width="100">';
+            // Action buttons
+            $actions = '<a href="' . base_url('admin/products/edit/' . $product['id']) . '" class="btn btn-outline-info btn-sm me-1">
+                    <i class="bi bi-pencil"></i>
+                </a>';
+            $actions .= '<a href="' . base_url('admin/products/delete/' . $product['id']) . '" class="btn btn-outline-danger btn-sm"
+                    onclick="return confirm(\'Are you sure you want to delete this product?\');">
+                    <i class="bi bi-trash"></i>
+                </a>';
 
-            $actions = '<a href="' . base_url('admin/products/edit/' . $product['id']) . '" class="btn btn-warning btn-sm mr-1">Edit</a>';
-            $actions .= '<a href="' . base_url('admin/products/delete/' . $product['id']) . '" class="btn btn-danger btn-sm mr-1" onclick="return confirm(\'Are you sure you want to delete this invoice?\');">Delete</a>';
-
+            // Product Link
             $endpoint = ($product['slug'] != "") ? $product['slug'] : $product['id'];
-            $product_link = '<a href="' . base_url('products/' . $endpoint) . '" class="" target="_blank">' . $product['name'] . '</a>';
-            $price_lists = '<p>MRP: ₹' . number_format($product['regular_price'], 2) . '</p>
-                <p>Sale: ₹' . number_format($product['sale_price'], 2) . '</p>
-                <p>Purchase:
+            $product_link = '<a href="' . base_url('products/' . $endpoint) . '" class="text-decoration-none fw-semibold text-success" target="_blank">
+                        <i class="bi bi-box-open me-1 text-secondary"></i>' . $product['name'] . '
+                    </a>';
+
+            // Price List
+            $price_lists = '
+            <ul class="list-unstyled mb-1 small">
+                <li><strong>MRP:</strong> ₹' . number_format($product['regular_price'], 2) . '</li>
+                <li><strong>Sale:</strong> ₹' . number_format($product['sale_price'], 2) . '</li>
+                <li><strong>Purchase:</strong>
                     <span class="purchase-price" data-product-id="' . $product['id'] . '" style="display: none;">
                         ₹' . number_format($purchase_price, 2) . '</span>
-                    <a href="javascript:void(0);"
-                        class="show_pp"
-                        data-product-id="' . $product['id'] . '"
-                        data-purchase-price="₹' . number_format($purchase_price, 2) . '">Show</a>
-                </p>
-                <a href="javascript:void(0);"
-                    class="quick-edit"
-                    data-product-id="' . $product['id'] . '"
-                    data-product-name="' . $product['name'] . '">
-                    <i class="fa fa-edit"></i> Quick Edit
-                </a>';
+                    <a href="javascript:void(0);" class="show_pp text-info" data-product-id="' . $product['id'] . '" data-purchase-price="₹' . number_format($purchase_price, 2) . '">
+                        Show
+                    </a>
+                </li>
+            </ul>
+            <a href="javascript:void(0);" class="quick-edit text-primary" data-product-id="' . $product['id'] . '" data-product-name="' . $product['name'] . '">
+                <span class="badge text-bg-success"><i class="bi bi-pen me-1"></i>Quick Edit</span>
+            </a>';
 
-            $stock_lists = 'In stocks: ' . $total_available_stocks . '<br>
-                <a href="javascript:void(0);"
-                    class="quick-stock-update"
-                    data-product-id="' . $product['id'] . '"
-                    data-product-name="' . $product['name'] . '"
-                    data-total-purchased="' . $total_quantity . '"
-                    data-current-stocks="' . $total_available_stocks . '">
-                    <i class="fa fa-plus-circle"></i> Quick Stock Update
-                </a>';
+            // Stock List
+            $stock_lists = '
+            <div class="mb-1"><strong>In stock:</strong> ' . $total_available_stocks . '</div>
+            <a href="javascript:void(0);" class="quick-stock-update text-success"
+                data-product-id="' . $product['id'] . '"
+                data-product-name="' . $product['name'] . '"
+                data-total-purchased="' . $total_quantity . '"
+                data-current-stocks="' . $total_available_stocks . '">
+                <span class="badge text-bg-dark"><i class="bi bi-cubes me-1"></i>Quick Stock Update</span>
+            </a>';
 
+            // Final row data for datatable
             $data[] = [
                 $product['id'],
                 $image,
@@ -107,6 +120,7 @@ class ProductsController extends MY_Controller
                 $actions,
             ];
         }
+
 
         echo json_encode([
             "draw" => intval($draw),

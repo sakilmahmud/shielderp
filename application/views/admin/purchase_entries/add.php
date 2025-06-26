@@ -62,7 +62,7 @@
                                         <div class="form-group mb-3">
                                             <div class="mt-1 d-flex justify-content-between">
                                                 <label for="product_id">Product</label>
-                                                <a href="javascript:void(0)" class="text-sm add_product">Add Product</a>
+                                                <a href="javascript:void(0)" class="text-sm add_product"><span class="badge bg-success">Add Product</span></a>
                                             </div>
                                             <select class="form-control product_id">
                                                 <option value="">Choose a Product</option>

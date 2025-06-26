@@ -41,8 +41,7 @@
                         aria-expanded="false"
                         data-bs-toggle="dropdown"
                         data-bs-display="static">
-                        <span class="theme-icon-active"><i class="my-1"></i></span>
-                        <span class="d-lg-none ms-2" id="bd-theme-text">Toggle theme</span>
+                        <span class="theme-icon-active" id="bd-theme-text"><i class="my-1"></i></span>
                     </button>
                     <ul
                         class="dropdown-menu dropdown-menu-end"

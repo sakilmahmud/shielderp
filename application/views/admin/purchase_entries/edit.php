@@ -130,7 +130,7 @@
                                     </div>
                                 </div>
                                 <div id="product-rows">
-                                    <h4>All Items</h4>
+                                    <h4 class="mt-3">All Items</h4>
                                     <table class="table table-hover table-bordered table-sm">
                                         <thead>
                                             <tr>

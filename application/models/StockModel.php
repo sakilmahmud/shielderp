@@ -74,7 +74,7 @@ class StockModel extends CI_Model
 
     public function get_lastest_stocks($product_id)
     {
-        $this->db->select('sm.purchase_price, sm.sale_price, sm.purchase_date, sm.available_stock, s.supplier_name, sm.batch_no, p.cgst, p.sgst');
+        $this->db->select('sm.purchase_price, p.sale_price, sm.purchase_date, sm.available_stock, s.supplier_name, sm.batch_no');
         $this->db->from('stock_management sm');
         $this->db->join('suppliers s', 's.id = sm.supplier_id', 'left');
         $this->db->join('products p', 'p.id = sm.product_id', 'left');

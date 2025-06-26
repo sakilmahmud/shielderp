@@ -9,15 +9,15 @@
         <div class="container-fluid">
             <div class="card">
                 <div class="card-body">
-                    <form id="filterForm">
-                        <div class="row mb-3">
-                            <div class="col-md-2">
+                    <form id="filterForm" class="mb-2 bg-light p-1">
+                        <div class="row">
+                            <div class="col-6 col-md-2">
                                 <input type="date" id="from_date" class="form-control filter-input" value="<?php echo date('Y-m-d', strtotime('-15 days')); ?>">
                             </div>
-                            <div class="col-md-2">
+                            <div class="col-6 col-md-2">
                                 <input type="date" id="to_date" class="form-control filter-input" value="<?php echo date('Y-m-d'); ?>">
                             </div>
-                            <div class="col-md-2">
+                            <div class="col-6 col-md-2 mt-2 mt-md-0">
                                 <select id="payment_status" class="form-control filter-input">
                                     <option value="">Payment Status</option>
                                     <option value="0">Due</option>
@@ -26,14 +26,14 @@
                                     <option value="3">Return</option>
                                 </select>
                             </div>
-                            <div class="col-md-2">
+                            <div class="d-none d-md-block col-md-2 mt-md-0">
                                 <select id="type" class="form-control filter-input">
                                     <option value="">Type</option>
                                     <option value="0">NON-GST</option>
                                     <option value="1">GST</option>
                                 </select>
                             </div>
-                            <div class="col-md-2">
+                            <div class="d-none d-md-block col-md-2 mt-md-0">
                                 <select id="created_by" class="form-control filter-input">
                                     <option value="">Created By</option>
                                     <?php foreach ($users as $user): ?>
@@ -41,8 +41,8 @@
                                     <?php endforeach; ?>
                                 </select>
                             </div>
-                            <div class="col-md-2">
-                                <button type="button" id="resetFilter" class="btn btn-secondary">Reset</button>
+                            <div class="col-6 col-md-2 mt-2 mt-md-0">
+                                <button type="button" id="resetFilter" class="btn btn-secondary btn-sm">Reset</button>
                             </div>
                         </div>
                     </form>
