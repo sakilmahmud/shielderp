@@ -1,15 +1,9 @@
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
-        <div class="container-fluid">
-            <div class="row mb-2">
-                <div class="col-sm-6">
-                    <h1>Admin Users</h1>
-                </div>
-                <div class="col-sm-6 text-right">
-                    <a href="<?php echo base_url('admin/adminAccounts/add'); ?>" class="btn btn-primary">Add User</a>
-                </div>
-            </div>
+        <div class="container-fluid d-flex justify-content-between align-items-center my-2">
+            <h2>Admin Users</h2>
+            <a href="<?php echo base_url('admin/adminAccounts/add'); ?>" class="btn btn-info">Add User</a>
         </div>
     </section>
 
@@ -36,7 +30,7 @@
                             <?php endif; ?>
 
                             <?php if (count($users) > 0) { ?>
-                                <table id="user" class="table table-bordered table-striped">
+                                <table class="table table-striped">
                                     <thead>
                                         <tr>
                                             <th>ID</th>

@@ -59,7 +59,9 @@ class IncomeController extends MY_Controller
             $total_transaction_amount += $income['transaction_amount'];
 
             $actions = '<a href="' . base_url('admin/income/edit/' . $income['id']) . '" class="btn btn-warning btn-sm">Edit</a>';
-            $actions .= '<a href="' . base_url('admin/income/delete/' . $income['id']) . '" class="btn btn-danger btn-sm" onclick="return confirm(\'Are you sure you want to delete this income?\');">Delete</a>';
+            if ($this->session->userdata('role') == 1) {
+                $actions .= '<a href="' . base_url('admin/income/delete/' . $income['id']) . '" class="btn btn-danger btn-sm" onclick="return confirm(\'Are you sure you want to delete this income?\');">Delete</a>';
+            }
 
             $data[] = [
                 $income['id'],

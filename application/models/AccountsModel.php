@@ -269,17 +269,130 @@ class AccountsModel extends CI_Model
     }
 
     /** for profit_loss */
-    public function get_total_by_type($type, $from, $to)
+    public function get_total_purchase($from, $to)
     {
-        return $this->db->select_sum('amount')
-            ->from('transactions')
-            ->where('trans_type', $type)
-            ->where('trans_date >=', $from)
-            ->where('trans_date <=', $to)
+        return $this->db->select_sum('total_amount')
+            ->from('purchase_orders')
+            ->where('purchase_date >=', $from)
+            ->where('purchase_date <=', $to)
             ->where('status', 1)
-            ->get()
-            ->row()
-            ->amount ?? 0;
+            ->get()->row()->total_amount ?? 0;
+    }
+
+    public function get_total_expense($from, $to)
+    {
+        return $this->db->select_sum('transaction_amount')
+            ->from('expenses')
+            ->where('transaction_date >=', $from)
+            ->where('transaction_date <=', $to)
+            ->get()->row()->transaction_amount ?? 0;
+    }
+
+    public function get_total_invoice($from, $to)
+    {
+        return $this->db->select_sum('total_amount')
+            ->from('invoices')
+            ->where('invoice_date >=', $from)
+            ->where('invoice_date <=', $to)
+            ->where('status', 1)
+            ->get()->row()->total_amount ?? 0;
+    }
+
+    public function get_total_income($from, $to)
+    {
+        return $this->db->select_sum('transaction_amount')
+            ->from('incomes')
+            ->where('transaction_date >=', $from)
+            ->where('transaction_date <=', $to)
+            ->get()->row()->transaction_amount ?? 0;
+    }
+
+    public function get_current_stock_value()
+    {
+        $this->db->where('status', 1);
+        $products = $this->db->get('products')->result_array();
+
+        $total_value = 0;
+
+        foreach ($products as $product) {
+            $product_id = $product['id'];
+            $purchase_price = $product['purchase_price'];
+
+            // Total quantity purchased
+            $this->db->select_sum('quantity');
+            $this->db->from('stock_management');
+            $this->db->where('product_id', $product_id);
+            $stock = $this->db->get()->row_array();
+            $total_quantity = $stock['quantity'] ?? 0;
+
+            // Total quantity sold in date range
+            $this->db->select_sum('quantity');
+            $this->db->from('invoice_details');
+            $this->db->where('product_id', $product_id);
+            $sold = $this->db->get()->row_array();
+            $total_sold_quantity = $sold['quantity'] ?? 0;
+
+            // Remaining stock and valuation
+            $remaining_qty = $total_quantity - $total_sold_quantity;
+            $total_value += ($purchase_price * $remaining_qty);
+        }
+
+        return $total_value;
+    }
+
+    public function get_current_sold_value($from, $to)
+    {
+        // Step 1: Get all sold products with sum of quantity and final_price
+        $this->db->select('product_id, SUM(quantity) as total_qty, SUM(final_price) as total_sales');
+        $this->db->from('invoice_details');
+        /* $this->db->where('invoice_date >=', $from);
+        $this->db->where('invoice_date <=', $to); */
+        $this->db->group_by('product_id');
+        $sold_products = $this->db->get()->result_array();
+
+        $total_purchase_amount = 0;
+        $total_sales_amount = 0;
+
+        // Step 2: Loop through sold products
+        foreach ($sold_products as $item) {
+            $product_id = $item['product_id'];
+            $total_qty = $item['total_qty'];
+            $total_sales = $item['total_sales'];
+
+            // Get purchase price and name from products table
+            $this->db->select('name, purchase_price');
+            $this->db->from('products');
+            $this->db->where('id', $product_id);
+            $product = $this->db->get()->row_array();
+
+            // If product not found, skip
+            if (!$product) continue;
+
+            $purchase_price = $product['purchase_price'] ?? 0;
+
+            // Calculate for this product
+            $purchase_amount = $purchase_price * $total_qty;
+
+            /* // Only print if sold at a loss
+            if ($total_sales < $purchase_amount) {
+                $loss = $purchase_amount - $total_sales;
+                echo $product['name'] . " ($product_id) × $total_qty = ₹" . number_format($purchase_amount, 2) .
+                    " | Sale: ₹" . number_format($total_sales, 2) .
+                    " | Loss: ₹" . number_format($loss, 2) . "<br>";
+            } */
+
+
+            $total_purchase_amount += $purchase_amount;
+            $total_sales_amount += $total_sales;
+        }
+
+        $net_profit = $total_sales_amount - $total_purchase_amount;
+
+        return [
+            'total_purchase_amount' => $total_purchase_amount,
+            'total_sales_amount' => $total_sales_amount,
+            'net_profit' => $net_profit
+        ];
     }
 
     /**  for balance_sheet*/

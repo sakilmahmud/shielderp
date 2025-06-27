@@ -31,37 +31,47 @@
                         <p>Dashboard</p>
                     </a>
                 </li>
+                <?php if ($this->session->userdata('role') == 1) : ?>
+                    <!-- Other Admin Users -->
+                    <li class="nav-item">
+                        <a href="<?php echo base_url('admin/adminAccounts'); ?>" class="nav-link <?php if ($activePage === 'adminAccounts') echo 'active'; ?>">
+                            <i class="nav-icon bi bi-people"></i>
+                            <p>Admin Users</p>
+                        </a>
+                    </li>
 
-                <!-- Accounts -->
-                <li class="nav-item <?php if (in_array($activePage, ['accounts', 'transfer_fund', 'payment_methods'])) echo 'menu-open'; ?>">
-                    <a href="#" class="nav-link <?php if (in_array($activePage, ['accounts', 'transfer_fund', 'payment_methods'])) echo 'active'; ?>">
-                        <i class="nav-icon bi bi-wallet2 text-purple"></i>
-                        <p>
-                            Accounts
-                            <i class="nav-arrow bi bi-chevron-right"></i>
-                        </p>
-                    </a>
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item">
-                            <a href="<?php echo base_url('admin/accounts/account_balance'); ?>" class="nav-link <?php if ($activePage === 'accounts') echo 'active'; ?>">
-                                <i class="bi bi-graph-up nav-icon"></i>
-                                <p>Account Balances</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="<?php echo base_url('admin/accounts/transfer_fund'); ?>" class="nav-link <?php if ($activePage === 'transfer_fund') echo 'active'; ?>">
-                                <i class="bi bi-arrow-left-right nav-icon"></i>
-                                <p>Transfer Fund</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="<?php echo base_url('admin/PaymentMethods'); ?>" class="nav-link <?php if ($activePage === 'payment_methods') echo 'active'; ?>">
-                                <i class="bi bi-credit-card-2-front nav-icon"></i>
-                                <p>Payment Methods</p>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
+                    <!-- Accounts -->
+                    <li class="nav-item <?php if (in_array($activePage, ['accounts', 'transfer_fund', 'payment_methods'])) echo 'menu-open'; ?>">
+                        <a href="#" class="nav-link <?php if (in_array($activePage, ['accounts', 'transfer_fund', 'payment_methods'])) echo 'active'; ?>">
+                            <i class="nav-icon bi bi-wallet2 text-purple"></i>
+                            <p>
+                                Accounts
+                                <i class="nav-arrow bi bi-chevron-right"></i>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a href="<?php echo base_url('admin/accounts/account_balance'); ?>" class="nav-link <?php if ($activePage === 'accounts') echo 'active'; ?>">
+                                    <i class="bi bi-graph-up nav-icon"></i>
+                                    <p>Account Balances</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="<?php echo base_url('admin/accounts/transfer_fund'); ?>" class="nav-link <?php if ($activePage === 'transfer_fund') echo 'active'; ?>">
+                                    <i class="bi bi-arrow-left-right nav-icon"></i>
+                                    <p>Transfer Fund</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="<?php echo base_url('admin/PaymentMethods'); ?>" class="nav-link <?php if ($activePage === 'payment_methods') echo 'active'; ?>">
+                                    <i class="bi bi-credit-card-2-front nav-icon"></i>
+                                    <p>Payment Methods</p>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+
+                <?php endif; ?>
 
                 <!-- DTP Services -->
                 <li class="nav-item <?php if (in_array($activePage, ['dtp', 'dtp_categories'])) echo 'menu-open'; ?>">
@@ -267,138 +277,139 @@
                     </ul>
                 </li>
 
-                <!-- Reports -->
-                <?php
-                $pages = ['premium_only', 'reports', 'cashbook', 'payment_paid', 'payment_received', 'daily_summary', 'ledger_dashboard', 'customer_ledger', 'supplier_ledger', 'income_ledger', 'expense_ledger', 'profit_loss', 'balance_sheet'];
-                ?>
-                <li class="nav-item <?php if (in_array($activePage, $pages)) echo 'menu-open'; ?>">
-                    <a href="#" class="nav-link <?php if (in_array($activePage, $pages)) echo 'active'; ?>">
-                        <i class="nav-icon bi bi-bar-chart icon-darkblue"></i>
-                        <p>Reports <i class="nav-arrow bi bi-chevron-right"></i></p>
-                    </a>
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item">
-                            <a href="<?php echo base_url('admin/reports/accounts'); ?>" class="nav-link <?php if (in_array($activePage, $pages)) echo 'active'; ?>">
-                                <i class="bi bi-file-earmark-bar-graph nav-icon"></i>
-                                <p>Accounts</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="<?php echo base_url('admin/premiumOnly'); ?>" class="nav-link">
-                                <i class="bi bi-box-seam nav-icon"></i>
-                                <p>Inventory</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="<?php echo base_url('admin/premiumOnly'); ?>" class="nav-link">
-                                <i class="bi bi-graph-up-arrow nav-icon"></i>
-                                <p>Sales</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="<?php echo base_url('admin/premiumOnly'); ?>" class="nav-link">
-                                <i class="bi bi-people nav-icon"></i>
-                                <p>Customers</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="<?php echo base_url('admin/premiumOnly'); ?>" class="nav-link">
-                                <i class="bi bi-cart4 nav-icon"></i>
-                                <p>Purchases</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="<?php echo base_url('admin/premiumOnly'); ?>" class="nav-link">
-                                <i class="bi bi-truck nav-icon"></i>
-                                <p>Suppliers</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="<?php echo base_url('admin/premiumOnly'); ?>" class="nav-link">
-                                <i class="bi bi-cash-coin nav-icon"></i>
-                                <p>Expenses</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="<?php echo base_url('admin/premiumOnly'); ?>" class="nav-link">
-                                <i class="bi bi-person-badge nav-icon"></i>
-                                <p>Staff</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="<?php echo base_url('admin/premiumOnly'); ?>" class="nav-link">
-                                <i class="bi bi-file-text nav-icon"></i>
-                                <p>GSTR</p>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
+                <?php if ($this->session->userdata('role') == 1) : ?>
+                    <!-- Reports -->
+                    <?php
+                    $pages = ['premium_only', 'reports', 'cashbook', 'payment_paid', 'payment_received', 'daily_summary', 'ledger_dashboard', 'customer_ledger', 'supplier_ledger', 'income_ledger', 'expense_ledger', 'profit_loss', 'balance_sheet'];
+                    ?>
+                    <li class="nav-item <?php if (in_array($activePage, $pages)) echo 'menu-open'; ?>">
+                        <a href="#" class="nav-link <?php if (in_array($activePage, $pages)) echo 'active'; ?>">
+                            <i class="nav-icon bi bi-bar-chart icon-darkblue"></i>
+                            <p>Reports <i class="nav-arrow bi bi-chevron-right"></i></p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a href="<?php echo base_url('admin/reports/accounts'); ?>" class="nav-link <?php if (in_array($activePage, $pages)) echo 'active'; ?>">
+                                    <i class="bi bi-file-earmark-bar-graph nav-icon"></i>
+                                    <p>Accounts</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="<?php echo base_url('admin/premiumOnly'); ?>" class="nav-link">
+                                    <i class="bi bi-box-seam nav-icon"></i>
+                                    <p>Inventory</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="<?php echo base_url('admin/premiumOnly'); ?>" class="nav-link">
+                                    <i class="bi bi-graph-up-arrow nav-icon"></i>
+                                    <p>Sales</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="<?php echo base_url('admin/premiumOnly'); ?>" class="nav-link">
+                                    <i class="bi bi-people nav-icon"></i>
+                                    <p>Customers</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="<?php echo base_url('admin/premiumOnly'); ?>" class="nav-link">
+                                    <i class="bi bi-cart4 nav-icon"></i>
+                                    <p>Purchases</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="<?php echo base_url('admin/premiumOnly'); ?>" class="nav-link">
+                                    <i class="bi bi-truck nav-icon"></i>
+                                    <p>Suppliers</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="<?php echo base_url('admin/premiumOnly'); ?>" class="nav-link">
+                                    <i class="bi bi-cash-coin nav-icon"></i>
+                                    <p>Expenses</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="<?php echo base_url('admin/premiumOnly'); ?>" class="nav-link">
+                                    <i class="bi bi-person-badge nav-icon"></i>
+                                    <p>Staff</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="<?php echo base_url('admin/premiumOnly'); ?>" class="nav-link">
+                                    <i class="bi bi-file-text nav-icon"></i>
+                                    <p>GSTR</p>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
 
-                <!-- Settings -->
-                <li class="nav-item <?php if (in_array($activePage, ['settings', 'units', 'bank_details', 'company_details'])) echo 'menu-open'; ?>">
-                    <a href="#" class="nav-link <?php if (in_array($activePage, ['settings', 'units', 'bank_details', 'company_details'])) echo 'active'; ?>">
-                        <i class="nav-icon bi bi-gear-fill icon-gray"></i>
-                        <p>Settings <i class="nav-arrow bi bi-chevron-right"></i></p>
-                    </a>
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item">
-                            <a href="<?php echo base_url('admin/settings'); ?>" class="nav-link <?php if ($activePage === 'settings') echo 'active'; ?>">
-                                <i class="bi bi-sliders nav-icon"></i>
-                                <p>General Settings</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="<?php echo base_url('admin/units'); ?>" class="nav-link <?php if ($activePage === 'units') echo 'active'; ?>">
-                                <i class="bi bi-rulers nav-icon"></i>
-                                <p>Units</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="<?php echo base_url('admin/settings/company_details'); ?>" class="nav-link <?php if ($activePage === 'company_details') echo 'active'; ?>">
-                                <i class="bi bi-buildings nav-icon"></i>
-                                <p>Company Details</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="<?php echo base_url('admin/settings/bank_details'); ?>" class="nav-link <?php if ($activePage === 'bank_details') echo 'active'; ?>">
-                                <i class="bi bi-bank nav-icon"></i>
-                                <p>Bank Details</p>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
+                    <!-- Settings -->
+                    <li class="nav-item <?php if (in_array($activePage, ['settings', 'units', 'bank_details', 'company_details'])) echo 'menu-open'; ?>">
+                        <a href="#" class="nav-link <?php if (in_array($activePage, ['settings', 'units', 'bank_details', 'company_details'])) echo 'active'; ?>">
+                            <i class="nav-icon bi bi-gear-fill icon-gray"></i>
+                            <p>Settings <i class="nav-arrow bi bi-chevron-right"></i></p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a href="<?php echo base_url('admin/settings'); ?>" class="nav-link <?php if ($activePage === 'settings') echo 'active'; ?>">
+                                    <i class="bi bi-sliders nav-icon"></i>
+                                    <p>General Settings</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="<?php echo base_url('admin/units'); ?>" class="nav-link <?php if ($activePage === 'units') echo 'active'; ?>">
+                                    <i class="bi bi-rulers nav-icon"></i>
+                                    <p>Units</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="<?php echo base_url('admin/settings/company_details'); ?>" class="nav-link <?php if ($activePage === 'company_details') echo 'active'; ?>">
+                                    <i class="bi bi-buildings nav-icon"></i>
+                                    <p>Company Details</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="<?php echo base_url('admin/settings/bank_details'); ?>" class="nav-link <?php if ($activePage === 'bank_details') echo 'active'; ?>">
+                                    <i class="bi bi-bank nav-icon"></i>
+                                    <p>Bank Details</p>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
 
-                <!-- Social Media -->
-                <li class="nav-item has-treeview <?php if (in_array($activePage, ['posts', 'wa', 'contacts'])) echo 'menu-open'; ?>">
-                    <a href="#" class="nav-link <?php if (in_array($activePage, ['posts', 'wa', 'contacts'])) echo 'active'; ?>">
-                        <i class="nav-icon bi bi-share-fill icon-social"></i>
-                        <p>
-                            Social Media
-                            <i class="nav-arrow bi bi-chevron-right"></i>
-                        </p>
-                    </a>
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item">
-                            <a href="<?php echo base_url('admin/posts'); ?>" class="nav-link <?php if ($activePage === 'posts') echo 'active'; ?>">
-                                <i class="bi bi-images nav-icon"></i>
-                                <p>Social Media Posts</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="<?php echo base_url('admin/wa'); ?>" class="nav-link <?php if ($activePage === 'wa') echo 'active'; ?>">
-                                <i class="bi bi-whatsapp nav-icon"></i>
-                                <p>WhatsApp Promotions</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="<?php echo base_url('admin/contacts'); ?>" class="nav-link <?php if ($activePage === 'contacts') echo 'active'; ?>">
-                                <i class="bi bi-journal-bookmark nav-icon"></i>
-                                <p>Contact DB</p>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-
+                    <!-- Social Media -->
+                    <li class="nav-item has-treeview <?php if (in_array($activePage, ['posts', 'wa', 'contacts'])) echo 'menu-open'; ?>">
+                        <a href="#" class="nav-link <?php if (in_array($activePage, ['posts', 'wa', 'contacts'])) echo 'active'; ?>">
+                            <i class="nav-icon bi bi-share-fill icon-social"></i>
+                            <p>
+                                Social Media
+                                <i class="nav-arrow bi bi-chevron-right"></i>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a href="<?php echo base_url('admin/posts'); ?>" class="nav-link <?php if ($activePage === 'posts') echo 'active'; ?>">
+                                    <i class="bi bi-images nav-icon"></i>
+                                    <p>Social Media Posts</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="<?php echo base_url('admin/wa'); ?>" class="nav-link <?php if ($activePage === 'wa') echo 'active'; ?>">
+                                    <i class="bi bi-whatsapp nav-icon"></i>
+                                    <p>WhatsApp Promotions</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="<?php echo base_url('admin/contacts'); ?>" class="nav-link <?php if ($activePage === 'contacts') echo 'active'; ?>">
+                                    <i class="bi bi-journal-bookmark nav-icon"></i>
+                                    <p>Contact DB</p>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                <?php endif; ?>
             </ul>
         </nav>
     </div>

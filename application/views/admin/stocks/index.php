@@ -102,8 +102,12 @@
                                                     <?php if ($stock['supplier_name'] != "") : ?>
                                                         <p class="text-center">-</p>
                                                     <?php else : ?>
-                                                        <a href="<?php echo base_url('admin/stocks/edit/' . $stock['id']); ?>" class="btn btn-warning btn-sm">Edit</a>
-                                                        <a href="<?php echo base_url('admin/stocks/delete/' . $stock['id']); ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this stock?')">Delete</a>
+                                                        <?php if ($this->session->userdata('role') == 1) : ?>
+                                                            <a href="<?php echo base_url('admin/stocks/edit/' . $stock['id']); ?>" class="btn btn-warning btn-sm">Edit</a>
+                                                            <a href="<?php echo base_url('admin/stocks/delete/' . $stock['id']); ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this stock?')">Delete</a>
+                                                        <?php else: ?>
+                                                            -
+                                                        <?php endif; ?>
                                                     <?php endif ?>
                                                 </td>
                                             </tr>

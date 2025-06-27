@@ -71,7 +71,9 @@ class InvoiceController extends MY_Controller
 
             $actions = '<a href="' . base_url('admin/invoices/view/' . $invoice['id']) . '" class="btn btn-info btn-sm me-1">View</a>';
             $actions .= '<a href="' . base_url('admin/invoices/edit/' . $invoice['id']) . '" class="btn btn-warning btn-sm me-1">Edit</a>';
-            $actions .= '<a href="' . base_url('admin/invoices/delete/' . $invoice['id']) . '" class="btn btn-danger btn-sm me-1" onclick="return confirm(\'Are you sure you want to delete this invoice?\');">Delete</a>';
+            if ($this->session->userdata('role') == 1) {
+                $actions .= '<a href="' . base_url('admin/invoices/delete/' . $invoice['id']) . '" class="btn btn-danger btn-sm me-1" onclick="return confirm(\'Are you sure you want to delete this invoice?\');">Delete</a>';
+            }
             $actions .= '<a href="' . base_url('admin/invoices/print/' . $invoice['id']) . '" target="_blank" class="btn btn-primary btn-sm">Print</a>';
 
             $status_badge = match ($invoice['payment_status']) {

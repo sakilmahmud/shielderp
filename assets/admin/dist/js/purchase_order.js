@@ -343,7 +343,7 @@ $(document).ready(function () {
       .find(".add-payment")
       .removeClass("btn-primary add-payment")
       .addClass("btn-danger remove-payment")
-      .html('<i class="fa fa-minus"></i>');
+      .html('<i class="bi bi-dash-lg"></i>');
 
     // Append the cloned payment row to the payment section
     $("#payment-section").append(newPaymentRow);

@@ -252,26 +252,49 @@ class AccountController extends MY_Controller
         }
     }
 
+    public function profit_loss_sold_value()
+    {
+        $from = $this->input->get('from') ?: date('Y-01-01');
+        $to   = $this->input->get('to') ?: date('Y-m-d');
+
+        $data = [
+            'activePage' => 'profit_loss_sold_value',
+            'from' => $from,
+            'to' => $to,
+            'items'     => $this->AccountsModel->get_current_sold_value($from, $to)
+        ];
+        /* echo "<pre>";
+        print_r($data);
+        die; */
+
+        $this->render_admin('admin/reports/accounts/profit_loss_sold_value', $data);
+    }
+
     public function profit_loss()
     {
-        $from = $this->input->get('from') ?: date('Y-m-01');
+        $from = $this->input->get('from') ?: date('Y-01-01');
         $to   = $this->input->get('to') ?: date('Y-m-d');
 
         $data = [
             'activePage' => 'profit_loss',
             'from' => $from,
             'to' => $to,
-            'total_income' => $this->AccountsModel->get_total_by_type(1, $from, $to),
-            'total_expense' => $this->AccountsModel->get_total_by_type(2, $from, $to),
+            'total_purchase'     => $this->AccountsModel->get_total_purchase($from, $to),
+            'total_expense'      => $this->AccountsModel->get_total_expense($from, $to),
+            'current_stock_value' => $this->AccountsModel->get_current_stock_value($from, $to),
+            'total_invoice'      => $this->AccountsModel->get_total_invoice($from, $to),
+            'total_income'       => $this->AccountsModel->get_total_income($from, $to),
         ];
 
+        $data['net_profit'] = ($data['total_invoice'] + $data['total_income'] + $data['current_stock_value'])
+            - ($data['total_purchase'] + $data['total_expense']);
 
         $this->render_admin('admin/reports/accounts/profit_loss', $data);
     }
 
     public function export_profit_loss($format)
     {
-        $from = $this->input->get('from') ?: date('Y-m-01');
+        $from = $this->input->get('from') ?: date('Y-01-01');
         $to   = $this->input->get('to') ?: date('Y-m-d');
 
         $total_income = $this->AccountsModel->get_total_by_type(1, $from, $to);

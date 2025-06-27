@@ -280,6 +280,7 @@ $route['admin/reports/accounts/export_daily_summary/(:any)'] = 'admin/reports/Ac
 
 $route['admin/reports/accounts/profit-loss'] = 'admin/reports/AccountController/profit_loss';
 $route['admin/reports/accounts/export_profit_loss/(:any)'] = 'admin/reports/AccountController/export_profit_loss/$1';
+$route['admin/reports/accounts/profit-loss-sold-value'] = 'admin/reports/AccountController/profit_loss_sold_value';
 
 $route['admin/reports/accounts/balance-sheet'] = 'admin/reports/AccountController/balance_sheet';
 $route['admin/reports/accounts/export_balance_sheet/(:any)'] = 'admin/reports/AccountController/export_balance_sheet/$1';

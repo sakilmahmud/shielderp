@@ -1,8 +1,8 @@
 <div class="content-wrapper">
     <section class="content-header">
         <div class="container-fluid d-flex justify-content-between align-items-center my-2">
-            <h2><i class="bi bi-bar-chart-fill"></i> Profit & Loss</h2>
-            <a href="<?php echo base_url('admin/reports/accounts/profit-loss-sold-value'); ?>" class="btn btn-info">Profit on Sold Items</a>
+            <h2><i class="bi bi-bar-chart-fill"></i> Profit on Sold Items</h2>
+            <a href="<?php echo base_url('admin/reports/accounts/profit-loss'); ?>" class="btn btn-info">Profit/Loss</a>
             <a href="<?php echo base_url('admin/reports/accounts'); ?>" class="btn btn-primary">Accounts</a>
         </div>
     </section>
@@ -35,28 +35,16 @@
                             <table class="table table-striped">
                                 <tr>
                                     <th>Total Purchase</th>
-                                    <td class="text-danger text-end">₹<?= number_format($total_purchase, 2) ?></td>
-                                </tr>
-                                <tr>
-                                    <th>Other Expenses</th>
-                                    <td class="text-danger text-end">₹<?= number_format($total_expense, 2) ?></td>
-                                </tr>
-                                <tr>
-                                    <th>Current Stock Valuation</th>
-                                    <td class="text-success text-end">₹<?= number_format($current_stock_value, 2) ?></td>
+                                    <td class="text-danger text-end">₹<?= number_format($items['total_purchase_amount'], 2) ?></td>
                                 </tr>
                                 <tr>
                                     <th>Total Invoices</th>
-                                    <td class="text-success text-end">₹<?= number_format($total_invoice, 2) ?></td>
-                                </tr>
-                                <tr>
-                                    <th>Other Income</th>
-                                    <td class="text-success text-end">₹<?= number_format($total_income, 2) ?></td>
+                                    <td class="text-success text-end">₹<?= number_format($items['total_sales_amount'], 2) ?></td>
                                 </tr>
                                 <tr class="fw-bold">
                                     <th>Net Profit / Loss</th>
-                                    <td class="text-end <?= $net_profit >= 0 ? 'text-success' : 'text-danger' ?>">
-                                        ₹<?= number_format($net_profit, 2) ?>
+                                    <td class="text-end <?= $items['net_profit'] >= 0 ? 'text-success' : 'text-danger' ?>">
+                                        ₹<?= number_format($items['net_profit'], 2) ?>
                                     </td>
                                 </tr>
                             </table>
@@ -78,17 +66,14 @@
     const plChart = new Chart(document.getElementById('plChart'), {
         type: 'bar',
         data: {
-            labels: ['Invoices', 'Income', 'Stock Value', 'Purchase', 'Expense'],
+            labels: ['Purchase', 'Invoices'],
             datasets: [{
                 label: 'Amount (₹)',
                 data: [
-                    <?= $total_invoice ?>,
-                    <?= $total_income ?>,
-                    <?= $current_stock_value ?>,
-                    <?= $total_purchase ?>,
-                    <?= $total_expense ?>
+                    <?= $items['total_purchase_amount'] ?>,
+                    <?= $items['total_sales_amount'] ?>,
                 ],
-                backgroundColor: ['#28a745', '#17a2b8', '#ffc107', '#dc3545', '#6c757d'],
+                backgroundColor: ['#dc3545', '#28a745'],
                 borderWidth: 1
             }]
         },

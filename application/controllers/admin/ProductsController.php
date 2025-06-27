@@ -69,10 +69,12 @@ class ProductsController extends MY_Controller
             $actions = '<a href="' . base_url('admin/products/edit/' . $product['id']) . '" class="btn btn-outline-info btn-sm me-1">
                     <i class="bi bi-pencil"></i>
                 </a>';
-            $actions .= '<a href="' . base_url('admin/products/delete/' . $product['id']) . '" class="btn btn-outline-danger btn-sm"
+            if ($this->session->userdata('role') == 1) {
+                $actions .= '<a href="' . base_url('admin/products/delete/' . $product['id']) . '" class="btn btn-outline-danger btn-sm"
                     onclick="return confirm(\'Are you sure you want to delete this product?\');">
                     <i class="bi bi-trash"></i>
                 </a>';
+            }
 
             // Product Link
             $endpoint = ($product['slug'] != "") ? $product['slug'] : $product['id'];

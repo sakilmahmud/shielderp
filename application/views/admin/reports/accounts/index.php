@@ -22,9 +22,9 @@
                 foreach ($pages as $page): ?>
                     <div class="col-md-6 col-lg-4 mb-4">
                         <div class="card shadow-sm h-100">
-                            <a href="<?= base_url('admin/reports/accounts/' . $page['url']) ?>" class="mt-2">
+                            <a href="<?= base_url('admin/reports/accounts/' . $page['url']) ?>" class="mt-2 text-dark">
                                 <h5 class="card-title p-3 d-flex align-items-center justify-content-center gap-2">
-                                    <i class="<?= $page['icon'] ?> fs-2 text-primary"></i>
+                                    <i class="<?= $page['icon'] ?> fs-2" style="color:#ff6600"></i>
                                     <?= $page['label'] ?>
                                 </h5>
 

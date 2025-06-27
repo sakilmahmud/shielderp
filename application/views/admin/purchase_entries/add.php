@@ -60,7 +60,7 @@
                                 <div class="row product-row">
                                     <div class="col-md-3">
                                         <div class="form-group mb-3">
-                                            <div class="mt-1 d-flex justify-content-between">
+                                            <div class="my-1 d-flex justify-content-between">
                                                 <label for="product_id">Product</label>
                                                 <a href="javascript:void(0)" class="text-sm add_product"><span class="badge bg-success">Add Product</span></a>
                                             </div>
@@ -102,21 +102,16 @@
                                             <input type="text" class="form-control discount" value="0" readonly>
                                         </div>
                                     </div>
-                                    <div class="col-md-1">
-                                        <div class="form-group mb-3">
-                                            <label for="gst_rate">GST Rate</label>
-                                            <select class="form-control gst_rate">
-                                                <option value="0">0%</option>
-                                                <option value="12">12%</option>
-                                                <option value="18" selected>18%</option>
-                                                <option value="28">28%</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-1">
-                                        <div class="form-group mb-3">
-                                            <label for="gst_amount">GST Amount</label>
-                                            <input type="text" class="form-control gst_amount" readonly>
+                                    <div class="col-md-2">
+                                        <div class="d-flex gap-3">
+                                            <div class="form-group mb-3">
+                                                <label for="gst_rate">GST (%)</label>
+                                                <input type="text" class="form-control gst_rate" value="0">
+                                            </div>
+                                            <div class="form-group mb-3">
+                                                <label for="gst_amount">G Amount</label>
+                                                <input type="text" class="form-control gst_amount" readonly>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="col-md-2">
@@ -130,7 +125,7 @@
                                     </div>
                                 </div>
                                 <div id="product-rows">
-                                    <h4>All Items</h4>
+                                    <h4 class="mt-3">All Items</h4>
                                     <table class="table">
                                         <thead>
                                             <tr>
@@ -212,7 +207,7 @@
                                                     <input type="number" class="form-control payment_amount" name="payment_amount[]" placeholder="Enter Amount">
                                                 </div>
                                                 <div class="form-group mb-3">
-                                                    <button type="button" class="btn btn-primary add-payment"><i class="fa fa-plus"></i></button>
+                                                    <button type="button" class="btn btn-primary add-payment"><i class="bi bi-plus"></i></button>
                                                 </div>
                                             </div>
                                         </div>
