@@ -47,7 +47,7 @@
                         </div>
                     </form>
                     <div class="table-responsive">
-                        <table id="invoiceTable" class="table table-bordered table-striped" style="width: 100% !important;">
+                        <table id="invoiceTable" class="table table-striped" style="width: 100% !important;">
                             <thead>
                                 <tr>
                                     <th>ID</th>

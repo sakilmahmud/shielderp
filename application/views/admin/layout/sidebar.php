@@ -111,8 +111,8 @@
                 </li>
 
                 <!-- Products -->
-                <li class="nav-item <?php if (in_array($activePage, ['products', 'categories', 'brands', 'product_types'])) echo 'menu-open'; ?>">
-                    <a href="#" class="nav-link <?php if (in_array($activePage, ['products', 'categories', 'brands', 'product_types'])) echo 'active'; ?>">
+                <li class="nav-item <?php if (in_array($activePage, ['products', 'categories', 'brands', 'hsn_codes', 'product_types'])) echo 'menu-open'; ?>">
+                    <a href="#" class="nav-link <?php if (in_array($activePage, ['products', 'categories', 'brands', 'hsn_codes', 'product_types'])) echo 'active'; ?>">
                         <i class="nav-icon bi bi-boxes icon-orange"></i>
                         <p>Products <i class="nav-arrow bi bi-chevron-right"></i></p>
                     </a>
@@ -133,6 +133,12 @@
                             <a href="<?php echo base_url('admin/brands'); ?>" class="nav-link <?php if ($activePage === 'brands') echo 'active'; ?>">
                                 <i class="bi bi-c-circle nav-icon"></i>
                                 <p>Brands</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="<?php echo base_url('admin/hsn-codes'); ?>" class="nav-link <?php if ($activePage === 'hsn_codes') echo 'active'; ?>">
+                                <i class="bi bi-layers nav-icon"></i>
+                                <p>HSN Codes</p>
                             </a>
                         </li>
                         <li class="nav-item">

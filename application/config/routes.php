@@ -136,6 +136,16 @@ $route['admin/brands/delete/(:num)'] = 'admin/BrandsController/delete/$1';
 
 /** end of brands */
 
+/** hsn code */
+
+$route['admin/hsn-codes'] = 'admin/HsnCodes/index';
+$route['admin/hsn-codes/create'] = 'admin/HsnCodes/create';
+$route['admin/hsn-codes/edit/(:num)'] = 'admin/HsnCodes/edit/$1';
+$route['admin/hsn-codes/delete/(:num)'] = 'admin/HsnCodes/delete/$1';
+$route['admin/hsn-codes/ajax-list'] = 'admin/HsnCodes/ajax_list';
+
+/** end of hsn */
+
 $route['admin/products'] = 'admin/ProductsController/index';
 $route['admin/products/ajax_list'] = 'admin/ProductsController/ajax_list';
 $route['admin/products/add'] = 'admin/ProductsController/add';
