@@ -90,4 +90,15 @@ class HsnCodeModel extends CI_Model
     {
         return $this->db->order_by('hsn_code')->get($this->table)->result_array();
     }
+
+    public function get_or_create($value)
+    {
+        $this->db->where('hsn_code', $value);
+        $record = $this->db->get('hsn_codes')->row();
+        if ($record) return $record->id;
+
+        $insert = ['hsn_code' => $value, 'created_at' => date('Y-m-d H:i:s')]; // extend if needed
+        $this->db->insert('hsn_codes', $insert);
+        return $this->db->insert_id();
+    }
 }

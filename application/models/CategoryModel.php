@@ -39,4 +39,20 @@ class CategoryModel extends CI_Model
         $query = $this->db->get('categories');
         return $query->row_array();
     }
+
+    public function bulk_insert($data)
+    {
+        return $this->db->insert_batch('categories', $data);
+    }
+
+    public function get_or_create($value)
+    {
+        $this->db->where('name', $value);
+        $record = $this->db->get('categories')->row();
+        if ($record) return $record->id;
+
+        $insert = ['name' => $value, 'created_at' => date('Y-m-d H:i:s')]; // extend if needed
+        $this->db->insert('categories', $insert);
+        return $this->db->insert_id();
+    }
 }

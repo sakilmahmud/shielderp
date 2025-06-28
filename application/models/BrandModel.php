@@ -31,4 +31,22 @@ class BrandModel extends CI_Model
         $this->db->where('id', $id);
         $this->db->delete('brands');
     }
+
+    public function bulk_insert($data)
+    {
+        if (!empty($data)) {
+            $this->db->insert_batch('brands', $data);
+        }
+    }
+
+    public function get_or_create($value)
+    {
+        $this->db->where('brand_name', $value);
+        $record = $this->db->get('brands')->row();
+        if ($record) return $record->id;
+
+        $insert = ['hsn_code' => $value, 'created_at' => date('Y-m-d H:i:s')]; // extend if needed
+        $this->db->insert('brands', $insert);
+        return $this->db->insert_id();
+    }
 }

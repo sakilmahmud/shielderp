@@ -2,6 +2,7 @@
     <section class="content-header">
         <div class="container-fluid d-flex justify-content-between align-items-center my-2">
             <h2>List of Categories</h2>
+            <a href="<?php echo base_url('admin/categories-export-import'); ?>" class="btn btn-info">Export / Import Categories</a>
             <a href="<?php echo base_url('admin/categories/add'); ?>" class="btn btn-primary">Add Category</a>
         </div>
     </section>

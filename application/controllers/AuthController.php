@@ -20,83 +20,70 @@ class AuthController extends CI_Controller
     {
         $data['error'] = ''; // Initialize the error message
 
+        // If already logged in
         if ($this->session->userdata('user_id')) {
-
             $role = $this->session->userdata('role');
-            // User authentication successful, redirect to respective panel
             switch ($role) {
                 case 1:
-                    redirect('admin/dashboard');
-                    break;
+                case 2:
                 case 5:
                     redirect('admin/dashboard');
-                    break;
-                case 2:
-                    redirect('admin/dashboard');
-                    break;
                 case 3:
                     redirect('doer/dashboard');
-                    break;
                 case 4:
                     redirect('client/dashboard');
-                    break;
                 default:
                     redirect('login');
-                    break;
             }
         }
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            // Retrieve the form data
             $username = $this->input->post('username');
             $password = $this->input->post('password');
 
-            // Perform the login authentication
             $user = $this->UserModel->getUserByUsernameOrMobileOrEmail($username);
 
             if ($user && password_verify($password, $user['password'])) {
+                // Set session
+                $this->session->set_userdata([
+                    'user_id'   => $user['id'],
+                    'username'  => $user['username'],
+                    'full_name' => $user['full_name'],
+                    'role'      => $user['user_role']
+                ]);
 
-                // Set user data in the session
-                $user_id = $user['id'];
-                $this->session->set_userdata('user_id', $user_id);
-                $this->session->set_userdata('username', $user['username']);
-                $this->session->set_userdata('full_name', $user['full_name']);
-                $this->session->set_userdata('role', $user['user_role']);
-
-                $remember = $this->input->post('remember') ? true : false;
-
-                // If "Remember Me" is checked, set a persistent cookie
-                if ($remember) {
-                    $cookie_value = $user_id . ':' . sha1($user_id . $username . $password . 'your_secret_key');
-                    $cookie_expiration = 60 * 60 * 24 * 30; // 30 days (adjust the time as needed)
-                    $this->input->set_cookie('remember_me', $cookie_value, $cookie_expiration);
+                // Remember me cookie
+                if ($this->input->post('remember')) {
+                    $cookie_value = $user['id'] . ':' . sha1($user['id'] . $username . $password . 'your_secret_key');
+                    $this->input->set_cookie('remember_me', $cookie_value, 60 * 60 * 24 * 30); // 30 days
                 }
 
-                // User authentication successful, redirect to respective panel
+                // ✅ Redirect to last URL if available
+                $last_url = $this->session->userdata('last_url');
+                if (!empty($last_url)) {
+                    $this->session->unset_userdata('last_url');
+                    redirect($last_url);
+                }
+
+                // Role-based redirection
                 switch ($user['user_role']) {
                     case 1:
-                        redirect('admin/dashboard');
-                        break;
                     case 2:
+                    case 5:
                         redirect('admin/dashboard');
-                        break;
                     case 3:
                         redirect('doer/dashboard');
-                        break;
                     case 4:
                         redirect('client/dashboard');
-                        break;
                     default:
                         redirect('login');
-                        break;
                 }
             } else {
-                // Invalid username or password, set the error message
                 $data['error'] = 'Invalid username or password';
             }
         }
 
-        $this->load->view('auth/login', $data); // Load the login view with error message if any
+        $this->load->view('auth/login', $data);
     }
 
     public function register()

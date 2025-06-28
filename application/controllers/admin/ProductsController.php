@@ -11,6 +11,7 @@ class ProductsController extends MY_Controller
         $this->load->model('CategoryModel');
         $this->load->model('BrandModel');
         $this->load->model('UnitModel');
+        $this->load->model('HsnCodeModel');
         $this->load->model('ProductTypeModel');
         $this->load->library('form_validation');
         $this->load->library('upload');
@@ -751,5 +752,85 @@ class ProductsController extends MY_Controller
 
         // Load raw view
         $this->render_admin('admin/product_update', isset($data) ? $data : []);
+    }
+
+    public function export_import()
+    {
+        $data['activePage'] = 'products-export-import';
+        $this->render_admin('admin/products/export_import', $data);
+    }
+
+    public function export_csv()
+    {
+        $this->load->helper('download');
+        $products = $this->ProductModel->get_all_products_with_names();
+
+        $csv = "name,slug,hsn_code,purchase_price,sale_price,regular_price,highlight_text,description,category,brand,low_stock_alert,unit\n";
+        foreach ($products as $p) {
+            $csv .= "{$p['name']},{$p['slug']},{$p['hsn_code']},{$p['purchase_price']},{$p['sale_price']},{$p['regular_price']},\"{$p['highlight_text']}\",\"{$p['description']}\",{$p['category']},{$p['brand']},{$p['low_stock_alert']},{$p['unit']}\n";
+        }
+
+        force_download('products_export_' . date('Ymd_His') . '.csv', $csv);
+    }
+
+    public function import_csv()
+    {
+        $config['upload_path'] = './uploads/csv/';
+        $config['allowed_types'] = 'csv';
+        $config['max_size'] = 2048;
+        $this->upload->initialize($config);
+
+        if (!$this->upload->do_upload('csv_file')) {
+            $this->session->set_flashdata('error', $this->upload->display_errors());
+            redirect('admin/products-export-import');
+        }
+
+        $file = $this->upload->data('full_path');
+        $csv_data = array_map('str_getcsv', file($file));
+        $header = array_map('trim', array_shift($csv_data));
+
+        if ($header !== ['name', 'slug', 'hsn_code', 'purchase_price', 'sale_price', 'regular_price', 'highlight_text', 'description', 'category', 'brand', 'low_stock_alert', 'unit']) {
+            $this->session->set_flashdata('error', 'CSV format mismatch.');
+            redirect('admin/products-export-import');
+        }
+
+        $added = $skipped = 0;
+
+        foreach ($csv_data as $row) {
+            list($name, $slug, $hsn_code, $purchase_price, $sale_price, $regular_price, $highlight, $desc, $cat, $brand, $stock, $unit) = $row;
+
+            $exists = $this->ProductModel->get_by_name_slug($name, $slug);
+            if ($exists) {
+                $skipped++;
+                continue;
+            }
+
+            $hsn_id = $this->HsnCodeModel->get_or_create(trim($hsn_code));
+            $cat_id = $this->CategoryModel->get_or_create(trim($cat));
+            $brand_id = $this->BrandModel->get_or_create(trim($brand));
+            $unit_id = $this->UnitModel->get_or_create(trim($unit));
+
+            $data = [
+                'name' => trim($name),
+                'slug' => trim($slug),
+                'hsn_code_id' => $hsn_id,
+                'purchase_price' => (float) $purchase_price,
+                'sale_price' => (float) $sale_price,
+                'regular_price' => (float) $regular_price,
+                'highlight_text' => trim($highlight),
+                'description' => trim($desc),
+                'category_id' => $cat_id,
+                'brand_id' => $brand_id,
+                'low_stock_alert' => (int) $stock,
+                'unit_id' => $unit_id,
+                'created_at' => date('Y-m-d H:i:s')
+            ];
+
+            $this->ProductModel->insert_product($data);
+            $added++;
+        }
+
+        $this->session->set_flashdata('message', "$added products imported, $skipped skipped (duplicates).\n");
+        redirect('admin/products-export-import');
     }
 }

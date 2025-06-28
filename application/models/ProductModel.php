@@ -379,4 +379,20 @@ class ProductModel extends CI_Model
         $this->db->where('name', $name);
         return $this->db->update('products', $data);
     }
+
+    public function get_by_name_slug($name, $slug)
+    {
+        return $this->db->get_where('products', ['name' => $name, 'slug' => $slug])->row_array();
+    }
+
+    public function get_all_products_with_names()
+    {
+        $this->db->select('p.*, h.hsn_code, c.name as category, b.brand_name as brand, u.name as unit');
+        $this->db->from('products p');
+        $this->db->join('hsn_codes h', 'h.id = p.hsn_code_id', 'left');
+        $this->db->join('categories c', 'c.id = p.category_id', 'left');
+        $this->db->join('brands b', 'b.id = p.brand_id', 'left');
+        $this->db->join('units u', 'u.id = p.unit_id', 'left');
+        return $this->db->get()->result_array();
+    }
 }

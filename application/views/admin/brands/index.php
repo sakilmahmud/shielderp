@@ -2,6 +2,7 @@
     <section class="content-header">
         <div class="container-fluid d-flex justify-content-between align-items-center my-2">
             <h2>Brands</h2>
+            <a href="<?php echo base_url('admin/brands-export-import'); ?>" class="btn btn-info">Brands Export / Import</a>
             <a href="<?php echo base_url('admin/brands/add'); ?>" class="btn btn-primary">Add Brand</a>
         </div>
     </section>

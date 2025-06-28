@@ -109,6 +109,9 @@ $route['admin/categories/add'] = 'admin/CategoriesController/add';
 $route['admin/categories/add-ajax'] = 'admin/CategoriesController/addAjax';
 $route['admin/categories/edit/(:num)'] = 'admin/CategoriesController/edit/$1';
 $route['admin/categories/delete/(:num)'] = 'admin/CategoriesController/delete/$1';
+$route['admin/categories-export-import'] = 'admin/CategoriesController/export_import';
+$route['admin/export/categories'] = 'admin/CategoriesController/export_csv';
+$route['admin/import/categories'] = 'admin/CategoriesController/import_csv';
 
 /** product type */
 $route['admin/product-types'] = 'admin/ProductTypeController/index';
@@ -133,6 +136,10 @@ $route['admin/brands/add'] = 'admin/BrandsController/add';
 $route['admin/brands/add-ajax'] = 'admin/BrandsController/addAjax';
 $route['admin/brands/edit/(:num)'] = 'admin/BrandsController/edit/$1';
 $route['admin/brands/delete/(:num)'] = 'admin/BrandsController/delete/$1';
+$route['admin/brands-export-import'] = 'admin/BrandsController/export_import';
+$route['admin/brands-export'] = 'admin/BrandsController/export_csv';
+$route['admin/brands-import'] = 'admin/BrandsController/import_csv';
+
 
 /** end of brands */
 
@@ -158,6 +165,10 @@ $route['admin/products/get_product_prices'] = 'admin/ProductsController/get_prod
 $route['admin/products/last_purchase_price'] = 'admin/ProductsController/get_last_purchase_price';
 $route['admin/products/update_price'] = 'admin/ProductsController/update_price';
 $route['admin/products/getProductsByCategory'] = 'admin/ProductsController/getProductsByCategory';
+
+$route['admin/products-export-import'] = 'admin/ProductsController/export_import';
+$route['admin/products-export-import/export'] = 'admin/ProductsController/export_csv';
+$route['admin/products-export-import/import'] = 'admin/ProductsController/import_csv';
 
 $route['admin/products/bulk-upload'] = 'admin/ProductsController/bulkUpload';
 $route['admin/products/process-bulk-upload'] = 'admin/ProductsController/processBulkUpload';

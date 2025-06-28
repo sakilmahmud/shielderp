@@ -29,4 +29,15 @@ class UnitModel extends CI_Model
     {
         $this->db->delete('units', ['id' => $id]);
     }
+
+    public function get_or_create($value)
+    {
+        $this->db->where('name', $value);
+        $record = $this->db->get('units')->row();
+        if ($record) return $record->id;
+
+        $insert = ['name' => $value, 'created_at' => date('Y-m-d H:i:s')]; // extend if needed
+        $this->db->insert('units', $insert);
+        return $this->db->insert_id();
+    }
 }

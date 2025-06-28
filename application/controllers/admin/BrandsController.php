@@ -20,7 +20,6 @@ class BrandsController extends MY_Controller
         $data['activePage'] = 'brands';
         $data['brands'] = $this->BrandModel->get_all_brands();
 
-
         $this->render_admin('admin/brands/index', $data);
     }
 
@@ -106,5 +105,96 @@ class BrandsController extends MY_Controller
         // Set flash message and redirect
         $this->session->set_flashdata('message', 'Brand delete successfully');
         redirect('admin/brands');
+    }
+
+    public function export_import()
+    {
+        $data['activePage'] = 'brands-export-import';
+        $this->render_admin('admin/brands/export_import', $data);
+    }
+
+    public function export_csv()
+    {
+        $this->load->helper('download');
+
+        // Get data using model
+        $brands = $this->BrandModel->get_all_brands();
+
+        $delimiter = ",";
+        $newline = "\r\n";
+        $filename = "brands_export_" . date('Ymd_His') . ".csv";
+
+        // Build CSV header
+        $csv_data = "brand_name,brand_descriptions\n";
+
+        // Loop through data
+        foreach ($brands as $row) {
+            $csv_data .= '"' . $row['brand_name'] . '","' . $row['brand_descriptions'] . '"' . $newline;
+        }
+
+        // Trigger file download
+        force_download($filename, $csv_data);
+    }
+
+    public function import_csv()
+    {
+        $this->load->library('upload');
+
+        $config['upload_path'] = './uploads/csv/';
+        $config['allowed_types'] = 'csv';
+        $config['max_size'] = 2048;
+        $this->upload->initialize($config);
+
+        if (!$this->upload->do_upload('csv_file')) {
+            $this->session->set_flashdata('error', $this->upload->display_errors());
+            redirect('admin/brands-export-import');
+        } else {
+            $file_data = $this->upload->data();
+            $file_path = $file_data['full_path'];
+
+            $csv_array = array_map('str_getcsv', file($file_path));
+            $header = array_map('trim', $csv_array[0]);
+
+            if ($header !== ['brand_name', 'brand_descriptions']) {
+                $this->session->set_flashdata('error', 'Invalid CSV format. Required headers: brand_name, brand_descriptions');
+                redirect('admin/brands-export-import');
+            }
+
+            unset($csv_array[0]);
+
+            $insert_data = [];
+            $skipped = 0;
+            $inserted = 0;
+
+            foreach ($csv_array as $row) {
+                if (count($row) < 1) continue;
+
+                $brand_name = trim($row[0]);
+                $brand_descriptions = isset($row[1]) && trim($row[1]) !== '' ? trim($row[1]) : $brand_name;
+
+                $this->db->where('brand_name', $brand_name);
+                $exists = $this->db->get('brands')->num_rows();
+
+                if ($exists > 0) {
+                    $skipped++;
+                    continue;
+                }
+
+                $insert_data[] = [
+                    'brand_name' => $brand_name,
+                    'brand_descriptions' => $brand_descriptions,
+                    'created_at' => date('Y-m-d H:i:s'),
+                    'status' => 1
+                ];
+                $inserted++;
+            }
+
+            if (!empty($insert_data)) {
+                $this->BrandModel->bulk_insert($insert_data);
+            }
+
+            $this->session->set_flashdata('message', "CSV Import Completed.<br>✅ Inserted: <strong>$inserted</strong><br>⚠️ Skipped (duplicate): <strong>$skipped</strong>");
+            redirect('admin/brands-export-import');
+        }
     }
 }
