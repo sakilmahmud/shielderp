@@ -66,7 +66,7 @@
                         <!-- All added items -->
                         <?php $this->load->view('admin/invoices/inc/items'); ?>
 
-                        <div class="total_amount_section">
+                        <div class="total_amount_section" style="display: none;">
                             <!-- Amount Section -->
                             <?php $this->load->view('admin/invoices/inc/amount_section'); ?>
 
@@ -98,7 +98,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="d-flex justify-content-end gap-3">
+                        <div class="d-flex justify-content-end gap-3 final_btn_section" style="display: none !important;">
                             <div>Balance Amount: <span class="balance_amount"></span></div>
 
                             <button type="submit" class="btn btn-primary">Create Invoice</button>
@@ -112,8 +112,7 @@
 <script>
     let productDetailsUrl = "<?php echo base_url('admin/products/product_details'); ?>";
     let getLastestStocksUrl = "<?php echo base_url('admin/invoices/getLastestStocks'); ?>";
-    let getLastPurchasePricesUrl = "<?php echo base_url('admin/invoices/getLastPurchasePrices'); ?>";
-    let default_cgst_rate = 0;
-    let default_sgst_rate = 0;
+    let latestSalePricesUrl = "<?php echo base_url('admin/invoices/latest-sale-prices'); ?>";
+    let default_gst_rate = <?= $gst_rate; ?>;
 </script>
 <script src="<?php echo base_url('assets/admin/dist/js/invoice.js') ?>"></script>

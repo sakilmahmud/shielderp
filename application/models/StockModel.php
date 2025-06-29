@@ -127,6 +127,24 @@ class StockModel extends CI_Model
         return $final_stock;
     }
 
+    public function get_latest_sale_prices($product_id, $customer_id = null)
+    {
+        $this->db
+            ->select('final_price, quantity, invoice_date')
+            ->from('invoice_details')
+            ->where('product_id', $product_id);
+
+        if (!empty($customer_id)) {
+            $this->db->where('customer_id', $customer_id);
+        }
+
+        return $this->db
+            ->order_by('invoice_date', 'DESC')
+            ->limit(5)
+            ->get()
+            ->result_array();
+    }
+
     public function update_stock_on_delete($product_id, $quantity)
     {
         // Reduce the available stock by the quantity of the deleted purchase order

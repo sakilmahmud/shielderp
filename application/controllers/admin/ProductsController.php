@@ -491,7 +491,6 @@ class ProductsController extends MY_Controller
         }
 
         // Fetch the last purchase price using the model
-        //$last_purchase_price = $this->ProductModel->getLastPurchasePrice($product_id);
         $last_purchase_price = $this->StockModel->last_purchase_price($product_id);
 
         // Check if a price was found

@@ -68,6 +68,12 @@
                                         </select>
                                     </div>
                                 </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>GST Rate:</label>
+                                        <input type="text" name="default_gst_rate" class="form-control" value="<?php echo isset($settings['default_gst_rate']) ? $settings['default_gst_rate'] : 0; ?>">
+                                    </div>
+                                </div>
                             </div>
 
                             <div class="form-group">

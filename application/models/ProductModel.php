@@ -190,14 +190,14 @@ class ProductModel extends CI_Model
     public function get_product_details($product_id)
     {
         return $this->db
-            ->select('p.*, u.symbol')
+            ->select('p.*, u.symbol, h.hsn_code, h.gst_rate')
             ->from('products p')
             ->join('units u', 'p.unit_id = u.id', 'left')
+            ->join('hsn_codes h', 'p.hsn_code_id = h.id', 'left')
             ->where('p.id', $product_id)
             ->get()
-            ->row_array(); // Changed to row_array for consistency
+            ->row_array();
     }
-
 
     public function insert_product($data)
     {
@@ -228,8 +228,6 @@ class ProductModel extends CI_Model
 
     public function get_product_prices($product_id)
     {
-        $getLastPurchasePrice = $this->get_latest_sale_prices($product_id);
-
         $this->db->select('regular_price, sale_price, purchase_price');
         $this->db->from('products');
         $this->db->where('id', $product_id);
@@ -237,29 +235,11 @@ class ProductModel extends CI_Model
         $this->db->limit(1);
         $query = $this->db->get();
         if ($query->num_rows() > 0) {
-            $arr = array('prices' => $query->row(), 'latest_sale_prices' => $getLastPurchasePrice);
+            $arr = array('prices' => $query->row());
             return $arr;
         } else {
             return 0; // Default price if none found
         }
-    }
-
-    public function get_latest_sale_prices($product_id, $customer_id = null)
-    {
-        $this->db
-            ->select('final_price, quantity, invoice_date')
-            ->from('invoice_details')
-            ->where('product_id', $product_id);
-
-        if (!empty($customer_id)) {
-            $this->db->where('customer_id', $customer_id);
-        }
-
-        return $this->db
-            ->order_by('invoice_date', 'DESC')
-            ->limit(5)
-            ->get()
-            ->result_array();
     }
 
     public function updateProductPrice($product_id, $data)

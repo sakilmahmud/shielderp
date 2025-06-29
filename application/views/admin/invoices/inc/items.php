@@ -1,18 +1,16 @@
-<div id="product-rows">
+<div id="product-rows" class="mt-3" style="<?php echo empty($invoice_details) ? 'display: none' : ''; ?>;">
     <h4>All Items</h4>
     <table class="table table-hover table-bordered table-sm">
         <thead>
             <tr>
-                <!-- <th width="5%">Sl</th> -->
-                <th width="30%">Product</th>
-                <th width="7%">HSN</th>
-                <th width="5%">QNT</th>
-                <th width="8%">Price</th>
-                <th width="8%">Discount</th>
-                <th width="9%">GST</th>
-                <th width="8%">Unit Price</th>
+                <th width="31%">Product</th>
+                <th width="6%">QNT</th>
+                <th width="9%">Price</th>
+                <th width="9%">Discount</th>
+                <th width="10%">GST</th>
+                <th width="9%">Unit Price</th>
                 <th width="10%">Total</th>
-                <th width="10%"></th>
+                <th width="11%">Action</th>
             </tr>
         </thead>
         <tbody>
@@ -29,9 +27,6 @@
                             <b><?php echo $product['product_name']; ?></b>
                             <br>
                             <?php echo $product['product_descriptions']; ?>
-                        </td>
-                        <td>
-                            <p><?php echo $product['hsn_code']; ?></p>
                         </td>
                         <td>
                             <p><?php echo $product['quantity']; ?></p>

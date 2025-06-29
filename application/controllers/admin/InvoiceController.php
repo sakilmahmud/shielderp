@@ -116,7 +116,8 @@ class InvoiceController extends MY_Controller
     {
         $data['activePage'] = 'invoices';
         $data['is_gst_bill'] = getSetting('is_gst_bill');
-
+        $default_gst_rate = getSetting('default_gst_rate');
+        $data['gst_rate'] = isset($default_gst_rate) ? $default_gst_rate : 0;
         // Load necessary data for the view
         $data['products'] = $this->ProductModel->get_all_products();
         $data['customers'] = $this->CustomerModel->get_all_customers();
@@ -175,12 +176,12 @@ class InvoiceController extends MY_Controller
                 $this->db->insert('customers', $customerData);
                 $customer_id = $this->db->insert_id();
             }
-
+            $invoice_date = $this->input->post('invoice_date');
             // Prepare invoice data
             $invoiceData = [
                 'invoice_no' => $invoice_no,
-                'invoice_date' => $this->input->post('invoice_date'),
-                'due_date' => $this->input->post('invoice_date'),
+                'invoice_date' => $invoice_date,
+                'due_date' => $invoice_date,
                 'customer_id' => $customer_id, // Use the correct customer ID
                 'is_gst' => $is_gst,
                 'sub_total' => $this->input->post('sub_total'),
@@ -224,7 +225,6 @@ class InvoiceController extends MY_Controller
 
             $gst_amounts = $this->input->post('gst_amount');
             $final_prices = $this->input->post('final_price');
-            $hsn_codes = $this->input->post('hsn_code');
 
             foreach ($product_ids as $index => $product_id) {
                 $gst_rate = $gst_rates[$index];
@@ -244,7 +244,7 @@ class InvoiceController extends MY_Controller
                     'sgst' => $sgst,
                     'gst_amount' => $gst_amounts[$index],
                     'final_price' => $final_prices[$index],
-                    'hsn_code' => $hsn_codes[$index],
+                    'invoice_date' => $invoice_date,
                     'created_at' => $current_date_time
                 ];
                 // Reduce the stock for each product
@@ -340,6 +340,8 @@ class InvoiceController extends MY_Controller
         $data['invoice_details'] = $this->InvoiceModel->get_invoice_details($invoice_id);
         $data['paymentModes'] = $this->PaymentMethodsModel->getAll();
         $data['is_gst_bill'] = getSetting('is_gst_bill');
+        $default_gst_rate = getSetting('default_gst_rate');
+        $data['gst_rate'] = isset($default_gst_rate) ? $default_gst_rate : 0;
 
         // Load necessary data for the view
         $data['products'] = $this->ProductModel->get_all_products();
@@ -445,13 +447,14 @@ class InvoiceController extends MY_Controller
             $purchase_prices = $this->input->post('purchase_price');
             $discount_types = $this->input->post('discount_type');
             $discounts = $this->input->post('discount');
-            $cgst = $this->input->post('cgst');
-            $sgst = $this->input->post('sgst');
+            $gst_rates = $this->input->post('gst_rate');
             $gst_amounts = $this->input->post('gst_amount');
-            $hsn_codes = $this->input->post('hsn_code');
             $final_prices = $this->input->post('final_price');
 
             foreach ($product_ids as $index => $product_id) {
+                $gst_rate = $gst_rates[$index];
+                $cgst = $gst_rate / 2;
+                $sgst = $gst_rate / 2;
                 $invoiceDetailsData[] = [
                     'invoice_id' => $invoice_id,
                     'customer_id' => $this->input->post('customer_id'),
@@ -461,12 +464,12 @@ class InvoiceController extends MY_Controller
                     'price' => $purchase_prices[$index],
                     'discount_type' => $discount_types[$index],
                     'discount' => $discounts[$index],
-                    'cgst' => $cgst[$index] ?? 9,
-                    'sgst' => $sgst[$index] ?? 9,
+                    'cgst' => $cgst,
+                    'sgst' => $sgst,
                     'gst_amount' => $gst_amounts[$index],
                     'final_price' => $final_prices[$index],
-                    'hsn_code' => $hsn_codes[$index],
-                    'created_at' => $current_date_time
+                    'invoice_date' => $this->input->post('invoice_date'),
+                    'updated_at' => $current_date_time
                 ];
             }
 
@@ -693,16 +696,14 @@ class InvoiceController extends MY_Controller
     public function getLastestStocks()
     {
         $product_id = $this->input->post('product_id');
-        $stocks = $this->StockModel->get_lastest_stocks($product_id);
+        $stocks = $this->StockModel->get_stock_history($product_id);
+        $current_stock = $this->StockModel->get_current_stock($product_id);
 
         if ($stocks) {
-            $lastPP = $stocks[0]['purchase_price'];
-            $lastSP = $stocks[0]['sale_price'];
             $response = [
                 'status' => 'success',
-                'lastPP' => $lastPP,
-                'lastSP' => $lastSP,
-                'data' => $stocks
+                'data' => $stocks,
+                'current_stock' => $current_stock
             ];
         } else {
             $response = [
@@ -977,29 +978,16 @@ class InvoiceController extends MY_Controller
         redirect('admin/invoices');
     }
 
-    public function getLastPurchasePrices()
+    public function latest_sale_prices()
     {
         $customer_id = $this->input->post('customer_id');
         $product_id = $this->input->post('product_id');
+        $result = $this->StockModel->get_latest_sale_prices($product_id, $customer_id);
 
-        if (!empty($customer_id) && !empty($product_id)) {
-            $this->db->select('final_price, quantity, invoice_date');
-            $this->db->from('invoice_details');
-            $this->db->where('customer_id', $customer_id);
-            $this->db->where('product_id', $product_id);
-            $this->db->order_by('invoice_date', 'DESC');
-            $this->db->limit(5); // Get last 5 purchases
-
-            $query = $this->db->get();
-            $result = $query->result_array();
-
-            if (!empty($result)) {
-                echo json_encode(['status' => 'success', 'data' => $result]);
-            } else {
-                echo json_encode(['status' => 'error', 'message' => 'No previous purchases found']);
-            }
+        if (!empty($result)) {
+            echo json_encode(['status' => 'success', 'data' => $result]);
         } else {
-            echo json_encode(['status' => 'error', 'message' => 'Invalid input']);
+            echo json_encode(['status' => 'error', 'message' => 'No previous purchases found']);
         }
     }
 }

@@ -1,11 +1,3 @@
-<script>
-    setTimeout(function() {
-        const toggleButton = document.querySelector('[data-widget="pushmenu"]');
-        if (toggleButton) {
-            toggleButton.click();
-        }
-    }, 1000); // 1 second delay
-</script>
 <div class="content-wrapper">
     <section class="content-header">
         <div class="container-fluid d-flex justify-content-between align-items-center my-2">
@@ -192,9 +184,8 @@
 <script>
     let productDetailsUrl = "<?php echo base_url('admin/products/product_details'); ?>";
     let getLastestStocksUrl = "<?php echo base_url('admin/invoices/getLastestStocks'); ?>";
-    let getLastPurchasePricesUrl = "<?php echo base_url('admin/invoices/getLastPurchasePrices'); ?>";
-    let default_cgst_rate = 0;
-    let default_sgst_rate = 0;
+    let latestSalePricesUrl = "<?php echo base_url('admin/invoices/latest-sale-prices'); ?>";
+    let default_gst_rate = <?= $gst_rate; ?>;
 </script>
 <script>
     $(document).ready(function() {
