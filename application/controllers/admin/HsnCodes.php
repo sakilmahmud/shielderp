@@ -89,4 +89,20 @@ class HsnCodes extends MY_Controller
         $this->HsnCodeModel->delete($id);
         redirect('admin/hsn-codes');
     }
+
+    public function ajax_add()
+    {
+        $data = [
+            'hsn_code' => $this->input->post('hsn_code'),
+            'gst_rate' => $this->input->post('gst_rate'),
+            'description' => $this->input->post('description'),
+        ];
+
+        if ($this->db->insert('hsn_codes', $data)) {
+            $data['id'] = $this->db->insert_id();
+            echo json_encode(['success' => true, 'data' => $data]);
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Insert failed']);
+        }
+    }
 }

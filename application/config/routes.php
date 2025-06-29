@@ -150,6 +150,8 @@ $route['admin/hsn-codes/create'] = 'admin/HsnCodes/create';
 $route['admin/hsn-codes/edit/(:num)'] = 'admin/HsnCodes/edit/$1';
 $route['admin/hsn-codes/delete/(:num)'] = 'admin/HsnCodes/delete/$1';
 $route['admin/hsn-codes/ajax-list'] = 'admin/HsnCodes/ajax_list';
+$route['admin/hsn-codes/ajax_add'] = 'admin/HsnCodes/ajax_add';
+
 
 /** end of hsn */
 
@@ -213,6 +215,8 @@ $route['admin/invoices/view/(:num)']        = 'admin/InvoiceController/view/$1';
 $route['admin/invoices/print/(:num)']       = 'admin/InvoiceController/print/$1';
 $route['admin/payments/print_receipt/(:num)'] = 'admin/InvoiceController/print_receipt/$1';
 $route['admin/invoices/delete/(:num)'] = 'admin/InvoiceController/delete/$1';
+
+$route['admin/invoices/product-details'] = 'admin/InvoiceController/product_details';
 
 $route['admin/invoices/getLastestStocks']   = 'admin/InvoiceController/getLastestStocks';
 $route['admin/invoices/getLastPurchasePrices']   = 'admin/InvoiceController/getLastPurchasePrices';

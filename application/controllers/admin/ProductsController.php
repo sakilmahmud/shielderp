@@ -144,18 +144,12 @@ class ProductsController extends MY_Controller
         $data['brands'] = $this->BrandModel->get_all_brands();  // Get all brands
         $data['product_types'] = $this->ProductTypeModel->get_all_product_types();  // Get all brands
         $data['units'] = $this->UnitModel->get_all_units();  // Get all units
+        $data['hsn_codes'] = $this->HsnCodeModel->get_all(); // Add this
+
 
         $this->form_validation->set_rules('name', 'Name', 'required');
         $this->form_validation->set_rules('category_id', 'Category', 'required');
         $this->form_validation->set_rules('brand_id', 'Brand', 'required');
-
-        // Validation for MRP Price (regular_price)
-        /* $this->form_validation->set_rules(
-            'regular_price',
-            'Regular Price',
-            'required|numeric|greater_than[0]',
-            ['greater_than' => 'The {field} must be greater than 0.']
-        ); */
 
         // Validation for Sale Price
         $this->form_validation->set_rules(
@@ -242,9 +236,7 @@ class ProductsController extends MY_Controller
                 'category_id' => $this->input->post('category_id'),
                 'brand_id' => $this->input->post('brand_id'),
                 'product_type_id' => $this->input->post('product_type_id'),
-                'hsn_code' => $this->input->post('hsn_code'),
-                'cgst' => $this->input->post('cgst'),
-                'sgst' => $this->input->post('sgst'),
+                'hsn_code_id' => $this->input->post('hsn_code_id'),
                 'low_stock_alert' => $this->input->post('low_stock_alert'),
                 'unit_id' => $this->input->post('unit_id')
             );
@@ -263,18 +255,12 @@ class ProductsController extends MY_Controller
         $data['product_types'] = $this->ProductTypeModel->get_all_product_types();
         $data['product'] = $this->ProductModel->get_product($id);
         $data['units'] = $this->UnitModel->get_all_units();  // Get all units
+        $data['hsn_codes'] = $this->HsnCodeModel->get_all(); // Add this
+
 
         $this->form_validation->set_rules('name', 'Name', 'required');
         $this->form_validation->set_rules('category_id', 'Category', 'required');
         $this->form_validation->set_rules('brand_id', 'Brand', 'required');
-
-        // Validation for MRP Price (regular_price)
-        /* $this->form_validation->set_rules(
-            'regular_price',
-            'Regular Price',
-            'required|numeric|greater_than[0]',
-            ['greater_than' => 'The {field} must be greater than 0.']
-        ); */
 
         // Validation for Sale Price
         $this->form_validation->set_rules(
@@ -375,9 +361,7 @@ class ProductsController extends MY_Controller
                 'product_type_id' => $this->input->post('product_type_id'),
                 'featured_image' => $featured_image,
                 'gallery_images' => $gallery_images_encoded,
-                'hsn_code' => $this->input->post('hsn_code'),
-                'cgst' => $this->input->post('cgst'),
-                'sgst' => $this->input->post('sgst'),
+                'hsn_code_id' => $this->input->post('hsn_code_id'),
                 'low_stock_alert' => $this->input->post('low_stock_alert'),
                 'unit_id' => $this->input->post('unit_id')
             );
@@ -507,7 +491,8 @@ class ProductsController extends MY_Controller
         }
 
         // Fetch the last purchase price using the model
-        $last_purchase_price = $this->ProductModel->getLastPurchasePrice($product_id);
+        //$last_purchase_price = $this->ProductModel->getLastPurchasePrice($product_id);
+        $last_purchase_price = $this->StockModel->last_purchase_price($product_id);
 
         // Check if a price was found
         if ($last_purchase_price !== null) {

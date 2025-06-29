@@ -135,3 +135,30 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="addHsnCodeModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5>Add HSN Code</h5>
+            </div>
+            <div class="modal-body">
+                <form id="addHsnCodeForm">
+                    <div class="form-group">
+                        <label for="hsn_code">HSN Code</label>
+                        <input type="text" class="form-control" name="hsn_code" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="gst_rate">GST Rate (%)</label>
+                        <input type="number" step="0.01" class="form-control" name="gst_rate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="description">Description</label>
+                        <textarea class="form-control" name="description"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary mt-2">Add HSN</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

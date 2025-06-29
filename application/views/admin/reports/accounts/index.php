@@ -27,7 +27,6 @@
                                     <i class="<?= $page['icon'] ?> fs-2" style="color:#ff6600"></i>
                                     <?= $page['label'] ?>
                                 </h5>
-
                             </a>
                         </div>
                     </div>

@@ -651,6 +651,44 @@ class InvoiceController extends MY_Controller
         $this->pdf->stream($filename, ['Attachment' => 0]);
     }
 
+    public function product_details()
+    {
+        $product_id  = $this->input->post('product_id');
+        $customer_id = $this->input->post('customer_id'); // Optional
+
+        $response = [];
+
+        // Basic product + unit symbol
+        $product = $this->ProductModel->get_product_details($product_id);
+
+        // Last 5 purchase prices by customer
+        $lastPurchases = $this->ProductModel->get_last_purchase_prices($product_id, $customer_id);
+
+        // Last 5 stock entries
+        $stock_history = $this->StockModel->get_stock_history($product_id);
+        $current_stock = $this->StockModel->get_current_stock($product_id);
+
+
+        if (!empty($product)) {
+            $response = [
+                'status'         => 'success',
+                'product'        => $product,
+                'last_purchases' => $lastPurchases,
+                'stock_entries'  => $stock_history,
+                'current_stock'  => $current_stock,
+                'lastPP'         => $lastPP,
+                'lastSP'         => $lastSP,
+            ];
+        } else {
+            $response = [
+                'status'  => 'error',
+                'message' => 'Product not found.'
+            ];
+        }
+
+        echo json_encode($response);
+    }
+
     // Method to fetch last 5 stock entries
     public function getLastestStocks()
     {

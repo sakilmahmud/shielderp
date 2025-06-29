@@ -267,6 +267,29 @@
                 });
             });
 
+            $('#add_hsn_code_btn').on('click', function() {
+                $('#addHsnCodeModal').modal('show');
+            });
+
+            $('#addHsnCodeForm').on('submit', function(e) {
+                e.preventDefault();
+                $.post('<?= base_url("admin/hsn-codes/ajax_add") ?>', $(this).serialize(), function(response) {
+                    if (response.success) {
+                        const hsn = response.data;
+                        $('#hsn_code_id').append(
+                            `<option value="${hsn.id}" data-gst="${hsn.gst_rate}" selected>
+                    ${hsn.hsn_code} - ${hsn.description} (${hsn.gst_rate}%)
+                </option>`
+                        ).trigger('change');
+                        $('#addHsnCodeModal').modal('hide');
+                        $('#addHsnCodeForm')[0].reset();
+                    } else {
+                        alert("Error: " + response.message);
+                    }
+                }, 'json');
+            });
+
+
             $("#brand_id").change(function() {
                 updateProductName();
             });

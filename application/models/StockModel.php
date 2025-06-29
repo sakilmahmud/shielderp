@@ -72,22 +72,59 @@ class StockModel extends CI_Model
         return $this->db->delete('stock_management');
     }
 
-    public function get_lastest_stocks($product_id)
+    public function last_purchase_price($product_id)
     {
-        $this->db->select('sm.purchase_price, p.sale_price, sm.purchase_date, sm.available_stock, s.supplier_name, sm.batch_no');
-        $this->db->from('stock_management sm');
-        $this->db->join('suppliers s', 's.id = sm.supplier_id', 'left');
-        $this->db->join('products p', 'p.id = sm.product_id', 'left');
-        $this->db->where('sm.product_id', $product_id);
-        $this->db->where('sm.available_stock >', 0);  // Add this condition
-        $this->db->order_by('sm.purchase_date', 'DESC');
-        $this->db->limit(5);
+        $last_purchase_price = $this->db
+            ->select('purchase_price')
+            ->from('stock_management')
+            ->where('product_id', $product_id)
+            ->order_by('purchase_date', 'DESC')
+            ->limit(1)
+            ->get()
+            ->row_array();
+        return $last_purchase_price['purchase_price'] ?? 0;
+    }
 
-        //echo $this->db->get_compiled_select();
+    public function get_stock_history($product_id, $items = 5)
+    {
+        return $this->db
+            ->select('sm.purchase_price, p.sale_price, sm.purchase_date, sm.available_stock, s.supplier_name, sm.batch_no')
+            ->from('stock_management sm')
+            ->join('suppliers s', 's.id = sm.supplier_id', 'left')
+            ->join('products p', 'p.id = sm.product_id', 'left')
+            ->where('sm.product_id', $product_id)
+            ->where('sm.available_stock >', 0)
+            ->order_by('sm.purchase_date', 'DESC')
+            ->limit($items)
+            ->get()
+            ->result_array();
+    }
 
+    public function get_current_stock($product_id)
+    {
+        // Get the total product quantity from stock_management
+        $this->db->select('SUM(quantity) as total_quantity');
+        $this->db->from('stock_management');
+        $this->db->where('product_id', $product_id);
+        $product_query = $this->db->get();
+        $product_data = $product_query->row_array();
 
-        $query = $this->db->get();
-        return $query->result_array();
+        $total_quantity = $product_data['total_quantity'] ?? 0; // Total quantity added to stock
+
+        // Get the total sold quantity from invoice_details
+        $this->db->select('SUM(quantity) as sold_quantity');
+        $this->db->from('invoice_details');
+        $this->db->where('product_id', $product_id);
+        $this->db->where('status', 1); // Optional: filter only active or completed invoices
+        $sold_query = $this->db->get();
+        $sold_data = $sold_query->row_array();
+
+        $total_sold_quantity = $sold_data['sold_quantity'] ?? 0; // Total quantity sold
+
+        // Calculate final stock
+        $final_stock = $total_quantity - $total_sold_quantity;
+
+        return $final_stock;
     }
 
     public function update_stock_on_delete($product_id, $quantity)
