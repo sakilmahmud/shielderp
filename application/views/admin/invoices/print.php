@@ -254,11 +254,27 @@
             <div class="biller_seller">
                 <div class="left_sec">
                     <h2><?php echo $biller['name']; ?></h2>
-                    <p><?php echo $biller['address']; ?></p>
-                    <p>Contact: <?php echo $biller['contact']; ?></p>
-                    <p>Email: <?php echo $biller['email']; ?></p>
-                    <p>Website: <?php echo $biller['website']; ?></p>
-                    <p>GSTIN: <?php echo $biller['gstin']; ?></p>
+
+                    <?php if (!empty($biller['address'])): ?>
+                        <p><?php echo $biller['address']; ?></p>
+                    <?php endif; ?>
+
+                    <?php if (!empty($biller['contact'])): ?>
+                        <p>Contact: <?php echo $biller['contact']; ?></p>
+                    <?php endif; ?>
+
+                    <?php if (!empty($biller['email'])): ?>
+                        <p>Email: <?php echo $biller['email']; ?></p>
+                    <?php endif; ?>
+
+                    <?php if (!empty($biller['website'])): ?>
+                        <p>Website: <?php echo $biller['website']; ?></p>
+                    <?php endif; ?>
+
+                    <?php if (!empty($biller['gstin'])): ?>
+                        <p>GSTIN: <?php echo $biller['gstin']; ?></p>
+                    <?php endif; ?>
+
                 </div>
                 <div class="right_sec">
                     <h3 style="margin-top: -5px;">Bill To</h3>
@@ -405,7 +421,7 @@
             </div>
             <div class="footer right_sec">
                 <p>For <?php echo $biller['name']; ?></p>
-                <img src="<?php echo base_url('assets/frontend/images/sign.png'); ?>" alt="SMM" width="200">
+                <!-- <img src="<?php echo base_url('assets/frontend/images/sign.png'); ?>" alt="SMM" width="200"> -->
             </div>
         </div>
     </div>

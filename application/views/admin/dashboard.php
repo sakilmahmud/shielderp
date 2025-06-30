@@ -48,7 +48,7 @@
         <div class="col-6 col-sm-6 col-md-3">
             <div class="info-box">
                 <span class="info-box-icon text-bg-primary shadow-sm">
-                    <i class="bi bi-arrow-down-circle-fill"></i>
+                    <i class="bi bi-arrow-down-circle-fill fs-3 fs-md-2 fs-lg-1"></i>
                 </span>
                 <div class="info-box-content">
                     <span class="info-box-text">Payin</span>
@@ -63,11 +63,13 @@
         <div class="col-6 col-sm-6 col-md-3">
             <div class="info-box">
                 <span class="info-box-icon text-bg-danger shadow-sm">
-                    <i class="bi bi-arrow-up-circle-fill"></i>
+                    <i class="bi bi-arrow-up-circle-fill fs-3 fs-md-2 fs-lg-1"></i>
                 </span>
                 <div class="info-box-content">
                     <span class="info-box-text">Payout</span>
-                    <span class="info-box-number text-danger">₹<?= number_format($payout, 2) ?></span>
+                    <span class="info-box-number text-danger">
+                        ₹<?= number_format($payout, 2) ?>
+                    </span>
                 </div>
             </div>
         </div>
@@ -76,7 +78,7 @@
         <div class="col-6 col-sm-6 col-md-3">
             <div class="info-box">
                 <span class="info-box-icon text-bg-success shadow-sm">
-                    <i class="bi bi-cart-check-fill"></i>
+                    <i class="bi bi-cart-check-fill fs-3 fs-md-2 fs-lg-1"></i>
                 </span>
                 <div class="info-box-content">
                     <span class="info-box-text">Sales</span>
@@ -91,7 +93,7 @@
         <div class="col-6 col-sm-6 col-md-3">
             <div class="info-box">
                 <span class="info-box-icon text-bg-warning shadow-sm">
-                    <i class="bi bi-bag-check-fill"></i>
+                    <i class="bi bi-bag-check-fill fs-3 fs-md-2 fs-lg-1"></i>
                 </span>
                 <div class="info-box-content">
                     <span class="info-box-text">Purchase</span>
@@ -102,6 +104,7 @@
             </div>
         </div>
     </div>
+
 
 
     <div class="row">

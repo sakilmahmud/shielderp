@@ -24,7 +24,7 @@
 
 
                             <div class="row">
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <div class="form-group">
                                         <label for="frontend_logo">Frontend Logo:</label>
                                         <input type="file" name="frontend_logo" id="frontend_logo" class="form-control">
@@ -32,11 +32,18 @@
                                     </div>
                                 </div>
 
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <div class="form-group">
                                         <label for="admin_logo">Admin Logo:</label>
                                         <input type="file" name="admin_logo" id="admin_logo" class="form-control">
                                         <img id="admin_logo_preview" src="<?php echo isset($settings['admin_logo']) ? base_url($settings['admin_logo']) : ''; ?>" alt="Admin Logo" width="150">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="owner_sign">Owner Signature:</label>
+                                        <input type="file" name="owner_sign" id="owner_sign" class="form-control">
+                                        <img id="owner_sign_preview" src="<?php echo isset($settings['owner_sign']) ? base_url($settings['owner_sign']) : ''; ?>" alt="owner sign" width="150">
                                     </div>
                                 </div>
 
@@ -127,5 +134,9 @@
 
     $("#admin_logo").change(function() {
         readURL(this, 'admin_logo_preview');
+    });
+
+    $("#owner_sign").change(function() {
+        readURL(this, 'owner_sign_preview');
     });
 </script>
