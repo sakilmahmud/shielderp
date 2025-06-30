@@ -351,6 +351,7 @@ class AdminController extends MY_Controller
 
             if ($due > 0) {
                 $due_customers[] = [
+                    'c_id' => $cust['id'],
                     'name' => $cust['customer_name'],
                     'mobile' => $cust['phone'],
                     'due_date' => $invoice_date ?? '',
@@ -419,6 +420,7 @@ class AdminController extends MY_Controller
 
             if ($due > 0) {
                 $due_suppliers[] = [
+                    's_id' => $supplier['id'],
                     'name' => $supplier['supplier_name'],
                     'due_date' => $latest_due_date ?? '',
                     'due_amount' => $due

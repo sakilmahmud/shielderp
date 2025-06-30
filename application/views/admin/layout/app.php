@@ -515,8 +515,23 @@
     }
 
     $(document).ready(function() {
+        $('.logout').on('click', function(e) {
+            e.preventDefault(); // prevent immediate logout
+            const logoutUrl = $(this).attr('href');
+
+            if (confirm('Are you sure you want to logout?')) {
+                window.location.href = logoutUrl;
+            }
+        });
         updateDateTime(); // Initial call
         setInterval(updateDateTime, 1000); // Update every second
+
+        // Automatically trigger sidebar toggle after 1 second (1000ms)
+        <?php if ($this->uri->segment(1) == 'admin' && ($this->uri->segment(2) == 'invoices' || $this->uri->segment(2) == 'purchase_entries')) : ?>
+            setTimeout(function() {
+                $('[data-lte-toggle="sidebar"]').get(0).click();
+            }, 1000);
+        <?php endif; ?>
     });
 </script>
 

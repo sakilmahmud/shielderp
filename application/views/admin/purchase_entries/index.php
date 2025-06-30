@@ -7,79 +7,76 @@
     </section>
     <section class="content">
         <div class="container-fluid">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="card">
-                        <div class="card-body">
-                            <?php if ($this->session->flashdata('message')) : ?>
-                                <div class="alert alert-success">
-                                    <?php echo $this->session->flashdata('message'); ?>
-                                </div>
-                            <?php endif; ?>
-
-                            <form id="filterForm">
-                                <div class="row mb-3">
-                                    <div class="col-md-2">
-                                        <input type="date" id="from_date" class="form-control filter-input" value="<?php echo date('Y-m-d', strtotime('-30 days')); ?>">
-                                    </div>
-                                    <div class="col-md-2">
-                                        <input type="date" id="to_date" class="form-control filter-input" value="<?php echo date('Y-m-d'); ?>">
-                                    </div>
-                                    <div class="col-md-2">
-                                        <select id="payment_status" class="form-control filter-input">
-                                            <option value="">Payment Status</option>
-                                            <option value="0">Due</option>
-                                            <option value="1">Paid</option>
-                                            <option value="2">Partial</option>
-                                            <option value="3">Return</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-md-1">
-                                        <select id="type" class="form-control filter-input">
-                                            <option value="">Type</option>
-                                            <option value="0">NON-GST</option>
-                                            <option value="1">GST</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <select id="supplier_id" class="form-control filter-input">
-                                            <option value="">Suppliers</option>
-                                            <?php foreach ($suppliers as $user): ?>
-                                                <option value="<?php echo $user['id']; ?>"><?php echo $user['supplier_name']; ?></option>
-                                            <?php endforeach; ?>
-                                        </select>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <button type="button" id="resetFilter" class="btn btn-secondary">Reset</button>
-                                    </div>
-                                </div>
-                            </form>
-
-                            <table class="table table-sm table-striped table-bordered" id="purchaseTable">
-                                <thead>
-                                    <tr>
-                                        <th>ID</th>
-                                        <th>Supplier</th>
-                                        <th>Purchase Date</th>
-                                        <th>Invoice No</th>
-                                        <th>Payable</th>
-                                        <th>Paid</th>
-                                        <th>Due</th>
-                                        <th>Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody></tbody>
-                                <tfoot>
-                                    <tr>
-                                        <th colspan="4" class="text-right">Total:</th>
-                                        <th id="totalAmount">₹0.00</th>
-                                        <th id="totalPaid">₹0.00</th>
-                                        <th id="totalDue">₹0.00</th>
-                                        <th></th>
-                                    </tr>
-                                </tfoot>
-                            </table>
+            <div class="card">
+                <div class="card-body">
+                    <?php if ($this->session->flashdata('message')) : ?>
+                        <div class="alert alert-success">
+                            <?php echo $this->session->flashdata('message'); ?>
                         </div>
+                    <?php endif; ?>
+
+                    <form id="filterForm" class="mb-2 bg-light p-1">
+                        <div class="row mb-3">
+                            <div class="col-md-2">
+                                <input type="date" id="from_date" class="form-control filter-input" value="<?php echo date('Y-m-d', strtotime('-30 days')); ?>">
+                            </div>
+                            <div class="col-md-2">
+                                <input type="date" id="to_date" class="form-control filter-input" value="<?php echo date('Y-m-d'); ?>">
+                            </div>
+                            <div class="col-md-2">
+                                <select id="payment_status" class="form-control filter-input">
+                                    <option value="">Payment Status</option>
+                                    <option value="0">Due</option>
+                                    <option value="1">Paid</option>
+                                    <option value="2">Partial</option>
+                                    <option value="3">Return</option>
+                                </select>
+                            </div>
+                            <div class="col-md-1">
+                                <select id="type" class="form-control filter-input">
+                                    <option value="">Type</option>
+                                    <option value="0">NON-GST</option>
+                                    <option value="1">GST</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <select id="supplier_id" class="form-control filter-input">
+                                    <option value="">Suppliers</option>
+                                    <?php foreach ($suppliers as $user): ?>
+                                        <option value="<?php echo $user['id']; ?>"><?php echo $user['supplier_name']; ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <button type="button" id="resetFilter" class="btn btn-secondary">Reset</button>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="table-responsive">
+                        <table class="table table-sm table-striped table-bordered" id="purchaseTable">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Supplier</th>
+                                    <th>Purchase Date</th>
+                                    <th>Invoice No</th>
+                                    <th>Payable</th>
+                                    <th>Paid</th>
+                                    <th>Due</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                            <tfoot>
+                                <tr>
+                                    <th colspan="4" class="text-right">Total:</th>
+                                    <th id="totalAmount">₹0.00</th>
+                                    <th id="totalPaid">₹0.00</th>
+                                    <th id="totalDue">₹0.00</th>
+                                    <th></th>
+                                </tr>
+                            </tfoot>
+                        </table>
                     </div>
                 </div>
             </div>

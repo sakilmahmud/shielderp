@@ -10,9 +10,9 @@
   <meta name="description" content="ERP Systems" />
   <meta name="keywords" content="ERP, ERP Systems, CRM, CRM Systems, Inventory Management Systems" />
 
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/source-sans-3@5.0.12/index.css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.10.1/styles/overlayscrollbars.min.css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+  <link rel="stylesheet" href="<?php echo base_url('assets/admin/css/index.css') ?>">
+  <link rel="stylesheet" href="<?php echo base_url('assets/admin/css/overlayscrollbars.min.css') ?>">
+  <link rel="stylesheet" href="<?php echo base_url('assets/admin/css/bootstrap-icons.min.css') ?>">
   <link rel="stylesheet" href="<?php echo base_url('assets/admin/css/adminlte.min.css') ?>">
 </head>
 

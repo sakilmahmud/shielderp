@@ -107,7 +107,7 @@
                                 </div>
                             </div>
                             <div class="col-md-12">
-                                <div class="card text-white bg-info mx-2 mb-2">
+                                <div class="card text-dark bg-info mx-2 mb-2">
                                     <div class="card-body d-flex justify-content-center align-items-center gap-3 p-2">
                                         <h5 class="card-title"><i class="bi bi-calendar3"></i> Last 30 Days</h5>
                                         <p class="card-text fs-4">₹<?= number_format($sales_report['monthly'], 2) ?></p>

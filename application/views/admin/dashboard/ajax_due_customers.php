@@ -35,7 +35,7 @@
                         <?php foreach ($due_customers as $cust): ?>
                             <tr>
                                 <td>
-                                    <a href="pages/examples/invoice.html"
+                                    <a href="<?= base_url('admin/customers/show/' . $cust['c_id']) ?>"
                                         class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">
                                         <?= $cust['name'] ?></a>
                                 </td>

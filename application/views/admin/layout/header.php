@@ -29,7 +29,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="<?php echo base_url('logout'); ?>" class="nav-link" title="Logout">
+                    <a href="<?php echo base_url('logout'); ?>" class="nav-link logout" title="Logout">
                         <i class="bi bi-power text-danger"></i>
                     </a>
                 </li>

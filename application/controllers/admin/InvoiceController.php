@@ -83,13 +83,16 @@ class InvoiceController extends MY_Controller
                 '3' => '<span class="badge text-bg-danger">Return</span>',
                 default => '<span class="badge badge-secondary">Unknown</span>',
             };
+            $customer_link = ($invoice['customer_id'] != 5)
+                ? '<a href="' . base_url('admin/customers/show/' . $invoice['customer_id']) . '" class="text-dark">' . $invoice['customer_name'] . '</a>'
+                : $invoice['customer_name'];
 
             $data[] = [
                 $invoice['id'],
                 $status_badge,
                 ($invoice['is_gst']) ? 'GST' : 'NON-GST',
                 $invoice['invoice_no'],
-                $invoice['customer_name'] . '<br>' . $invoice['mobile'],
+                $customer_link . '<br>' . $invoice['mobile'],
                 date('d-m-Y', strtotime($invoice['invoice_date'])),
                 '₹' . number_format($invoice['total_amount'], 2),
                 '₹' . number_format($invoice['paid_amount'], 2),

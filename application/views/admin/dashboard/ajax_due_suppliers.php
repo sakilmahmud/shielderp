@@ -34,7 +34,7 @@
                             <tr>
                                 <td>
                                     <a
-                                        href="pages/examples/invoice.html"
+                                        href="javascript:void(0)"
                                         class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"><?= $sup['name'] ?></a>
                                 </td>
                                 <td><small class="text-muted"><i class="far fa-calendar-alt"></i> Due: <?= date('d M Y', strtotime($sup['due_date'])) ?></small></td>
