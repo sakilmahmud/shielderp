@@ -1,71 +1,111 @@
 <!-- Chart -->
 <link rel="stylesheet" href="<?php echo base_url('assets/admin/css/calc.css/chart.min.css') ?>">
 <div class="container-fluid mt-3">
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3 class="mb-0">Dashboard</h3>
+        <form method="get" id="dashboardFilterForm" class="form-inline">
+            <div class="d-flex align-items-center">
+                <select name="filter" id="filter" class="form-control me-2">
+                    <option value="today" <?= ($filter == 'today') ? 'selected' : '' ?>>Today</option>
+                    <option value="last_7" <?= ($filter == 'last_7') ? 'selected' : '' ?>>Last 7 Days</option>
+                    <option value="last_30" <?= ($filter == 'last_30') ? 'selected' : '' ?>>Last 30 Days</option>
+                    <option value="custom" <?= ($filter == 'custom') ? 'selected' : '' ?>>Custom</option>
+                </select>
+
+                <div id="customDateRange">
+                    <div class="d-flex align-items-center mt-2">
+                        <input type="date" name="from_date" class="form-control me-2" value="<?= $from_date ?>">
+                        <input type="date" name="to_date" class="form-control me-2" value="<?= $to_date ?>">
+                        <button type="submit" class="btn btn-primary">Apply</button>
+                    </div>
+                </div>
+                <script>
+                    $(document).ready(function() {
+                        // On change of the filter dropdown
+                        $('#filter').on('change', function() {
+                            if ($(this).val() === 'custom') {
+                                $('#customDateRange').show();
+                            } else {
+                                $('#customDateRange').hide();
+                                $('#dashboardFilterForm').submit();
+                            }
+                        });
+
+                        // Hide date fields if not "custom" on load
+                        if ($('#filter').val() !== 'custom') {
+                            $('#customDateRange').hide();
+                        }
+                    });
+                </script>
+
+            </div>
+        </form>
+    </div>
+
     <div class="row">
+        <!-- Payin -->
         <div class="col-12 col-sm-6 col-md-3">
             <div class="info-box">
                 <span class="info-box-icon text-bg-primary shadow-sm">
-                    <i class="bi bi-gear-fill"></i>
+                    <i class="bi bi-arrow-down-circle-fill"></i>
                 </span>
                 <div class="info-box-content">
-                    <span class="info-box-text">CPU Traffic</span>
-                    <span class="info-box-number">
-                        10
-                        <small>%</small>
+                    <span class="info-box-text">Payin</span>
+                    <span class="info-box-number text-success">
+                        ₹<?= number_format($payin, 2) ?>
                     </span>
                 </div>
-                <!-- /.info-box-content -->
             </div>
-            <!-- /.info-box -->
         </div>
-        <!-- /.col -->
+
+        <!-- Payout -->
         <div class="col-12 col-sm-6 col-md-3">
             <div class="info-box">
                 <span class="info-box-icon text-bg-danger shadow-sm">
-                    <i class="bi bi-hand-thumbs-up-fill"></i>
+                    <i class="bi bi-arrow-up-circle-fill"></i>
                 </span>
                 <div class="info-box-content">
-                    <span class="info-box-text">Likes</span>
-                    <span class="info-box-number">41,410</span>
+                    <span class="info-box-text">Payout</span>
+                    <span class="info-box-number text-danger">₹<?= number_format($payout, 2) ?></span>
                 </div>
-                <!-- /.info-box-content -->
             </div>
-            <!-- /.info-box -->
         </div>
-        <!-- /.col -->
-        <!-- fix for small devices only -->
-        <!-- <div class="clearfix hidden-md-up"></div> -->
+
+        <!-- Sales -->
         <div class="col-12 col-sm-6 col-md-3">
             <div class="info-box">
                 <span class="info-box-icon text-bg-success shadow-sm">
-                    <i class="bi bi-cart-fill"></i>
+                    <i class="bi bi-cart-check-fill"></i>
                 </span>
                 <div class="info-box-content">
                     <span class="info-box-text">Sales</span>
-                    <span class="info-box-number">760</span>
+                    <span class="info-box-number text-success">
+                        ₹<?= number_format($sales['total_amount'] ?? 0, 2) ?> (<?= $sales['invoice_count'] ?? 0 ?>)
+                    </span>
                 </div>
-                <!-- /.info-box-content -->
             </div>
-            <!-- /.info-box -->
         </div>
-        <!-- /.col -->
+
+        <!-- Purchase -->
         <div class="col-12 col-sm-6 col-md-3">
             <div class="info-box">
                 <span class="info-box-icon text-bg-warning shadow-sm">
-                    <i class="bi bi-people-fill"></i>
+                    <i class="bi bi-bag-check-fill"></i>
                 </span>
                 <div class="info-box-content">
-                    <span class="info-box-text">New Members</span>
-                    <span class="info-box-number">2,000</span>
+                    <span class="info-box-text">Purchase</span>
+                    <span class="info-box-number text-danger">
+                        ₹<?= number_format($purchase['total_amount'] ?? 0, 2) ?>(<?= $purchase['purchase_count'] ?? 0 ?>)
+                    </span>
                 </div>
-                <!-- /.info-box-content -->
             </div>
-            <!-- /.info-box -->
         </div>
-        <!-- /.col -->
     </div>
+
+
     <div class="row">
-        <div class="col-md-4">
+        <?php /*<div class="col-md-4">
             <div class="card card-min-height">
                 <div class="card-header">
                     <h3 class="card-title"><i class="nav-icon fas fa-chart-bar"></i> Quick Reports</h3>
@@ -149,18 +189,82 @@
                 </div>
 
             </div>
-        </div>
+        </div> */ ?>
         <div class="col-md-4">
-            <div id="ajax-customer-due-content">
-                <p>Loading...</p>
+            <div class="card card-min-height card-success card-outline">
+                <div class="card-header d-flex justify-content-between">
+                    <h3 class="card-title">Customer Due</h3>
+                    <h3 class="ms-3 badge text-bg-dark">
+                        ₹<?= round($total_customer_due ?? 0) ?>
+                    </h3>
+                </div>
+                <!-- /.card-header -->
+                <div class="card-body p-0">
+                    <div id="ajax-customer-due-content"></div>
+                </div>
+                <div class="card-footer clearfix">
+                    <a
+                        href="<?= base_url('admin/invoices/create'); ?>"
+                        class="btn btn-sm btn-primary float-start">
+                        New Invoice
+                    </a>
+                    <a
+                        href="<?= base_url('admin/invoices'); ?>"
+                        class="btn btn-sm btn-secondary float-end">
+                        All Invoices
+                    </a>
+                </div>
             </div>
         </div>
         <div class="col-md-4">
-            <div id="ajax-supplier-due-content" class="due-scroll-container">
-                <p>Loading...</p>
+            <div class="card card-min-height card-danger card-outline">
+                <div class="card-header d-flex justify-content-between">
+                    <h3 class="card-title">Suppliers Due</h3>
+                    <h3 class="ms-3 badge text-bg-dark">
+                        ₹<?= round($total_supplier_due ?? 0) ?>
+                    </h3>
+                </div>
+                <!-- /.card-header -->
+                <div class="card-body p-0">
+                    <div id="ajax-supplier-due-content"></div>
+                </div>
+                <div class="card-footer clearfix">
+                    <a
+                        href="<?= base_url('admin/purchase_entries/add'); ?>"
+                        class="btn btn-sm btn-primary float-start">
+                        New Purchase
+                    </a>
+                    <a
+                        href="<?= base_url('admin/purchase_entries'); ?>"
+                        class="btn btn-sm btn-secondary float-end">
+                        All Purchases
+                    </a>
+                </div>
             </div>
         </div>
-
+        <div class="col-md-4">
+            <div class="card card-min-height card-info card-outline">
+                <!--begin::Header-->
+                <div class="card-header">
+                    <div class="card-title">Reminder</div>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-secondary" role="alert">
+                        A simple secondary alert with
+                        <a href="#" class="alert-link">an example link</a>. Give it a click.
+                    </div>
+                    <div class="alert alert-success" role="alert">
+                        A simple success alert with
+                        <a href="#" class="alert-link">an example link</a>. Give it a click .
+                    </div>
+                    <div class="alert alert-danger" role="alert">
+                        A simple danger alert with <a href="#" class="alert-link">an example link</a>.
+                        Give it a click if you like.
+                    </div>
+                </div>
+                <!--end::Body-->
+            </div>
+        </div>
         <?php /*<div class="col-md-4">
             <div class="card card-min-height">
                 <div class="card-header d-flex justify-content-between align-items-center">
@@ -260,14 +364,30 @@ foreach ($top_categories as $cat) {
         loadSupplierDue();
 
         function loadCustomerDue() {
-            $('#ajax-customer-due-content').html('<p>Loading...</p>');
+            $('#ajax-customer-due-content').html(`<div class="d-flex justify-content-center align-items-center" style="height: 200px;">
+                    <div class="spinner-border text-primary me-2"></div>
+                    <div class="spinner-border text-success me-2"></div>
+                    <div class="spinner-border text-info me-2"></div>
+                    <div class="spinner-border text-warning me-2"></div>
+                    <div class="spinner-border text-danger me-2"></div>
+                    </div>
+                `);
+
             $.get('<?= base_url('admin/dashboard/due_customers') ?>', function(data) {
                 $('#ajax-customer-due-content').html(data);
             });
         }
 
+
         function loadSupplierDue() {
-            $('#ajax-supplier-due-content').html('<p>Loading...</p>');
+            $('#ajax-supplier-due-content').html(`<div class="d-flex justify-content-center align-items-center" style="height: 200px;">
+                    <div class="spinner-border text-primary me-2"></div>
+                    <div class="spinner-border text-success me-2"></div>
+                    <div class="spinner-border text-info me-2"></div>
+                    <div class="spinner-border text-warning me-2"></div>
+                    <div class="spinner-border text-danger me-2"></div>
+                    </div>
+                `);
             $.get('<?= base_url('admin/dashboard/due_suppliers') ?>', function(data) {
                 $('#ajax-supplier-due-content').html(data);
             });
