@@ -45,7 +45,7 @@
 
     <div class="row">
         <!-- Payin -->
-        <div class="col-12 col-sm-6 col-md-3">
+        <div class="col-6 col-sm-6 col-md-3">
             <div class="info-box">
                 <span class="info-box-icon text-bg-primary shadow-sm">
                     <i class="bi bi-arrow-down-circle-fill"></i>
@@ -60,7 +60,7 @@
         </div>
 
         <!-- Payout -->
-        <div class="col-12 col-sm-6 col-md-3">
+        <div class="col-6 col-sm-6 col-md-3">
             <div class="info-box">
                 <span class="info-box-icon text-bg-danger shadow-sm">
                     <i class="bi bi-arrow-up-circle-fill"></i>
@@ -73,7 +73,7 @@
         </div>
 
         <!-- Sales -->
-        <div class="col-12 col-sm-6 col-md-3">
+        <div class="col-6 col-sm-6 col-md-3">
             <div class="info-box">
                 <span class="info-box-icon text-bg-success shadow-sm">
                     <i class="bi bi-cart-check-fill"></i>
@@ -88,7 +88,7 @@
         </div>
 
         <!-- Purchase -->
-        <div class="col-12 col-sm-6 col-md-3">
+        <div class="col-6 col-sm-6 col-md-3">
             <div class="info-box">
                 <span class="info-box-icon text-bg-warning shadow-sm">
                     <i class="bi bi-bag-check-fill"></i>
@@ -96,12 +96,13 @@
                 <div class="info-box-content">
                     <span class="info-box-text">Purchase</span>
                     <span class="info-box-number text-danger">
-                        ₹<?= number_format($purchase['total_amount'] ?? 0, 2) ?>(<?= $purchase['purchase_count'] ?? 0 ?>)
+                        ₹<?= number_format($purchase['total_amount'] ?? 0, 2) ?> (<?= $purchase['purchase_count'] ?? 0 ?>)
                     </span>
                 </div>
             </div>
         </div>
     </div>
+
 
     <div class="row">
         <div class="col-md-4 mb-3">
