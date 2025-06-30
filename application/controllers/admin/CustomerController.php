@@ -32,7 +32,7 @@ class CustomerController extends MY_Controller
 
             $photo_url = !empty($customer->photo)
                 ? base_url($customer->photo)
-                : base_url('assets/admin/dist/img/user.jpg');
+                : base_url('assets/admin/img/user.jpg');
 
             $row[] = '<img src="' . $photo_url . '" class="rounded-circle" width="40" height="40" alt="Photo">';
             $row[] = $customer->id;

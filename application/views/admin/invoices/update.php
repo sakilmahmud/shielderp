@@ -373,4 +373,4 @@
         $('.balance_amount').text('₹' + balance.toFixed(2));
     }
 </script>
-<script src="<?php echo base_url('assets/admin/dist/js/invoice.js') ?>"></script>
+<script src="<?php echo base_url('assets/admin/js/invoice.js') ?>"></script>

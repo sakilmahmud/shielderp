@@ -55,7 +55,7 @@
 
                         <div class="card-body text-center">
                             <div class="profile-photo-wrapper">
-                                <img id="profileImage" src="<?= !empty($customer['photo']) ? base_url($customer['photo']) : base_url('assets/admin/dist/img/user.jpg') ?>" alt="Customer Photo">
+                                <img id="profileImage" src="<?= !empty($customer['photo']) ? base_url($customer['photo']) : base_url('assets/admin/img/user.jpg') ?>" alt="Customer Photo">
                                 <div class="photo-action-icons">
                                     <i class="bi bi-pencil-square text-light" title="Edit Photo" onclick="document.getElementById('photoInput').click()" style="cursor:pointer;"></i>
                                     <i class="bi bi-x-circle text-light" title="Remove Photo" onclick="removePhoto()" style="cursor:pointer;"></i>

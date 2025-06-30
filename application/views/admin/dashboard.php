@@ -1,3 +1,5 @@
+<!-- Chart -->
+<link rel="stylesheet" href="<?php echo base_url('assets/admin/css/calc.css/chart.min.css') ?>">
 <div class="container-fluid mt-3">
     <div class="row">
         <div class="col-12 col-sm-6 col-md-3">
@@ -193,6 +195,7 @@
         </div>
     </div>
 </div>
+<script src="<?php echo base_url('assets/admin/js/chart.min.js') ?>"></script>
 
 <?php
 $months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
