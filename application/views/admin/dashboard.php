@@ -103,94 +103,8 @@
         </div>
     </div>
 
-
     <div class="row">
-        <?php /*<div class="col-md-4">
-            <div class="card card-min-height">
-                <div class="card-header">
-                    <h3 class="card-title"><i class="nav-icon fas fa-chart-bar"></i> Quick Reports</h3>
-                </div>
-
-                <!-- Quick Reports Tabs -->
-                <ul class="nav nav-tabs mb-3" role="tablist">
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#sale" type="button" role="tab">
-                            <i class="bi bi-currency-rupee"></i> Sales
-                        </button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#purchase" type="button" role="tab">
-                            <i class="bi bi-cart-check"></i> Purchases
-                        </button>
-                    </li>
-                </ul>
-
-                <!-- Tab Content -->
-                <div class="tab-content">
-                    <!-- Sales Tab -->
-                    <div class="tab-pane fade show active" id="sale" role="tabpanel">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="card text-white bg-success mx-2 mb-2">
-                                    <div class="card-body d-flex justify-content-center align-items-center gap-3 p-2">
-                                        <h5 class="card-title"><i class="bi bi-calendar-day"></i> Today’s Sale</h5>
-                                        <p class="card-text fs-4">₹<?= number_format($sales_report['daily'], 2) ?></p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-12">
-                                <div class="card text-white bg-primary mx-2 mb-2">
-                                    <div class="card-body d-flex justify-content-center align-items-center gap-3 p-2">
-                                        <h5 class="card-title"><i class="bi bi-calendar-week"></i> Last 7 Days</h5>
-                                        <p class="card-text fs-4">₹<?= number_format($sales_report['weekly'], 2) ?></p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-12">
-                                <div class="card text-dark bg-info mx-2 mb-2">
-                                    <div class="card-body d-flex justify-content-center align-items-center gap-3 p-2">
-                                        <h5 class="card-title"><i class="bi bi-calendar3"></i> Last 30 Days</h5>
-                                        <p class="card-text fs-4">₹<?= number_format($sales_report['monthly'], 2) ?></p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Purchase Tab -->
-                    <div class="tab-pane fade" id="purchase" role="tabpanel">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="card text-dark bg-warning mx-2 mb-2">
-                                    <div class="card-body d-flex justify-content-center align-items-center gap-3 p-2">
-                                        <h5 class="card-title"><i class="bi bi-bag-plus"></i> Today’s Purchase</h5>
-                                        <p class="card-text fs-4">₹<?= number_format($purchase_report['daily'], 2) ?></p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-12">
-                                <div class="card text-white bg-secondary mx-2 mb-2">
-                                    <div class="card-body d-flex justify-content-center align-items-center gap-3 p-2">
-                                        <h5 class="card-title"><i class="bi bi-calendar-week"></i> Last 7 Days</h5>
-                                        <p class="card-text fs-4">₹<?= number_format($purchase_report['weekly'], 2) ?></p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-12">
-                                <div class="card text-white bg-dark mx-2 mb-2">
-                                    <div class="card-body d-flex justify-content-center align-items-center gap-3 p-2">
-                                        <h5 class="card-title"><i class="bi bi-calendar3"></i> Last 30 Days</h5>
-                                        <p class="card-text fs-4">₹<?= number_format($purchase_report['monthly'], 2) ?></p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </div> */ ?>
-        <div class="col-md-4">
+        <div class="col-md-4 mb-3">
             <div class="card card-min-height card-success card-outline">
                 <div class="card-header d-flex justify-content-between">
                     <h3 class="card-title">Customer Due</h3>
@@ -216,7 +130,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-4 mb-3">
             <div class="card card-min-height card-danger card-outline">
                 <div class="card-header d-flex justify-content-between">
                     <h3 class="card-title">Suppliers Due</h3>
@@ -242,45 +156,56 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-4 mb-3">
             <div class="card card-min-height card-info card-outline">
                 <!--begin::Header-->
-                <div class="card-header">
-                    <div class="card-title">Reminder</div>
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <div class="card-title">
+                        Reminder
+                        <?php if (!empty($reminders)): ?>
+                            <span class="badge bg-dark ms-2"><?= count($reminders) ?></span>
+                        <?php endif; ?>
+                    </div>
+                    <button class="btn btn-sm btn-dark" data-bs-toggle="modal" data-bs-target="#addReminderModal">Add</button>
                 </div>
-                <div class="card-body">
-                    <div class="alert alert-secondary" role="alert">
-                        A simple secondary alert with
-                        <a href="#" class="alert-link">an example link</a>. Give it a click.
-                    </div>
-                    <div class="alert alert-success" role="alert">
-                        A simple success alert with
-                        <a href="#" class="alert-link">an example link</a>. Give it a click .
-                    </div>
-                    <div class="alert alert-danger" role="alert">
-                        A simple danger alert with <a href="#" class="alert-link">an example link</a>.
-                        Give it a click if you like.
-                    </div>
+
+                <?php
+                $alert_classes = ['alert-secondary', 'alert-success', 'alert-info', 'alert-warning'];
+                ?>
+
+                <div class="card-body p-3" style="max-height: 260px; overflow-y: auto;">
+                    <?php if (!empty($reminders)): ?>
+                        <?php foreach ($reminders as $index => $reminder): ?>
+                            <?php
+                            $content = strip_tags($reminder['content']);
+                            $short_content = (strlen($content) > 40) ? substr($content, 0, 40) . '...' : $content;
+                            $alert_class = $alert_classes[$index % count($alert_classes)];
+                            $created_at = date('d M, Y h:i A', strtotime($reminder['created_at']));
+                            ?>
+                            <div class="alert <?= $alert_class ?> mb-3">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <?= $short_content ?>
+                                        <a href="#" class="ms-2 text-dark" data-bs-toggle="modal" data-bs-target="#viewReminderModal" data-id="<?= $reminder['id'] ?>" title="View Full">
+                                            <i class="bi bi-eye-fill"></i>
+                                        </a>
+                                    </div>
+                                    <small class="text-muted"><?= $created_at ?></small>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <div class="alert alert-light text-center py-4">
+                            <i class="bi bi-emoji-smile fs-2 text-muted"></i><br>
+                            <strong>No reminders yet!</strong><br>
+                            You're all caught up for now 😊
+                        </div>
+                    <?php endif; ?>
                 </div>
                 <!--end::Body-->
             </div>
+
         </div>
-        <?php /*<div class="col-md-4">
-            <div class="card card-min-height">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h3 class="card-title mb-0">
-                        <i class="nav-icon fas fa-warehouse"></i> Quick Stocks
-                    </h3>
-                    <span class="badge badge-pill badge-info">
-                        <?= $low_stock_count ?? 0 ?> / <?= $total_products_count ?? 0 ?>
-                    </span>
-                </div>
-                <div class="p-2" id="ajax-low-stock-content">
-                    <p>Loading...</p>
-                </div>
-            </div>
-        </div>
-        */ ?>
     </div>
     <div class="row mt-3">
         <div class="col-md-8">
@@ -398,6 +323,19 @@ foreach ($top_categories as $cat) {
     $(document).ready(function() {
         $.get('<?= base_url("admin/ajax/low-stock") ?>', function(data) {
             $('#ajax-low-stock-content').html(data);
+        });
+    });
+</script>
+<script>
+    $(document).ready(function() {
+        $('#viewReminderModal').on('show.bs.modal', function(e) {
+            const reminderId = $(e.relatedTarget).data('id');
+            $.get('<?= base_url('admin/reminder/detail/') ?>' + reminderId, function(data) {
+                const reminder = JSON.parse(data);
+                $('#reminderDetailContent').text(reminder.content);
+                $('#reminderCreatedAt').text('Created at: ' + reminder.created_at);
+                $('#markAsDoneBtn').attr('href', '<?= base_url('admin/reminder/done/') ?>' + reminder.id);
+            });
         });
     });
 </script>

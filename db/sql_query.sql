@@ -128,3 +128,11 @@ CREATE TABLE `debit_note_items` (
   FOREIGN KEY (`product_id`) REFERENCES `products`(`id`),
   FOREIGN KEY (`hsn_code_id`) REFERENCES `hsn_codes`(`id`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+/*30062025**/
+CREATE TABLE `reminders` (
+    `id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    `content` TEXT NOT NULL,
+    `is_done` TINYINT(1) DEFAULT 0,
+    `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP
+);

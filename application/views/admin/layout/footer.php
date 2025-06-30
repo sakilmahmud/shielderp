@@ -162,3 +162,40 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="addReminderModal" tabindex="-1">
+    <div class="modal-dialog">
+        <form class="modal-content" action="<?= base_url('admin/reminder/add') ?>" method="post">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Reminder</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <textarea name="reminder_content" class="form-control" rows="4" placeholder="Write reminder..." required></textarea>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary">Add</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="modal fade" id="viewReminderModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Reminder Detail</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p id="reminderDetailContent"></p>
+                <small class="text-muted" id="reminderCreatedAt"></small>
+            </div>
+            <div class="modal-footer">
+                <a href="#" id="markAsDoneBtn" class="btn btn-success">Mark as Done</a>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -25,6 +25,8 @@ class AdminController extends MY_Controller
         $this->load->model('SettingsModel');
         $this->load->helper('custom_helper');
         $this->load->model('TaskModel');
+        $this->load->model('DashboardModel');
+        $this->load->model('ReminderModel');
         $this->load->library('upload'); // Make sure 'upload' is the correct name of the library class
     }
 
@@ -51,32 +53,54 @@ class AdminController extends MY_Controller
     {
         $data['activePage'] = 'dashboard';
 
-        // Load total sales data
-        $data['sales_report'] = [
+        $filter = $this->input->get('filter') ?? 'today';
+        $from = $to = date('Y-m-d');
+
+        if ($filter === 'last_7') {
+            $from = date('Y-m-d', strtotime('-6 days'));
+        } elseif ($filter === 'last_30') {
+            $from = date('Y-m-d', strtotime('-29 days'));
+        } elseif ($filter === 'custom') {
+            $from = $this->input->get('from_date');
+            $to = $this->input->get('to_date');
+        }
+
+        $data['filter'] = $filter;
+        $data['from_date'] = $from;
+        $data['to_date'] = $to;
+
+        $data['payin'] = $this->DashboardModel->get_total_payin($from, $to);
+        $data['payout'] = $this->DashboardModel->get_total_payout($from, $to);
+        $data['sales'] = $this->DashboardModel->get_total_sales($from, $to);
+        $data['purchase'] = $this->DashboardModel->get_total_purchase($from, $to);
+
+        $data['total_customer_due'] = $this->get_total_customer_due();
+        $data['total_supplier_due'] = $this->get_total_supplier_due();
+
+        $data['reminders'] = $this->ReminderModel->get_active_reminders();
+
+
+        // keep existing dashboard logic
+        /* $data['sales_report'] = [
             'daily' => $this->get_sales_total('daily'),
             'weekly' => $this->get_sales_total('weekly'),
             'monthly' => $this->get_sales_total('monthly'),
         ];
-
-        // Load total purchase data
         $data['purchase_report'] = [
             'daily' => $this->get_purchase_total('daily'),
             'weekly' => $this->get_purchase_total('weekly'),
             'monthly' => $this->get_purchase_total('monthly'),
-        ];
-
-        // Load top categories by sales
+        ]; */
         $data['top_categories'] = $this->get_top_categories_sales();
         $data['monthly_sales'] = $this->get_monthly_sales_data();
         $data['monthly_purchases'] = $this->get_monthly_purchase_data();
-
-        // Add low stock summary
-        $stock_summary = $this->get_low_stock_summary(); // returns ['low' => 12, 'total' => 75]
+        $stock_summary = $this->get_low_stock_summary();
         $data['low_stock_count'] = $stock_summary['low'];
         $data['total_products_count'] = $stock_summary['total'];
 
         $this->render_admin('admin/dashboard', $data);
     }
+
 
     private function get_low_stock_summary()
     {
@@ -282,7 +306,6 @@ class AdminController extends MY_Controller
 
     public function ajax_due_customers()
     {
-        $data['total_customer_due'] = $this->get_total_customer_due();
         $data['due_customers'] = $this->due_customer_list();
 
         // Fix: Add true to return view content as string
@@ -292,7 +315,6 @@ class AdminController extends MY_Controller
 
     public function ajax_due_suppliers()
     {
-        $data['total_supplier_due'] = $this->get_total_supplier_due();
         $data['due_suppliers'] = $this->due_supplier_list();
 
         // Fix: Add true to return view content as string
@@ -761,5 +783,31 @@ class AdminController extends MY_Controller
         $data['title'] = 'Premium Access Required';
 
         $this->render_admin('admin/premium_only');
+    }
+
+    public function add_reminder()
+    {
+        $this->load->model('ReminderModel');
+
+        $content = $this->input->post('reminder_content', true);
+        if (!empty($content)) {
+            $this->ReminderModel->add_reminder($content);
+        }
+
+        redirect('admin/dashboard');
+    }
+
+    public function get_reminder_detail($id)
+    {
+        $this->load->model('ReminderModel');
+        $reminder = $this->ReminderModel->get_reminder($id);
+        echo json_encode($reminder);
+    }
+
+    public function mark_reminder_done($id)
+    {
+        $this->load->model('ReminderModel');
+        $this->ReminderModel->mark_done($id);
+        redirect('admin/dashboard');
     }
 }

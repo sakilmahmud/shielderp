@@ -199,7 +199,7 @@ sup {
   transition: background 0.3s;
 }
 .card-min-height {
-  min-height: 300px;
+  min-height: 330px;
 }
 
 #ajax-low-stock-content .list-group-item {

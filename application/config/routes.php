@@ -318,3 +318,7 @@ $route['admin/reports/accounts/export_expense_ledger/(:any)'] = 'admin/reports/A
 
 $route['admin/reports/accounts/tax'] = 'admin/reports/AccountController/tax';
 $route['admin/reports/accounts/chart-of-accounts'] = 'admin/reports/AccountController/chart_of_accounts';
+
+$route['admin/reminder/add'] = 'AdminController/add_reminder';
+$route['admin/reminder/detail/(:num)'] = 'AdminController/get_reminder_detail/$1';
+$route['admin/reminder/done/(:num)'] = 'AdminController/mark_reminder_done/$1';

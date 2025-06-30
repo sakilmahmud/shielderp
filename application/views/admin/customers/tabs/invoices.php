@@ -25,7 +25,7 @@
 
 <div class="card">
     <div class="card-body p-0">
-        <table class="table table-bordered table-sm">
+        <table class="table table-bordered table-striped table-sm">
             <thead>
                 <tr>
                     <th>Invoice No</th>
@@ -57,8 +57,8 @@
                             <td><?= date('d-m-Y', strtotime($inv['invoice_date'])) ?></td>
                             <td><?= date('d-m-Y', strtotime($inv['due_date'])) ?></td>
                             <td class="text-end">₹<?= number_format($inv['total_amount'], 2) ?></td>
-                            <td><?php echo $status_badge; ?></td>
-                            <td><?php echo $actions; ?></td>
+                            <td><?= $status_badge; ?></td>
+                            <td><?= $actions; ?></td>
                         </tr>
                     <?php endforeach; ?>
                 <?php else : ?>
@@ -67,6 +67,19 @@
                     </tr>
                 <?php endif; ?>
             </tbody>
+
+            <?php if (!empty($invoices)): ?>
+                <tfoot>
+                    <tr>
+                        <td colspan="3" class="text-end fw-bold">Total</td>
+                        <td class="text-end fw-bold text-primary">
+                            ₹<?= number_format(array_sum(array_column($invoices, 'total_amount')), 2) ?>
+                        </td>
+                        <td colspan="2"></td>
+                    </tr>
+                </tfoot>
+            <?php endif; ?>
         </table>
+
     </div>
 </div>

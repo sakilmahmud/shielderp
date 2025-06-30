@@ -18,7 +18,7 @@
         <h5 class="m-0">Payment History</h5>
     </div>
     <div class="card-body p-0">
-        <table class="table table-bordered table-sm mb-0">
+        <table class="table table-bordered table-striped table-sm mb-0">
             <thead>
                 <tr>
                     <th>Date</th>
@@ -53,6 +53,18 @@
                     </tr>
                 <?php endif; ?>
             </tbody>
+
+            <?php if (!empty($payments)): ?>
+                <tfoot>
+                    <tr>
+                        <td colspan="4" class="text-end fw-bold">Total</td>
+                        <td class="text-end fw-bold text-primary">
+                            ₹<?= number_format(array_sum(array_column($payments, 'amount')), 2) ?>
+                        </td>
+                        <td></td>
+                    </tr>
+                </tfoot>
+            <?php endif; ?>
         </table>
     </div>
 </div>
