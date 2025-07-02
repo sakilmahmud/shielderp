@@ -53,7 +53,12 @@ class UserModel extends CI_Model
 
     public function get_all_doers()
     {
-        $query = $this->db->get_where('users', array('user_role' => 3));
+        $this->db->select('*');
+        $this->db->from('users');
+        $this->db->where('status', 1);
+        $this->db->where_in('user_role', [2, 3]); // Include users with role_id 2 or 3
+
+        $query = $this->db->get();
         return $query->result_array();
     }
 

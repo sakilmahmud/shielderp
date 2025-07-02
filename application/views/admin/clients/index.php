@@ -1,14 +1,8 @@
 <div class="content-wrapper">
     <section class="content-header">
-        <div class="container-fluid">
-            <div class="row mb-2">
-                <div class="col-sm-6">
-                    <h2>List of Clients</h2>
-                </div>
-                <div class="col-sm-6 text-right">
-                    <a href="<?php echo base_url('admin/clients/add'); ?>" class="btn btn-primary">Add Client</a>
-                </div>
-            </div>
+        <div class="container-fluid d-flex justify-content-between align-items-center my-2">
+            <h2>List of Clients</h2>
+            <a href="<?php echo base_url('admin/clients/add'); ?>" class="btn btn-info">Add Client</a>
         </div>
     </section>
     <section class="content">
@@ -49,9 +43,10 @@
                                         <?php foreach ($clients as $client) : ?>
                                             <tr>
                                                 <td><?php echo $client['id']; ?></td>
-                                                <td><?php echo $client['username']; ?></td>
-                                                <td><?php echo $client['email']; ?></td>
+                                                <td><?php echo !empty($client['username']) ? $client['username'] : $client['mobile']; ?></td>
+                                                <td><?php echo !empty($client['email']) ? $client['email'] : '-'; ?></td>
                                                 <td><?php echo $client['mobile']; ?></td>
+
                                                 <td><?php echo $client['full_name']; ?></td>
                                                 <td><?php echo ($client['status'] == 1) ? 'Active' : 'Inactive'; ?></td>
                                                 <td>

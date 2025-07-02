@@ -234,6 +234,15 @@ $route['admin/tasks/delete/(:num)'] = 'admin/tasks/delete/$1';
 $route['admin/taskDetails'] = 'AdminController/taskDetails';
 
 /** end of tasks */
+/** tasks categories */
+$route['admin/task-categories'] = 'admin/TaskCategoryController/index';
+$route['admin/task-categories/add'] = 'admin/TaskCategoryController/add';
+$route['admin/task-categories/edit/(:num)'] = 'admin/TaskCategoryController/edit/$1';
+$route['admin/task-categories/delete/(:num)'] = 'admin/TaskCategoryController/delete/$1';
+$route['admin/task-categories/save'] = 'admin/TaskCategoryController/save';
+$route['admin/task-categories/ajax-list'] = 'admin/TaskCategoryController/ajax_list';
+
+/** end of tasks categories */
 
 /** clients */
 $route['admin/clients'] = 'admin/clients/index';

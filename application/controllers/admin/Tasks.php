@@ -35,7 +35,6 @@ class Tasks extends MY_Controller
     {
         $data['activePage'] = 'tasks';
 
-
         $user_id = $this->session->userdata('user_id');
         $role = $this->session->userdata('role');
 
@@ -55,14 +54,15 @@ class Tasks extends MY_Controller
         // Fetching clients and doers
         $data['clients'] = $this->UserModel->get_all_clients();
         $data['all_staff'] = $this->UserModel->get_all_staff();
-
-
+        $data['task_categories'] = $this->TaskModel->get_all_categories();
+        /* echo "<pre>";
+        print_r($data);
+        die; */
         $this->form_validation->set_rules('title', 'Title', 'required');
         // Add more rules as needed
 
         if ($this->form_validation->run() === FALSE) {
             $data['isUpdate'] = false;
-            $data['categories'] = $this->TaskModel->get_all_categories();
 
 
             $this->render_admin('admin/tasks/add', $data);
@@ -144,6 +144,7 @@ class Tasks extends MY_Controller
 
         $data['clients'] = $this->UserModel->get_all_clients();
         $data['all_staff'] = $this->UserModel->get_all_staff();
+        $data['task_categories'] = $this->TaskModel->get_all_categories();
 
         $this->form_validation->set_rules('title', 'Title', 'required');
         // Add more rules as needed
@@ -151,8 +152,6 @@ class Tasks extends MY_Controller
         if ($this->form_validation->run() === FALSE) {
             $data['isUpdate'] = true;
             $data['task'] = $this->TaskModel->get_task($id);
-            $data['categories'] = $this->TaskModel->get_all_categories();
-
 
             $this->render_admin('admin/tasks/add', $data);
         } else {

@@ -29,7 +29,7 @@ class Doers extends MY_Controller
         $data['activePage'] = 'doers';
 
         $this->form_validation->set_rules('username', 'Username', 'required');
-        $this->form_validation->set_rules('email', 'Email', 'required|valid_email');
+        $this->form_validation->set_rules('mobile', 'Mobile', 'required');
         // Add more rules as needed
 
         if ($this->form_validation->run() === FALSE) {
@@ -88,7 +88,7 @@ class Doers extends MY_Controller
         $data['activePage'] = 'doers';
 
         $this->form_validation->set_rules('username', 'Username', 'required');
-        $this->form_validation->set_rules('email', 'Email', 'required|valid_email');
+        $this->form_validation->set_rules('mobile', 'Mobile', 'required');
         // Add more rules as needed
 
         if ($this->form_validation->run() === FALSE) {

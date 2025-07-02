@@ -54,7 +54,7 @@ class Clients extends MY_Controller
             $this->UserModel->insert_user($userData);
 
             // Set flash message for success
-            $this->session->set_flashdata('message', 'New cleint added successfully!');
+            $this->session->set_flashdata('message', 'New client added successfully!');
             redirect('admin/clients');
         }
     }
@@ -92,7 +92,7 @@ class Clients extends MY_Controller
         $data['activePage'] = 'clients';
 
         $this->form_validation->set_rules('username', 'Username', 'required');
-        $this->form_validation->set_rules('email', 'Email', 'required|valid_email');
+        $this->form_validation->set_rules('mobile', 'Mobile', 'required');
         // Add more rules as needed
 
         if ($this->form_validation->run() === FALSE) {

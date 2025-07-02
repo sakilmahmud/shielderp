@@ -250,8 +250,8 @@
                 </li>
 
                 <!-- Tasks -->
-                <li class="nav-item <?php if (in_array($activePage, ['tasks', 'clients', 'doers'])) echo 'menu-open'; ?>">
-                    <a href="#" class="nav-link <?php if (in_array($activePage, ['tasks', 'clients', 'doers'])) echo 'active'; ?>">
+                <li class="nav-item <?php if (in_array($activePage, ['tasks', 'clients', 'doers', 'task-categories'])) echo 'menu-open'; ?>">
+                    <a href="#" class="nav-link <?php if (in_array($activePage, ['tasks', 'clients', 'doers', 'task-categories'])) echo 'active'; ?>">
                         <i class="nav-icon bi bi-kanban icon-teal"></i>
                         <p>Tasks <i class="nav-arrow bi bi-chevron-right"></i></p>
                     </a>
@@ -272,6 +272,12 @@
                             <a href="<?php echo base_url('admin/doers'); ?>" class="nav-link <?php if ($activePage === 'doers') echo 'active'; ?>">
                                 <i class="bi bi-person-gear nav-icon"></i>
                                 <p>Doers</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="<?php echo base_url('admin/task-categories'); ?>" class="nav-link <?php if ($activePage === 'task-categories') echo 'active'; ?>">
+                                <i class="bi bi-tags nav-icon"></i>
+                                <p>Task Categories</p>
                             </a>
                         </li>
                     </ul>
