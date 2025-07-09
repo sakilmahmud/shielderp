@@ -52,7 +52,7 @@
                         </thead>
                         <tbody>
                             <?php foreach ($balances as $balance):
-                                if (($balance['credit'] - $balance['debit']) == 1) continue;
+                                if (($balance['credit'] - $balance['debit']) == 0) continue;
                             ?>
                                 <tr>
                                     <td><?php echo $balance['payment_method_title']; ?></td>
