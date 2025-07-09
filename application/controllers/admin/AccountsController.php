@@ -18,15 +18,15 @@ class AccountsController extends MY_Controller
     {
         $data['activePage'] = 'accounts';
 
-        // Get date range from user input (default to null if not set)
-        $from_date = $this->input->get('from_date') ? $this->input->get('from_date') : null;
-        $to_date = $this->input->get('to_date') ? $this->input->get('to_date') : null;
+        // Default to today's date if not set
+        $from_date = $this->input->get('from_date') ?? date('Y-m-d');
+        $to_date   = $this->input->get('to_date') ?? date('Y-m-d');
 
-        // Pass the date range to the model
+        // Fetch balances
         $data['balances'] = $this->AccountsModel->get_balances_by_payment_methods($from_date, $to_date);
         $data['total_balance'] = $this->AccountsModel->get_total_balance($from_date, $to_date);
 
-        // Retain the selected date range for display in the view
+        // Pass selected dates to view
         $data['from_date'] = $from_date;
         $data['to_date'] = $to_date;
 

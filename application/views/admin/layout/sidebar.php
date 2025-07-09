@@ -40,22 +40,25 @@
                         </a>
                     </li>
 
-                    <!-- Accounts -->
-                    <li class="nav-item <?php if (in_array($activePage, ['accounts', 'transfer_fund', 'payment_methods'])) echo 'menu-open'; ?>">
-                        <a href="#" class="nav-link <?php if (in_array($activePage, ['accounts', 'transfer_fund', 'payment_methods'])) echo 'active'; ?>">
-                            <i class="nav-icon bi bi-wallet2 text-purple"></i>
-                            <p>
-                                Accounts
-                                <i class="nav-arrow bi bi-chevron-right"></i>
-                            </p>
-                        </a>
-                        <ul class="nav nav-treeview">
-                            <li class="nav-item">
-                                <a href="<?php echo base_url('admin/accounts/account_balance'); ?>" class="nav-link <?php if ($activePage === 'accounts') echo 'active'; ?>">
-                                    <i class="bi bi-graph-up nav-icon"></i>
-                                    <p>Account Balances</p>
-                                </a>
-                            </li>
+                <?php endif; ?>
+
+                <!-- Accounts -->
+                <li class="nav-item <?php if (in_array($activePage, ['accounts', 'transfer_fund', 'payment_methods'])) echo 'menu-open'; ?>">
+                    <a href="#" class="nav-link <?php if (in_array($activePage, ['accounts', 'transfer_fund', 'payment_methods'])) echo 'active'; ?>">
+                        <i class="nav-icon bi bi-wallet2 text-purple"></i>
+                        <p>
+                            Accounts
+                            <i class="nav-arrow bi bi-chevron-right"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="<?php echo base_url('admin/accounts/account_balance'); ?>" class="nav-link <?php if ($activePage === 'accounts') echo 'active'; ?>">
+                                <i class="bi bi-graph-up nav-icon"></i>
+                                <p>Account Balances</p>
+                            </a>
+                        </li>
+                        <?php if ($this->session->userdata('role') == 1) : ?>
                             <li class="nav-item">
                                 <a href="<?php echo base_url('admin/accounts/transfer_fund'); ?>" class="nav-link <?php if ($activePage === 'transfer_fund') echo 'active'; ?>">
                                     <i class="bi bi-arrow-left-right nav-icon"></i>
@@ -68,10 +71,10 @@
                                     <p>Payment Methods</p>
                                 </a>
                             </li>
-                        </ul>
-                    </li>
 
-                <?php endif; ?>
+                        <?php endif; ?>
+                    </ul>
+                </li>
 
                 <!-- DTP Services -->
                 <li class="nav-item <?php if (in_array($activePage, ['dtp', 'dtp_categories'])) echo 'menu-open'; ?>">

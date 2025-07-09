@@ -307,8 +307,42 @@ class ProductModel extends CI_Model
         $this->db->where('products.category_id', $category_id); // Filter by category
         $this->db->order_by($sort_by, $sort_order); // Apply sorting
         $this->db->limit($limit, $start); // Apply pagination
+
         $query = $this->db->get();
-        return $query->result_array();
+        $products = $query->result_array();
+
+        // Iterate over products and calculate stock data for each product
+        foreach ($products as &$product) {
+            $product_id = $product['id'];
+
+            // Get the total product quantity from stock_management
+            $this->db->select('SUM(quantity) as total_quantity');
+            $this->db->from('stock_management');
+            $this->db->where('product_id', $product_id);
+            $product_query = $this->db->get();
+            $product_data = $product_query->row_array();
+
+            $total_quantity = $product_data['total_quantity'] ?? 0; // Total quantity added to stock
+
+            // Get the total sold quantity from invoice_details
+            $this->db->select('SUM(quantity) as sold_quantity');
+            $this->db->from('invoice_details');
+            $this->db->where('product_id', $product_id);
+            $this->db->where('status', 1); // Optional: filter only active or completed invoices
+            $sold_query = $this->db->get();
+            $sold_data = $sold_query->row_array();
+
+            $total_sold_quantity = $sold_data['sold_quantity'] ?? 0; // Total quantity sold
+
+            // Calculate final stock
+            $final_stock = $total_quantity - $total_sold_quantity;
+
+            // Add stock data to the product array
+            $product['total_quantity'] = $total_quantity;
+            $product['total_sold_quantity'] = $total_sold_quantity;
+            $product['total_available_stocks'] = $final_stock;
+        }
+        return $products;
     }
 
     public function get_product_type_by_slug($slug)

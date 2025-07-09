@@ -186,20 +186,20 @@ class CustomerModel extends CI_Model
 
         // Opening balance: total paid - total invoiced BEFORE from_date
         $this->db->select('
-        (
-            (SELECT COALESCE(SUM(amount), 0)
-             FROM transactions
-             WHERE transaction_for_table = "invoices"
-             AND trans_type = 1
-             AND status = 1
-             AND table_id IN (SELECT id FROM invoices WHERE customer_id = c.id)
-             AND trans_date < "' . $from_date . '")
-            -
-            (SELECT COALESCE(SUM(total_amount), 0)
-             FROM invoices
-             WHERE customer_id = c.id AND status = 1 AND invoice_date < "' . $from_date . '")
-        ) AS opening_balance
-    ');
+            (
+                (SELECT COALESCE(SUM(amount), 0)
+                FROM transactions
+                WHERE transaction_for_table = "invoices"
+                AND trans_type = 1
+                AND status = 1
+                AND table_id IN (SELECT id FROM invoices WHERE customer_id = c.id)
+                AND trans_date < "' . $from_date . '")
+                -
+                (SELECT COALESCE(SUM(total_amount), 0)
+                FROM invoices
+                WHERE customer_id = c.id AND status = 1 AND invoice_date < "' . $from_date . '")
+            ) AS opening_balance
+        ');
         $this->db->from('customers c');
         $this->db->where('c.id', $customer_id);
         $opening = $this->db->get()->row_array();
@@ -274,7 +274,7 @@ class CustomerModel extends CI_Model
         $this->db->where('i.customer_id', $customer_id);
         $this->db->where('t.trans_date >=', $from_date);
         $this->db->where('t.trans_date <=', $to_date);
-        $this->db->order_by('t.trans_date', 'DESC');
+        $this->db->order_by('t.trans_date DESC, t.id DESC');
 
         return $this->db->get()->result_array();
     }
