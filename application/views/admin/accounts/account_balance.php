@@ -51,7 +51,9 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <?php foreach ($balances as $balance): ?>
+                            <?php foreach ($balances as $balance):
+                                if (($balance['credit'] - $balance['debit']) == 1) continue;
+                            ?>
                                 <tr>
                                     <td><?php echo $balance['payment_method_title']; ?></td>
                                     <?php if ($this->session->userdata('role') == 1) : ?>
