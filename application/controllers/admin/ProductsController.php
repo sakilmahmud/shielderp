@@ -149,7 +149,7 @@ class ProductsController extends MY_Controller
 
         $this->form_validation->set_rules('name', 'Name', 'required');
         $this->form_validation->set_rules('category_id', 'Category', 'required');
-        $this->form_validation->set_rules('brand_id', 'Brand', 'required');
+        //$this->form_validation->set_rules('brand_id', 'Brand', 'required');
 
         // Validation for Sale Price
         $this->form_validation->set_rules(
@@ -188,10 +188,15 @@ class ProductsController extends MY_Controller
                 $config['upload_path'] = $upload_path;
                 $config['allowed_types'] = 'jpg|jpeg|png|gif';
                 $config['file_name'] = time() . '_' . $_FILES['featured_image']['name'];
+                $config['max_size'] = 300; // 300KB limit
 
                 $this->upload->initialize($config);
 
-                if ($this->upload->do_upload('featured_image')) {
+                if (!$this->upload->do_upload('featured_image')) {
+                    $data['isUpdate'] = false;
+                    $data['upload_error'] = $this->upload->display_errors('', '');
+                    return $this->render_admin('admin/products/add', $data);
+                } else {
                     $uploadData = $this->upload->data();
                     $featured_image = $uploadData['file_name'];
                 }
@@ -210,12 +215,20 @@ class ProductsController extends MY_Controller
                     $_FILES['file']['size'] = $_FILES['gallery_images']['size'][$i];
 
                     $config['file_name'] = time() . '_' . $_FILES['file']['name'];
+                    $config['upload_path'] = $upload_path;
+                    $config['allowed_types'] = 'jpg|jpeg|png|gif';
+                    $config['max_size'] = 300; // 300KB limit
+
 
                     $this->upload->initialize($config);
 
                     if ($this->upload->do_upload('file')) {
                         $uploadData = $this->upload->data();
                         $gallery_images[] = $uploadData['file_name'];
+                    } else {
+                        $data['isUpdate'] = false;
+                        $data['upload_error'] = $this->upload->display_errors('', '');
+                        return $this->render_admin('admin/products/add', $data);
                     }
                 }
 
@@ -224,8 +237,10 @@ class ProductsController extends MY_Controller
                 }
             }
 
+            $product_name = $this->input->post('name');
+
             $productData = array(
-                'name' => $this->input->post('name'),
+                'name' => $product_name,
                 'slug' => $this->input->post('slug'),
                 'regular_price' => $this->input->post('regular_price'),
                 'sale_price' => $this->input->post('sale_price'),
@@ -241,8 +256,19 @@ class ProductsController extends MY_Controller
                 'unit_id' => $this->input->post('unit_id')
             );
 
-            $this->ProductModel->insert_product($productData);
-            $this->session->set_flashdata('message', 'Product added successfully');
+            $inserted = $this->ProductModel->insert_product($productData);
+
+            if (!$inserted) {
+                /* $error = $this->db->error(); // Get the last DB error
+                echo '<pre>';
+                print_r($error);
+                echo '</pre>';
+                die('DB insert failed.'); */
+                $this->session->set_flashdata("error_message", "$product_name not added successfully!");
+            } else {
+                $this->session->set_flashdata("message", "$product_name added successfully");
+            }
+
             redirect('admin/products');
         }
     }
@@ -251,26 +277,20 @@ class ProductsController extends MY_Controller
     {
         $data['activePage'] = 'products';
         $data['categories'] = $this->CategoryModel->get_all_categories();
-        $data['brands'] = $this->BrandModel->get_all_brands(); // Get all brands
+        $data['brands'] = $this->BrandModel->get_all_brands();
         $data['product_types'] = $this->ProductTypeModel->get_all_product_types();
+        $data['units'] = $this->UnitModel->get_all_units();
+        $data['hsn_codes'] = $this->HsnCodeModel->get_all();
         $data['product'] = $this->ProductModel->get_product($id);
-        $data['units'] = $this->UnitModel->get_all_units();  // Get all units
-        $data['hsn_codes'] = $this->HsnCodeModel->get_all(); // Add this
-
 
         $this->form_validation->set_rules('name', 'Name', 'required');
         $this->form_validation->set_rules('category_id', 'Category', 'required');
-        $this->form_validation->set_rules('brand_id', 'Brand', 'required');
-
-        // Validation for Sale Price
         $this->form_validation->set_rules(
             'sale_price',
             'Sale Price',
             'required|numeric|greater_than[0]',
             ['greater_than' => 'The {field} must be greater than 0.']
         );
-
-        // Validation for Purchase Price
         $this->form_validation->set_rules(
             'purchase_price',
             'Purchase Price',
@@ -280,40 +300,38 @@ class ProductsController extends MY_Controller
 
         if ($this->form_validation->run() === FALSE) {
             $data['isUpdate'] = true;
-
-            // Load the views
-
             $this->render_admin('admin/products/add', $data);
         } else {
-            /* echo "<pre>";
-            print_r($_FILES);
-            die; */
             $upload_path = './uploads/products/';
-            // Check if the folder exists, if not create it
             if (!is_dir($upload_path)) {
                 mkdir($upload_path, 0777, true);
             }
-            // Handle file upload for featured image
+
             $featured_image = '';
             $gallery_images_encoded = '';
 
+            // Featured image upload
             if (!empty($_FILES['featured_image']['name'])) {
                 $config['upload_path'] = $upload_path;
                 $config['allowed_types'] = 'jpg|jpeg|png|gif';
                 $config['file_name'] = time() . '_' . $_FILES['featured_image']['name'];
+                $config['max_size'] = 300;
 
                 $this->upload->initialize($config);
 
-                if ($this->upload->do_upload('featured_image')) {
+                if (!$this->upload->do_upload('featured_image')) {
+                    $data['isUpdate'] = true;
+                    $data['upload_error'] = $this->upload->display_errors('', '');
+                    return $this->render_admin('admin/products/add', $data);
+                } else {
                     $uploadData = $this->upload->data();
                     $featured_image = $uploadData['file_name'];
                 }
             } else {
-                // Keep the existing image if no new image is uploaded
                 $featured_image = $this->input->post('existing_featured_image');
             }
 
-            // Handle gallery images
+            // Gallery image upload
             $gallery_images = array();
             if (!empty($_FILES['gallery_images']['name'][0])) {
                 $filesCount = count($_FILES['gallery_images']['name']);
@@ -324,9 +342,10 @@ class ProductsController extends MY_Controller
                     $_FILES['file']['error'] = $_FILES['gallery_images']['error'][$i];
                     $_FILES['file']['size'] = $_FILES['gallery_images']['size'][$i];
 
-                    $config['file_name'] = time() . '_' . $_FILES['file']['name'];
                     $config['upload_path'] = $upload_path;
-                    $config['allowed_types'] = 'jpg|jpeg|png|gif';  // Allowed file types
+                    $config['allowed_types'] = 'jpg|jpeg|png|gif';
+                    $config['file_name'] = time() . '_' . $_FILES['file']['name'];
+                    $config['max_size'] = 300;
 
                     $this->upload->initialize($config);
 
@@ -334,9 +353,9 @@ class ProductsController extends MY_Controller
                         $uploadData = $this->upload->data();
                         $gallery_images[] = $uploadData['file_name'];
                     } else {
-                        // Log the upload error
-                        $error = $this->upload->display_errors();
-                        echo "File upload failed: " . $error;
+                        $data['isUpdate'] = true;
+                        $data['upload_error'] = $this->upload->display_errors('', '');
+                        return $this->render_admin('admin/products/add', $data);
                     }
                 }
 
@@ -347,8 +366,7 @@ class ProductsController extends MY_Controller
                 $gallery_images_encoded = $data['product']['gallery_images'];
             }
 
-
-            // Product data
+            // Prepare product data
             $productData = array(
                 'name' => $this->input->post('name'),
                 'slug' => $this->input->post('slug'),
@@ -366,12 +384,12 @@ class ProductsController extends MY_Controller
                 'unit_id' => $this->input->post('unit_id')
             );
 
-            // Update the product
             $this->ProductModel->update_product($id, $productData);
-            $this->session->set_flashdata('message', 'Product updated successfully');
+            $this->session->set_flashdata('message', 'Product "' . $productData['name'] . '" updated successfully');
             redirect('admin/products');
         }
     }
+
 
     public function addAjax()
     {

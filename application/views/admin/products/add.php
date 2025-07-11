@@ -8,6 +8,27 @@
             </div>
         </div>
     </section>
+
+    <?php if (validation_errors()) : ?>
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <?php echo validation_errors('<div>', '</div>'); ?>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    <?php endif; ?>
+    <?php if ($this->session->flashdata('error_msg')) : ?>
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <?php echo $this->session->flashdata('error_msg'); ?>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    <?php endif; ?>
+    <?php if (!empty($upload_error)) : ?>
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <?php echo $upload_error; ?>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    <?php endif; ?>
+
+
     <section class="content">
         <div class="container-fluid">
             <div class="card">
@@ -53,8 +74,8 @@
                                     <div class="col-md-4 col-sm-12 mb-3">
                                         <!-- Regular Price Field -->
                                         <div class="form-group">
-                                            <label for="regular_price">MRP<sup>*</sup></label>
-                                            <input type="number" class="form-control" id="regular_price" name="regular_price" value="<?php echo set_value('regular_price', isset($product['regular_price']) ? $product['regular_price'] : '0.00'); ?>" required>
+                                            <label for="regular_price">MRP</label>
+                                            <input type="number" class="form-control" id="regular_price" name="regular_price" value="<?php echo set_value('regular_price', isset($product['regular_price']) ? $product['regular_price'] : '0.00'); ?>">
                                             <?php echo form_error('regular_price'); ?>
                                         </div>
                                     </div>
@@ -76,7 +97,7 @@
                                     <div class="col-md-4 col-sm-12 mb-3">
                                         <div class="form-group">
                                             <div class="mt-1 d-flex justify-content-between">
-                                                <label for="brand_id">Brand <sup>*</sup></label>
+                                                <label for="brand_id">Brand</label>
                                                 <a href="javascript:void(0)" class="text-sm add_brand">Add Brand</a>
                                             </div>
                                             <select class="form-control brand_id" id="brand_id" name="brand_id">
@@ -90,9 +111,9 @@
                                     </div>
                                     <div class="col-md-4 col-sm-12 mb-3">
                                         <div class="form-group">
-                                            <label for="hsn_code_id">HSN Code <sup>*</sup></label>
+                                            <label for="hsn_code_id">HSN Code</label>
                                             <div class="input-group">
-                                                <select class="form-control" id="hsn_code_id" name="hsn_code_id" required>
+                                                <select class="form-control" id="hsn_code_id" name="hsn_code_id">
                                                     <option value="">Select HSN</option>
                                                     <?php foreach ($hsn_codes as $hsn) { ?>
                                                         <option value="<?= $hsn['id']; ?>"
@@ -170,6 +191,7 @@
                                 <div class="form-group mb-3">
                                     <label for="featured_image">Featured Image</label>
                                     <input type="file" name="featured_image" id="featured_image" class="form-control" accept="image/*">
+                                    <small class="text-muted d-block mt-1">Allowed types: jpg, jpeg, png, gif. Max size: 300KB</small>
 
                                     <!-- Show existing featured image if available -->
                                     <?php if ($isUpdate && !empty($product['featured_image'])) { ?>
@@ -185,6 +207,7 @@
                                 <div class="form-group mb-3">
                                     <label for="gallery_images">Gallery Images (you can select multiple)</label>
                                     <input type="file" name="gallery_images[]" id="gallery_images" class="form-control" accept="image/*" multiple>
+                                    <small class="text-muted d-block mt-1">Allowed types: jpg, jpeg, png, gif. Max size per file: 300KB</small>
 
                                     <!-- Show existing gallery images if available -->
                                     <?php if ($isUpdate && !empty($product['gallery_images'])) {
@@ -198,6 +221,7 @@
                                     <div id="gallery_images_preview" style="margin-top: 10px;"></div>
                                 </div>
                             </div>
+
                             <div class="col-md-12 mb-3">
                                 <div class="form-group">
                                     <label for="highlight_text">Highlight</label>
@@ -263,16 +287,28 @@
             $('#cgst_sgst_display').val(`CGST: ${halfGst}%, SGST: ${halfGst}%`);
         });
 
+        // Max allowed file size in bytes (300KB)
+        const MAX_FILE_SIZE = 300 * 1024;
+
         // Preview for featured image
         $('#featured_image').change(function(e) {
             const file = e.target.files[0];
-            if (file && file.type.match('image.*')) {
+            if (file) {
+                if (!file.type.match('image.*')) {
+                    alert('Please select a valid image file (jpg, jpeg, png, gif)');
+                    $(this).val('');
+                    return;
+                }
+
+                /*if (file.size > MAX_FILE_SIZE) {
+                    alert('Featured image must be less than 300KB.');
+                    $(this).val('');
+                    return;
+                }*/
+
                 const preview = $('#featured_image_preview');
                 preview.attr('src', URL.createObjectURL(file));
                 preview.show();
-            } else {
-                alert('Please select a valid image file (jpg, jpeg, png, gif)');
-                $(this).val(''); // Clear the input
             }
         });
 
@@ -283,8 +319,26 @@
             previewContainer.empty(); // Clear previous images
 
             if (files.length > 0) {
+                let valid = true;
+
                 $.each(files, function(i, file) {
-                    if (file.type.match('image.*')) {
+                    if (!file.type.match('image.*')) {
+                        alert('Please select only image files (jpg, jpeg, png, gif).');
+                        $('#gallery_images').val('');
+                        valid = false;
+                        return false; // Break loop
+                    }
+
+                    if (file.size > MAX_FILE_SIZE) {
+                        alert(`Gallery image "${file.name}" exceeds 300KB. Please choose smaller images.`);
+                        $('#gallery_images').val('');
+                        valid = false;
+                        return false; // Break loop
+                    }
+                });
+
+                if (valid) {
+                    $.each(files, function(i, file) {
                         const img = $('<img />', {
                             src: URL.createObjectURL(file),
                             css: {
@@ -294,13 +348,10 @@
                             }
                         });
                         previewContainer.append(img);
-                    } else {
-                        alert('Please select only image files (jpg, jpeg, png, gif)');
-                        $('#gallery_images').val(''); // Clear the input
-                        return false; // Exit the loop if any non-image file is found
-                    }
-                });
+                    });
+                }
             }
         });
+
     });
 </script>

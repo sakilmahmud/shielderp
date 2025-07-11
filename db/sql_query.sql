@@ -136,3 +136,8 @@ CREATE TABLE `reminders` (
     `is_done` TINYINT(1) DEFAULT 0,
     `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP
 );
+
+/*110725*/
+ALTER TABLE `products` CHANGE `hsn_code` `hsn_code` BIGINT(20) NULL DEFAULT NULL;
+ALTER TABLE `products` CHANGE `regular_price` `regular_price` DECIMAL(9,2) NOT NULL DEFAULT '0.00', CHANGE `sale_price` `sale_price` DECIMAL(9,2) NOT NULL DEFAULT '0.00', CHANGE `purchase_price` `purchase_price` DECIMAL(9,2) NOT NULL DEFAULT '0.00';
+ALTER TABLE `products` DROP INDEX `fk_products_hsn`;

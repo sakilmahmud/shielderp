@@ -16,6 +16,20 @@
             <a href="<?php echo base_url('admin/products/add'); ?>" class="btn btn-primary">Add Product</a>
         </div>
     </section>
+
+    <?php if ($this->session->flashdata('message')) : ?>
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <?php echo $this->session->flashdata('message'); ?>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    <?php endif; ?>
+    <?php if ($this->session->flashdata('error_message')) : ?>
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            <?php echo $this->session->flashdata('error_message'); ?>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    <?php endif; ?>
+
     <section class="content">
         <div class="container-fluid">
             <div class="card">
