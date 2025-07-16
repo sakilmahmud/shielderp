@@ -413,11 +413,37 @@
 
         <div class="footer_sec">
             <div class="terms left_sec">
-                <h3>Terms / Declaration: <small class="color:#000"><?php echo $terms; ?></small></h3>
-                <p><strong>Bank Details -</strong></p>
-                <p>Bank Name: <?php echo $bank_details['bank_name']; ?></p>
-                <p>Account No.: <?php echo $bank_details['account_no']; ?></p>
-                <p>IFSC: <?php echo $bank_details['ifsc_code']; ?> | Branch: <?php echo $bank_details['branch']; ?></p>
+                <?php if (!empty($terms)): ?>
+                    <h3>Terms / Declaration: <small style="color:#000"><?php echo $terms; ?></small></h3>
+                <?php endif; ?>
+
+                <?php if (!empty($bank_details['bank_name']) || !empty($bank_details['account_no']) || !empty($bank_details['ifsc_code']) || !empty($bank_details['branch'])): ?>
+                    <p><strong>Bank Details -</strong></p>
+
+                    <?php if (!empty($bank_details['bank_name'])): ?>
+                        <p>Bank Name: <?php echo $bank_details['bank_name']; ?></p>
+                    <?php endif; ?>
+
+                    <?php if (!empty($bank_details['account_no'])): ?>
+                        <p>Account No.: <?php echo $bank_details['account_no']; ?></p>
+                    <?php endif; ?>
+
+                    <?php if (!empty($bank_details['ifsc_code']) || !empty($bank_details['branch'])): ?>
+                        <p>
+                            <?php if (!empty($bank_details['ifsc_code'])): ?>
+                                IFSC: <?php echo $bank_details['ifsc_code']; ?>
+                            <?php endif; ?>
+
+                            <?php if (!empty($bank_details['ifsc_code']) && !empty($bank_details['branch'])): ?>
+                                &nbsp;|&nbsp;
+                            <?php endif; ?>
+
+                            <?php if (!empty($bank_details['branch'])): ?>
+                                Branch: <?php echo $bank_details['branch']; ?>
+                            <?php endif; ?>
+                        </p>
+                    <?php endif; ?>
+                <?php endif; ?>
             </div>
             <div class="footer right_sec">
                 <p>For <?php echo $biller['name']; ?></p>

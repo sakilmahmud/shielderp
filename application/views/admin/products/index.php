@@ -406,7 +406,7 @@
         $(this).siblings('.purchase-price').text(purchasePrice).show(); // Show the purchase price
         $(this).hide(); // Hide the "Show" link
 
-        $.ajax({
+        /* $.ajax({
             url: '<?php echo base_url('/'); ?>admin/products/last_purchase_price',
             type: 'POST',
             data: {
@@ -419,12 +419,12 @@
                     $(`.purchase-price[data-product-id="${productId}"]`).text(`₹${purchasePrice}`).show();
                     $(`.show_pp[data-product-id="${productId}"]`).hide();
                 } else {
-                    alert(response.message);
+                    console.log(response.message);
                 }
             },
             error: function() {
-                alert('An error occurred while fetching the purchase price.');
+                console.log('An error occurred while fetching the purchase price.');
             }
-        });
+        }); */
     });
 </script>

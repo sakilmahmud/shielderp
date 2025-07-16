@@ -57,6 +57,7 @@
                         <input type="hidden" name="cgst[]" value="<?php echo $product['cgst']; ?>">
                         <input type="hidden" name="sgst[]" value="<?php echo $product['sgst']; ?>">
                         <input type="hidden" name="gst_amount[]" value="<?php echo $product['gst_amount']; ?>">
+                        <input type="hidden" name="gst_rate[]" value="<?php echo $product['cgst'] + $product['cgst']; ?>">
                         <input type="hidden" name="hsn_code[]" value="<?php echo $product['hsn_code']; ?>">
                         <input type="hidden" name="final_price[]" value="<?php echo $product['final_price']; ?>">
                     </tr>

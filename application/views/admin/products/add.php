@@ -81,9 +81,11 @@
                                     </div>
                                     <div class="col-md-4 col-sm-12 mb-3">
                                         <div class="form-group">
-                                            <div class="mt-1 d-flex justify-content-between">
+                                            <div class="my-1 d-flex justify-content-between">
                                                 <label for="category_id">Category <sup>*</sup></label>
-                                                <a href="javascript:void(0)" class="text-sm add_category">Add Category</a>
+                                                <a href="javascript:void(0)" class="text-sm add_category">
+                                                    <span class="badge bg-success">Add Category</span>
+                                                </a>
                                             </div>
                                             <select class="form-control category_id" id="category_id" name="category_id">
                                                 <option value="">Select Category</option>
@@ -96,11 +98,13 @@
                                     </div>
                                     <div class="col-md-4 col-sm-12 mb-3">
                                         <div class="form-group">
-                                            <div class="mt-1 d-flex justify-content-between">
+                                            <div class="my-1 d-flex justify-content-between">
                                                 <label for="brand_id">Brand</label>
-                                                <a href="javascript:void(0)" class="text-sm add_brand">Add Brand</a>
+                                                <a href="javascript:void(0)" class="text-sm add_brand">
+                                                    <span class="badge bg-success">Add Brand</span>
+                                                </a>
                                             </div>
-                                            <select class="form-control brand_id" id="brand_id" name="brand_id">
+                                            <select class="form-control brand_id" name="brand_id">
                                                 <option value="">Select Brand</option>
                                                 <?php foreach ($brands as $brand) { ?>
                                                     <option value="<?php echo $brand['id']; ?>" <?php echo set_select('brand_id', $brand['id'], isset($product['brand_id']) && $product['brand_id'] == $brand['id']); ?>><?php echo ucwords($brand['brand_name']); ?></option>
