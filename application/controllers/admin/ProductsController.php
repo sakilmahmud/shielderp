@@ -29,7 +29,7 @@ class ProductsController extends MY_Controller
         $data['categories'] = $this->CategoryModel->get_all_categories();
         $data['brands'] = $this->BrandModel->get_all_brands();
         $data['product_types'] = $this->ProductTypeModel->get_all_product_types();
-
+        $data['hsn_codes'] = $this->HsnCodeModel->get_all();
 
         $this->render_admin('admin/products/index', $data);
     }
@@ -118,6 +118,7 @@ class ProductsController extends MY_Controller
                 $product_link,
                 $product['category_name'],
                 $product['brand_name'],
+                $product['hsn_code'],
                 $price_lists,
                 $stock_lists,
                 $actions,
@@ -145,7 +146,6 @@ class ProductsController extends MY_Controller
         $data['product_types'] = $this->ProductTypeModel->get_all_product_types();  // Get all brands
         $data['units'] = $this->UnitModel->get_all_units();  // Get all units
         $data['hsn_codes'] = $this->HsnCodeModel->get_all(); // Add this
-
 
         $this->form_validation->set_rules('name', 'Name', 'required');
         $this->form_validation->set_rules('category_id', 'Category', 'required');
@@ -528,6 +528,7 @@ class ProductsController extends MY_Controller
         $mrp = $this->input->post('mrp');
         $sale_price = $this->input->post('sale_price');
         $purchase_price = $this->input->post('purchase_price');
+        $hsn_code_id = $this->input->post('hsn_code_id');
 
         if (empty($product_id) || !is_numeric($mrp) || !is_numeric($sale_price) || !is_numeric($purchase_price)) {
             echo json_encode(['status' => 'error', 'message' => 'Invalid input']);
@@ -535,6 +536,7 @@ class ProductsController extends MY_Controller
         }
 
         $data = [
+            'hsn_code_id' => $hsn_code_id,
             'regular_price' => $mrp,
             'sale_price' => $sale_price,
             'purchase_price' => $purchase_price,
@@ -796,16 +798,10 @@ class ProductsController extends MY_Controller
             redirect('admin/products-export-import');
         }
 
-        $added = $skipped = 0;
+        $added = $skipped = $updated = 0;
 
         foreach ($csv_data as $row) {
             list($name, $slug, $hsn_code, $purchase_price, $sale_price, $regular_price, $highlight, $desc, $cat, $brand, $stock, $unit) = $row;
-
-            $exists = $this->ProductModel->get_by_name_slug($name, $slug);
-            if ($exists) {
-                $skipped++;
-                continue;
-            }
 
             $hsn_id = $this->HsnCodeModel->get_or_create(trim($hsn_code));
             $cat_id = $this->CategoryModel->get_or_create(trim($cat));
@@ -825,14 +821,22 @@ class ProductsController extends MY_Controller
                 'brand_id' => $brand_id,
                 'low_stock_alert' => (int) $stock,
                 'unit_id' => $unit_id,
-                'created_at' => date('Y-m-d H:i:s')
+                'updated_at' => date('Y-m-d H:i:s')
             ];
 
-            $this->ProductModel->insert_product($data);
-            $added++;
+            $existing_product = $this->ProductModel->get_product_by_name(trim($name));
+
+            if ($existing_product) {
+                $this->ProductModel->update_product($existing_product->id, $data);
+                $updated++;
+            } else {
+                $data['created_at'] = date('Y-m-d H:i:s');
+                $this->ProductModel->insert_product($data);
+                $added++;
+            }
         }
 
-        $this->session->set_flashdata('message', "$added products imported, $skipped skipped (duplicates).\n");
+        $this->session->set_flashdata('message', "$added products imported, $updated products updated, $skipped skipped (duplicates).\n");
         redirect('admin/products-export-import');
     }
 }

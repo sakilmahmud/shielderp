@@ -35,6 +35,17 @@
                                     <textarea class="form-control" id="address" name="address" required><?php echo set_value('address'); ?></textarea>
                                     <?php echo form_error('address'); ?>
                                 </div>
+
+                                <div class="form-group mb-3">
+                                    <label for="state_id">State</label>
+                                    <select name="state_id" id="state_id" class="form-control" required>
+                                        <option value="">Select State</option>
+                                        <?php foreach ($states as $state): ?>
+                                            <option value="<?php echo $state['id']; ?>" <?php echo (set_value('state_id', $company_state) == $state['id']) ? 'selected' : ''; ?>><?php echo $state['state_name']; ?></option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                    <?php echo form_error('state_id'); ?>
+                                </div>
                                 <button type="submit" class="btn btn-primary">Add Customer</button>
                             </form>
                         </div>

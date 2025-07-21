@@ -40,6 +40,17 @@
                     <label for="company_gstin">GSTIN:</label>
                     <input type="text" name="company_gstin" value="<?php echo $settings['company_gstin']; ?>" class="form-control">
                 </div>
+
+                <!-- Company State -->
+                <div class="form-group">
+                    <label for="company_state">State:</label>
+                    <select name="company_state" class="form-control">
+                        <option value="">Select State</option>
+                        <?php foreach ($states as $state): ?>
+                            <option value="<?php echo $state['id']; ?>" <?php echo ($settings['company_state'] == $state['id']) ? 'selected' : ''; ?>><?php echo $state['state_name']; ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
                 <input type="hidden" name="page_url" value="<?= base_url('admin/settings/company_details') ?>">
 
                 <button type="submit" class="btn btn-primary mt-3">Save Company Details</button>

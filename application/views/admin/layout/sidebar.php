@@ -346,7 +346,7 @@
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a href="<?php echo base_url('admin/premiumOnly'); ?>" class="nav-link">
+                                <a href="<?php echo base_url('admin/reports/gstr'); ?>" class="nav-link <?php if ($activePage === 'gstr-reports') echo 'active'; ?>">
                                     <i class="bi bi-file-text nav-icon"></i>
                                     <p>GSTR</p>
                                 </a>
@@ -383,6 +383,12 @@
                                 <a href="<?php echo base_url('admin/settings/bank_details'); ?>" class="nav-link <?php if ($activePage === 'bank_details') echo 'active'; ?>">
                                     <i class="bi bi-bank nav-icon"></i>
                                     <p>Bank Details</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="<?php echo base_url('admin/settings/states'); ?>" class="nav-link <?php if ($activePage === 'states') echo 'active'; ?>">
+                                    <i class="bi bi-map nav-icon"></i>
+                                    <p>States</p>
                                 </a>
                             </li>
                         </ul>

@@ -89,6 +89,7 @@
                                     <th>Name</th>
                                     <th>Category</th>
                                     <th>Brand</th>
+                                    <th>HSN Code</th>
                                     <th>Price</th>
                                     <th>Stocks</th>
                                     <th>Action</th>
@@ -159,6 +160,9 @@
             },
             {
                 data: 7
+            },
+            {
+                data: 8
             }
         ]
     });
@@ -238,16 +242,35 @@
             <div class="modal-body">
                 <form id="quickEditForm">
                     <div class="mb-3">
-                        <label for="mrp" class="form-label">MRP</label>
-                        <input type="number" class="form-control" id="mrp" name="mrp" step="0.01" required>
+                        <label for="purchase_price" class="form-label">Purchase Price</label>
+                        <input type="number" class="form-control" id="purchase_price" name="purchase_price" step="0.01" required>
                     </div>
                     <div class="mb-3">
                         <label for="sale_price" class="form-label">Sale Price</label>
                         <input type="number" class="form-control" id="sale_price" name="sale_price" step="0.01" required>
                     </div>
                     <div class="mb-3">
-                        <label for="purchase_price" class="form-label">Purchase Price</label>
-                        <input type="number" class="form-control" id="purchase_price" name="purchase_price" step="0.01" required>
+                        <label for="mrp" class="form-label">MRP</label>
+                        <input type="number" class="form-control" id="mrp" name="mrp" step="0.01" required>
+                    </div>
+                    <div class="mb-3">
+                        <div class="form-group">
+                            <label for="hsn_code_id">HSN Code</label>
+                            <div class="input-group">
+                                <select class="form-control" id="hsn_code_id" name="hsn_code_id">
+                                    <option value="">Select HSN</option>
+                                    <?php foreach ($hsn_codes as $hsn) { ?>
+                                        <option value="<?= $hsn['id']; ?>"
+                                            data-gst="<?= $hsn['gst_rate']; ?>"
+                                            <?= set_select('hsn_code_id', $hsn['id'], isset($product['hsn_code_id']) && $product['hsn_code_id'] == $hsn['id']) ?>>
+                                            <?= $hsn['hsn_code']; ?> - <?= $hsn['description']; ?> (<?= $hsn['gst_rate']; ?>%)
+                                        </option>
+                                    <?php } ?>
+                                </select>
+                                <button type="button" class="btn btn-outline-secondary" id="add_hsn_code_btn">Add HSN</button>
+                            </div>
+                            <?php echo form_error('hsn_code_id'); ?>
+                        </div>
                     </div>
                     <input type="hidden" id="product_id" name="product_id">
                 </form>
@@ -286,13 +309,7 @@
                 if (response && response.prices) {
                     // Populate form fields with prices
                     $('#st_sale_price').val(response.prices.sale_price || 0);
-
-                    // Use 'last_purchase_price' if available, otherwise fallback to 'purchase_price'
-                    const purchasePrice = response.last_purchase_price !== null ?
-                        response.last_purchase_price :
-                        response.prices.purchase_price;
-
-                    $('#st_purchase_price').val(purchasePrice || 0);
+                    $('#st_purchase_price').val(response.prices.purchase_price || 0);
                 } else {
                     $('#st_sale_price').val(0);
                     $('#st_purchase_price').val(0);
@@ -321,8 +338,6 @@
                 if (response.status === 'success') {
                     alert('Stock updated successfully!');
                     $('#stockUpdateModal').modal('hide');
-                    //location.reload(); // Reload the page to reflect changes
-
                     table.ajax.reload();
                 } else {
                     alert(response.message || 'Failed to update stock.');
@@ -340,7 +355,7 @@
         const productName = $(this).data('product-name');
 
         // Populate modal fields
-        $('#quickEditModalLabel').text(`Edit Product: ${productName}`);
+        $('#quickEditModalLabel').text(`${productName}`);
         $('#product_id').val(productId);
 
         $.ajax({
@@ -352,19 +367,15 @@
             dataType: 'json',
             success: function(response) {
                 if (response && response.prices) {
-
-                    // Use 'last_purchase_price' if available, otherwise fallback to 'purchase_price'
-                    const purchasePrice = response.last_purchase_price !== null ?
-                        response.last_purchase_price :
-                        response.prices.purchase_price;
-
-                    $('#mrp').val(response.prices.regular_price);
-                    $('#sale_price').val(response.prices.sale_price);
-                    $('#purchase_price').val(purchasePrice);
+                    $('#purchase_price').val(response.prices.purchase_price || 0);
+                    $('#mrp').val(response.prices.regular_price || 0);
+                    $('#sale_price').val(response.prices.sale_price || 0);
+                    $('#hsn_code_id').val(response.prices.hsn_code_id || '');
                 } else {
                     $('#mrp').val(0);
                     $('#sale_price').val(0);
                     $('#purchase_price').val(0);
+                    $('#hsn_code_id').val('');
                 }
             },
             error: function() {
@@ -389,7 +400,8 @@
                 if (response.status === 'success') {
                     alert('Product updated successfully!');
                     $('#quickEditModal').modal('hide');
-                    location.reload(); // Reload the page to reflect changes
+                    table.ajax.reload();
+                    //location.reload(); // Reload the page to reflect changes
                 } else {
                     alert(response.message || 'Failed to update the product.');
                 }
@@ -402,29 +414,8 @@
 
     $(document).on('click', '.show_pp', function() {
         const productId = $(this).data('product-id'); // Add a `data-product-id` attribute to your HTML element
-        const purchasePrice = $(this).data('purchase-price');
+        var purchasePrice = $(this).data('purchase-price');
         $(this).siblings('.purchase-price').text(purchasePrice).show(); // Show the purchase price
         $(this).hide(); // Hide the "Show" link
-
-        /* $.ajax({
-            url: '<?php echo base_url('/'); ?>admin/products/last_purchase_price',
-            type: 'POST',
-            data: {
-                product_id: productId
-            },
-            dataType: 'json',
-            success: function(response) {
-                if (response.status === 'success') {
-                    const purchasePrice = response.purchase_price;
-                    $(`.purchase-price[data-product-id="${productId}"]`).text(`₹${purchasePrice}`).show();
-                    $(`.show_pp[data-product-id="${productId}"]`).hide();
-                } else {
-                    console.log(response.message);
-                }
-            },
-            error: function() {
-                console.log('An error occurred while fetching the purchase price.');
-            }
-        }); */
     });
 </script>

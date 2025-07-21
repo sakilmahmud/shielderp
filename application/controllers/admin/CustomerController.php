@@ -7,6 +7,8 @@ class CustomerController extends MY_Controller
     {
         parent::__construct();
         $this->load->model('CustomerModel');
+        $this->load->model('StateModel');
+        $this->load->model('SettingsModel');
         $this->load->library('form_validation');
 
         if (!$this->session->userdata('username')) {
@@ -60,6 +62,8 @@ class CustomerController extends MY_Controller
     public function add()
     {
         $data['activePage'] = 'customers';
+        $data['states'] = $this->StateModel->get_all_states();
+        $data['company_state'] = $this->SettingsModel->get_setting('company_state');
 
         $this->form_validation->set_rules('customer_name', 'Customer Name', 'required');
         $this->form_validation->set_rules('phone', 'Phone', 'required');
@@ -74,7 +78,8 @@ class CustomerController extends MY_Controller
                 'phone' => $this->input->post('phone'),
                 'email' => $this->input->post('email'),
                 'gst_number' => $this->input->post('gst_number'),
-                'address' => $this->input->post('address')
+                'address' => $this->input->post('address'),
+                'state_id' => $this->input->post('state_id')
             );
 
             $this->CustomerModel->insert_customer($customerData);
@@ -86,6 +91,7 @@ class CustomerController extends MY_Controller
     public function edit($id)
     {
         $data['activePage'] = 'customers';
+        $data['states'] = $this->StateModel->get_all_states();
         $data['customer'] = $this->CustomerModel->get_customer_by_id($id);
 
         if (empty($data['customer'])) {
@@ -105,7 +111,8 @@ class CustomerController extends MY_Controller
                 'phone' => $this->input->post('phone'),
                 'email' => $this->input->post('email'),
                 'gst_number' => $this->input->post('gst_number'),
-                'address' => $this->input->post('address')
+                'address' => $this->input->post('address'),
+                'state_id' => $this->input->post('state_id')
             );
 
             $this->CustomerModel->update_customer($id, $customerData);
@@ -125,6 +132,8 @@ class CustomerController extends MY_Controller
         $tab = $this->input->get('tab') ?? 'profile';
 
         $data['activePage'] = 'customers';
+        $this->load->model('StateModel');
+        $data['states'] = $this->StateModel->get_all_states();
         $data['customer'] = $this->CustomerModel->get_customer_by_id($id);
         $data['tab'] = $tab;
 
@@ -135,6 +144,7 @@ class CustomerController extends MY_Controller
             $this->form_validation->set_rules('customer_name', 'Customer Name', 'required');
             $this->form_validation->set_rules('phone', 'Phone', 'required');
             $this->form_validation->set_rules('address', 'Address', 'required');
+            $this->form_validation->set_rules('state_id', 'State', 'required');
 
             if ($this->form_validation->run()) {
                 $update = [
@@ -143,6 +153,7 @@ class CustomerController extends MY_Controller
                     'email' => $this->input->post('email'),
                     'gst_number' => $this->input->post('gst_number'),
                     'address' => $this->input->post('address'),
+                    'state_id' => $this->input->post('state_id'),
                     'status' => $this->input->post('status'),
                     'updated_at' => date('Y-m-d H:i:s'),
                 ];

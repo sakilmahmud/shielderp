@@ -2,7 +2,10 @@
     <section class="content-header">
         <div class="container-fluid d-flex justify-content-between align-items-center my-2">
             <h2>HSN Codes</h2>
-            <a href="<?= base_url('admin/hsn-codes/create') ?>" class="btn btn-primary btn-sm">Add HSN Code</a>
+                        <div>
+                <a href="<?= base_url('admin/hsn-codes-export-import') ?>" class="btn btn-info btn-sm">Export / Import</a>
+                <a href="<?= base_url('admin/hsn-codes/create') ?>" class="btn btn-primary btn-sm">Add HSN Code</a>
+            </div>
         </div>
     </section>
 

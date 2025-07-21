@@ -34,6 +34,10 @@ $route['admin/ajax/low-stock'] = 'AdminController/ajax_low_stock';
 $route['admin/settings'] = 'AdminController/generalSettings';
 $route['admin/settings/company_details'] = 'AdminController/companyDetails';
 $route['admin/settings/bank_details'] = 'AdminController/bankDetails';
+$route['admin/settings/states'] = 'admin/settings/StatesController/index';
+$route['admin/settings/states/add'] = 'admin/settings/StatesController/add';
+$route['admin/settings/states/edit/(:num)'] = 'admin/settings/StatesController/edit/$1';
+$route['admin/settings/states/delete/(:num)'] = 'admin/settings/StatesController/delete/$1';
 $route['admin/settings/update'] = 'AdminController/updateSettings';
 
 
@@ -151,6 +155,9 @@ $route['admin/hsn-codes/edit/(:num)'] = 'admin/HsnCodes/edit/$1';
 $route['admin/hsn-codes/delete/(:num)'] = 'admin/HsnCodes/delete/$1';
 $route['admin/hsn-codes/ajax-list'] = 'admin/HsnCodes/ajax_list';
 $route['admin/hsn-codes/ajax_add'] = 'admin/HsnCodes/ajax_add';
+$route['admin/hsn-codes-export-import'] = 'admin/HsnCodes/export_import';
+$route['admin/export/hsn-codes'] = 'admin/HsnCodes/export_csv';
+$route['admin/import/hsn-codes'] = 'admin/HsnCodes/import_csv';
 
 
 /** end of hsn */
@@ -326,6 +333,8 @@ $route['admin/reports/accounts/export_expense_ledger/(:any)'] = 'admin/reports/A
 
 
 $route['admin/reports/accounts/tax'] = 'admin/reports/AccountController/tax';
+$route['admin/reports/gstr'] = 'admin/reports/GstrController/index';
+$route['admin/reports/gstr/generate_json'] = 'admin/reports/GstrController/generate_json';
 $route['admin/reports/accounts/chart-of-accounts'] = 'admin/reports/AccountController/chart_of_accounts';
 
 $route['admin/reminder/add'] = 'AdminController/add_reminder';

@@ -44,10 +44,11 @@ class ProductModel extends CI_Model
 
     public function get_filtered_products($category_id = null, $brand_id = null, $product_type_id = null, $stock = null, $search_value, $start, $length)
     {
-        $this->db->select('products.*, categories.name as category_name, brands.brand_name');
+        $this->db->select('products.*, categories.name as category_name, brands.brand_name, hsn_codes.hsn_code');
         $this->db->from('products');
         $this->db->join('categories', 'products.category_id = categories.id', 'left');
         $this->db->join('brands', 'products.brand_id = brands.id', 'left');
+        $this->db->join('hsn_codes', 'products.hsn_code_id = hsn_codes.id', 'left');
 
         // Apply filters if set
         if ($category_id) {
@@ -67,6 +68,7 @@ class ProductModel extends CI_Model
             $this->db->or_like('products.description', $search_value);
             $this->db->or_like('categories.name', $search_value);
             $this->db->or_like('brands.brand_name', $search_value);
+            $this->db->or_like('hsn_codes.hsn_code', $search_value);
             $this->db->group_end();
         }
         // Pagination
@@ -228,7 +230,7 @@ class ProductModel extends CI_Model
 
     public function get_product_prices($product_id)
     {
-        $this->db->select('regular_price, sale_price, purchase_price');
+        $this->db->select('regular_price, sale_price, purchase_price, hsn_code_id');
         $this->db->from('products');
         $this->db->where('id', $product_id);
         $this->db->order_by('updated_at', 'DESC'); // Assuming you have a timestamp or similar column

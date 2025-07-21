@@ -18,6 +18,12 @@ class SettingsModel extends CI_Model
         return $result;
     }
 
+    public function get_setting($setting_name)
+    {
+        $query = $this->db->get_where('settings', ['setting_name' => $setting_name]);
+        return $query->row()->setting_value;
+    }
+
     public function getSetting($setting_name)
     {
         // Replace 'settings' with your actual table name for storing settings

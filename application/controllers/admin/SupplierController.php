@@ -25,10 +25,14 @@ class SupplierController extends MY_Controller
     public function add()
     {
         $data['activePage'] = 'suppliers';
+        $this->load->model('StateModel');
+        $data['states'] = $this->StateModel->get_all_states();
+        $data['company_state'] = $this->SettingsModel->get_setting('company_state');
 
         $this->form_validation->set_rules('supplier_name', 'Supplier Name', 'required');
         $this->form_validation->set_rules('phone', 'Phone', 'required');
         $this->form_validation->set_rules('address', 'Address', 'required');
+        $this->form_validation->set_rules('state_id', 'State', 'required');
 
         if ($this->form_validation->run() === FALSE) {
 
@@ -39,7 +43,8 @@ class SupplierController extends MY_Controller
                 'phone' => $this->input->post('phone'),
                 'email' => $this->input->post('email'),
                 'address' => $this->input->post('address'),
-                'gst_number' => $this->input->post('gst_number')
+                'gst_number' => $this->input->post('gst_number'),
+                'state_id' => $this->input->post('state_id')
             );
 
             $this->SupplierModel->insert_supplier($supplierData);
@@ -51,6 +56,8 @@ class SupplierController extends MY_Controller
     public function edit($id)
     {
         $data['activePage'] = 'suppliers';
+        $this->load->model('StateModel');
+        $data['states'] = $this->StateModel->get_all_states();
         $data['supplier'] = $this->SupplierModel->get_supplier($id);
 
         if (empty($data['supplier'])) {
@@ -60,6 +67,7 @@ class SupplierController extends MY_Controller
         $this->form_validation->set_rules('supplier_name', 'Supplier Name', 'required');
         $this->form_validation->set_rules('phone', 'Phone', 'required');
         $this->form_validation->set_rules('address', 'Address', 'required');
+        $this->form_validation->set_rules('state_id', 'State', 'required');
 
         if ($this->form_validation->run() === FALSE) {
 
@@ -70,7 +78,8 @@ class SupplierController extends MY_Controller
                 'phone' => $this->input->post('phone'),
                 'email' => $this->input->post('email'),
                 'address' => $this->input->post('address'),
-                'gst_number' => $this->input->post('gst_number')
+                'gst_number' => $this->input->post('gst_number'),
+                'state_id' => $this->input->post('state_id')
             );
 
             $this->SupplierModel->update_supplier($id, $supplierData);

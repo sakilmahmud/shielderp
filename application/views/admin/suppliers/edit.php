@@ -24,7 +24,7 @@
                                 </div>
                                 <div class="form-group mb-3">
                                     <label for="email">Email</label>
-                                    <input type="email" class="form-control" id="email" name="email" value="<?php echo set_value('email', $supplier['email']); ?>" required>
+                                    <input type="email" class="form-control" id="email" name="email" value="<?php echo set_value('email', $supplier['email']); ?>">
                                     <?php echo form_error('email'); ?>
                                 </div>
                                 <div class="form-group mb-3">
@@ -33,8 +33,18 @@
                                     <?php echo form_error('address'); ?>
                                 </div>
                                 <div class="form-group mb-3">
+                                    <label for="state_id">State</label>
+                                    <select name="state_id" id="state_id" class="form-control" required>
+                                        <option value="">Select State</option>
+                                        <?php foreach ($states as $state): ?>
+                                            <option value="<?php echo $state['id']; ?>" <?php echo (set_value('state_id', $supplier['state_id']) == $state['id']) ? 'selected' : ''; ?>><?php echo $state['state_name']; ?></option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                    <?php echo form_error('state_id'); ?>
+                                </div>
+                                <div class="form-group mb-3">
                                     <label for="gst_number">GST Number</label>
-                                    <input type="text" class="form-control" id="gst_number" name="gst_number" value="<?php echo set_value('gst_number', $supplier['gst_number']); ?>" required>
+                                    <input type="text" class="form-control" id="gst_number" name="gst_number" value="<?php echo set_value('gst_number', $supplier['gst_number']); ?>">
                                     <?php echo form_error('gst_number'); ?>
                                 </div>
                                 <button type="submit" class="btn btn-primary">Update Supplier</button>

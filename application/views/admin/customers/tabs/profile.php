@@ -28,6 +28,16 @@
         <textarea name="address" class="form-control" rows="3"><?= $customer['address'] ?? '' ?></textarea>
     </div>
 
+    <div class="col-md-6">
+        <label for="state_id" class="form-label">State</label>
+        <select name="state_id" id="state_id" class="form-control" required>
+            <option value="">Select State</option>
+            <?php foreach ($states as $state): ?>
+                <option value="<?php echo $state['id']; ?>" <?php echo (set_value('state_id', $customer['state_id']) == $state['id']) ? 'selected' : ''; ?>><?php echo $state['state_name']; ?></option>
+            <?php endforeach; ?>
+        </select>
+    </div>
+
     <div class="col-md-4">
         <label for="status" class="form-label">Status</label>
         <select name="status" class="form-control">

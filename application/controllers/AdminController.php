@@ -718,6 +718,8 @@ class AdminController extends MY_Controller
     public function companyDetails()
     {
         $data['activePage'] = 'company_details';
+        $this->load->model('StateModel');
+        $data['states'] = $this->StateModel->get_all_states();
         $data['settings'] = $this->SettingsModel->getSettings();
 
         $this->render_admin('admin/company_details', $data);
