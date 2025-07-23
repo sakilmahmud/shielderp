@@ -140,19 +140,20 @@
                                                 <th>Discount</th>
                                                 <th>GST</th>
                                                 <th>Total</th>
-                                                <th width="5%"></th>
+                                                <th width="10%"></th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <?php foreach ($purchase_order_products as $product) : ?>
-                                                <tr>
+                                                <tr data-product-id="<?php echo $product['product_id']; ?>">
                                                     <td><?php echo $product['product_name']; ?> x <b><?php echo $product['qnt']; ?></b></td>
                                                     <td>₹<?php echo $product['purchase_price']; ?></td>
                                                     <td>₹<?php echo $product['single_net_price']; ?></td>
                                                     <td><?php echo ($product['discount_type'] === 1) ? "₹" . $product['discount'] : $product['discount'] . "%"; ?></td>
                                                     <td>₹<?php echo $product['gst_amount']; ?> (<?php echo $product['gst_rate']; ?>%)</td>
                                                     <td>₹<?php echo $product['final_price']; ?></td>
-                                                    <td width="5%" class="text-center"><button type="button" class="btn btn-danger btn-sm remove-item">X</button></td>
+                                                    <td class="text-center"><button type="button" class="btn btn-info btn-sm edit-item me-2"><i class="bi bi-pencil-square"></i></button><button type="button" class="btn btn-danger btn-sm remove-item"><i class="bi bi-x-circle"></i></button>
+                                                    </td>
                                                     <input type="hidden" name="product_id[]" value="<?php echo $product['product_id']; ?>">
                                                     <input type="hidden" name='qnt[]' value="<?php echo $product['qnt']; ?>">
                                                     <input type="hidden" name="purchase_price[]" value="<?php echo $product['purchase_price']; ?>">
@@ -419,11 +420,6 @@
     </div>
 </div>
 
-<script>
-    let addProduct_url = "<?php echo base_url('admin/products/add-ajax'); ?>";
-    let addCategory_url = "<?php echo base_url('admin/categories/add-ajax'); ?>";
-    let addBrand_url = "<?php echo base_url('admin/brands/add-ajax'); ?>";
-</script>
 <script>
     $(document).ready(function() {
 

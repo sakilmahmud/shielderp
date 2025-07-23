@@ -138,9 +138,7 @@
                                                 <th>Action</th>
                                             </tr>
                                         </thead>
-                                        <tbody>
-                                            <!-- Rows will be dynamically added here -->
-                                        </tbody>
+                                        <tbody></tbody>
                                     </table>
                                 </div>
                                 <div class="total_amount_section">

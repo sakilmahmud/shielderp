@@ -1,12 +1,5 @@
 $(document).ready(function () {
-  /* while update purchase*/
   $("#is_gst").change();
-
-  /* setTimeout(function () {
-		calculateTotals();
-	}, 2500); */
-
-  /* end while update purchase*/
 
   $(".product-row").on("input", "input, select", function () {
     var $row = $(this).closest(".product-row");
@@ -24,7 +17,6 @@ $(document).ready(function () {
     var supplier_id = $("#supplier_id").val();
     var invoice_no = $("#invoice_no").val();
 
-    // supplier
     if (
       supplier_id === "" ||
       supplier_id === null ||
@@ -35,28 +27,24 @@ $(document).ready(function () {
       supplierInput.addClass("error shake"); // Add error and shake classes
       supplierInput.focus(); // Keep cursor focused
 
-      // Remove shake class after animation ends so it can re-trigger next time
       setTimeout(() => {
         supplierInput.removeClass("shake");
       }, 500);
       return false;
     }
 
-    // invoice_no
     if (invoice_no === "" || invoice_no === null || invoice_no === undefined) {
       let invoiceInput = $("#invoice_no");
 
       invoiceInput.addClass("error shake"); // Add error and shake classes
       invoiceInput.focus(); // Keep cursor focused
 
-      // Remove shake class after animation ends so it can re-trigger next time
       setTimeout(() => {
         invoiceInput.removeClass("shake");
       }, 500);
       return false;
     }
 
-    // Validate product_id
     if (product_id === "" || product_id === null || product_id === undefined) {
       let productInput = productRow.find(".product_id");
       let productInput2 = productRow.find(".chosen-single");
@@ -65,27 +53,23 @@ $(document).ready(function () {
       productInput2.addClass("error shake"); // Add error and shake classes
       productInput.focus(); // Keep cursor focused
 
-      // Remove shake class after animation ends so it can re-trigger next time
       setTimeout(() => {
         productInput.removeClass("shake");
       }, 500);
       return false;
     }
 
-    // Validate quantity
     if (isNaN(quantity) || quantity < 1) {
       alert("Please enter a valid quantity greater than or equal to 1.");
       return false;
     }
 
-    // Validate price
     if (isNaN(price) || price < 1) {
       let priceInput = productRow.find(".purchase_price");
 
       priceInput.addClass("error shake"); // Add error and shake classes
       priceInput.focus(); // Keep cursor focused
 
-      // Remove shake class after animation ends so it can re-trigger next time
       setTimeout(() => {
         priceInput.removeClass("shake");
       }, 500);
@@ -93,10 +77,8 @@ $(document).ready(function () {
       return false;
     }
 
-    // Set the fields to disabled
     $("#is_gst, #supplier_id").prop("disabled", true);
 
-    // Add hidden inputs to hold the values
     $("#is_gst").after(
       '<input type="hidden" name="is_gst" value="' + $("#is_gst").val() + '">'
     );
@@ -106,20 +88,32 @@ $(document).ready(function () {
         '">'
     );
 
-    // If all validations pass, add the product to the table
-    addProductToTable();
+    addOrUpdateProductInTable();
   });
 
-  // Event: Remove product from table
   $(document).on("click", ".remove-item", function () {
     $(this).closest("tr").remove();
     calculateTotals();
   });
 
-  // Initial calculation for existing products
-  $(".product-row").each(function () {
-    ///calculateTotals();
-    //calculateAmounts($(this));
+  $(document).on("click", ".edit-item", function () {
+    var $row = $(this).closest("tr");
+    var product_id = $row.find("input[name='product_id[]']").val();
+    var quantity = $row.find("input[name='qnt[]']").val();
+    var price = $row.find("input[name='purchase_price[]']").val();
+    var discountType = $row.find("input[name='discount_type[]']").val();
+    var discountAmount = $row.find("input[name='discount[]']").val();
+    var gstRate = $row.find("input[name='gst_rate[]']").val();
+
+    var $productRow = $(".product-row");
+    $productRow.find(".product_id").val(product_id).trigger("chosen:updated");
+    $productRow.find(".qnt").val(quantity);
+    $productRow.find(".purchase_price").val(price);
+    $productRow.find(".discount_type").val(discountType).trigger("change");
+    $productRow.find(".discount").val(discountAmount);
+    $productRow.find(".gst_rate").val(gstRate);
+
+    calculateAmounts($productRow);
   });
 });
 
@@ -133,7 +127,6 @@ $(document).on("change", ".discount_type", function () {
   }
 });
 
-// Handle GST/Non-GST change
 $("#is_gst").on("change", function () {
   let is_gst = $(this).val();
   let gstRate = is_gst == 1 ? 18 : 0;
@@ -151,7 +144,7 @@ $("#is_gst").on("change", function () {
 });
 
 function calculateAmounts($row) {
-  var quantity = parseFloat($row.find(".qnt").val()) || 1; // Default to 1 if empty
+  var quantity = parseFloat($row.find(".qnt").val()) || 1;
   var price = parseFloat($row.find(".purchase_price").val()) || 0;
   var discountType = $row.find(".discount_type").val();
   var discount = parseFloat($row.find(".discount").val()) || 0;
@@ -159,10 +152,8 @@ function calculateAmounts($row) {
 
   var discountedPrice = price;
   if (discountType == "2") {
-    // Percentage
     discountedPrice -= (price * discount) / 100;
   } else if (discountType == "1") {
-    // Flat
     discountedPrice -= discount;
   }
 
@@ -172,45 +163,36 @@ function calculateAmounts($row) {
   var net_single_price = finalPrice;
   var sale_single_price = finalPrice + (finalPrice * 10) / 100;
 
-  finalPrice *= quantity; // Multiply by quantity
-  //gstAmount *= quantity; // Multiply by quantity
-  console.log("here before");
+  finalPrice *= quantity;
+
   $row.find(".net_price").html("₹" + net_single_price.toFixed(2));
   $row.find(".single_net_price").val(net_single_price.toFixed(2));
   $row.find(".sale_price").html("₹" + sale_single_price.toFixed(2));
   $row.find(".single_sale_price").val(sale_single_price.toFixed(2));
   $row.find(".gst_amount").val(gstAmount.toFixed(2));
   $row.find(".final_price").val(finalPrice.toFixed(2));
-  console.log("here after");
 
   calculateTotals();
 }
 
 function calculateTotals() {
-  //alert("hello");
   var subTotal = 0;
   var totalDiscount = 0;
   var totalGst = 0;
   var grandTotal = 0;
-  var tbody = $("#product-rows tbody tr");
-  console.log(tbody);
+
   $("#product-rows tbody tr").each(function () {
     var quantity = parseFloat($(this).find("input[name='qnt[]']").val()) || 1;
-    console.log("quantity", quantity);
     var price =
       parseFloat($(this).find("input[name='purchase_price[]']").val()) || 0;
     var discountType = $(this).find("input[name='discount_type[]']").val();
     var discount =
       parseFloat($(this).find("input[name='discount[]']").val()) || 0;
-    var gstRate =
-      parseFloat($(this).find("input[name='gst_rate[]']").val()) || 0;
 
     var discountedPrice = price;
     if (discountType == "2") {
-      // Percentage
       discountedPrice -= (price * discount) / 100;
     } else if (discountType == "1") {
-      // Flat
       discountedPrice -= discount;
     }
 
@@ -236,7 +218,7 @@ function calculateTotals() {
   updateTotalBalance();
 }
 
-function addProductToTable() {
+function addOrUpdateProductInTable() {
   var productRow = $(".product-row");
   var product_id = parseFloat(productRow.find(".product_id").val());
   var product = productRow.find(".product_id option:selected").text();
@@ -278,9 +260,10 @@ function addProductToTable() {
     single_sale_price +
     '">';
 
-  // Create a new row in the table
   var newRow =
-    "<tr>" +
+    "<tr data-product-id='" +
+    product_id +
+    "'>" +
     "<td>" +
     product +
     " x <b>" +
@@ -304,17 +287,22 @@ function addProductToTable() {
     "<td>₹" +
     total.toFixed(2) +
     "</td>" +
-    '<td width="5%"><button type="button" class="btn btn-danger btn-sm remove-item">X</button></td>' +
+    "<td class='text-center'><button type='button' class='btn btn-info btn-sm edit-item me-2'><i class='bi bi-pencil-square me-1'></i></button><button type='button' class='btn btn-danger btn-sm remove-item'><i class='bi bi-x-circle me-1'></i></button></td>" +
     hiddenFields +
     "</tr>";
 
-  // Append the new row to the table body
-  $("#product-rows tbody").append(newRow);
+  var existingRow = $("#product-rows tbody").find(
+    "tr[data-product-id='" + product_id + "']"
+  );
 
-  // Update the totals
+  if (existingRow.length > 0) {
+    existingRow.replaceWith(newRow);
+  } else {
+    $("#product-rows tbody").append(newRow);
+  }
+
   calculateTotals();
 
-  // Reset the form fields for new entry
   productRow.find("input, select").val("");
   productRow.find(".qnt").val("1");
   let is_gst = $("#is_gst").val();
@@ -327,66 +315,43 @@ function addProductToTable() {
   productRow.find(".product_id").chosen().trigger("chosen:updated");
 }
 
-/** add payment section */
 $(document).ready(function () {
-  // Add payment row on clicking plus icon
   $(document).on("click", ".add-payment", function () {
-    // Clone the existing payment row
     var newPaymentRow = $(".payment-row:first").clone();
-
-    // Reset the cloned row's input values
     newPaymentRow.find("input").val("");
-    //newPaymentRow.find("select").val("");
-
-    // Change the plus button to a minus button for removing
     newPaymentRow
       .find(".add-payment")
       .removeClass("btn-primary add-payment")
       .addClass("btn-danger remove-payment")
       .html('<i class="bi bi-dash-lg"></i>');
-
-    // Append the cloned payment row to the payment section
     $("#payment-section").append(newPaymentRow);
   });
 
-  // Remove payment row
   $(document).on("click", ".remove-payment", function () {
     $(this).closest(".payment-row").remove();
   });
 });
 
-// Function to calculate and update the balance amount
 function updateTotalBalance() {
-  // Get the total amount from the total_amount input field
   var totalAmount = parseFloat($("#total_amount").val()) || 0;
-  //alert(totalAmount);
-  // Initialize the total paid amount
   var totalPaid = 0;
 
-  // Loop through each payment_amount input field to sum the paid amounts
   $(".payment_amount").each(function () {
     var paymentAmount = parseFloat($(this).val()) || 0;
     totalPaid += paymentAmount;
   });
 
-  //alert(totalPaid);
-
-  // Calculate the balance amount
   var balanceAmount = totalAmount - totalPaid;
 
   if (parseFloat(balanceAmount) <= 0) {
-    //alert("btn hide");
     $(".add_update_payment_btn").hide();
   } else {
-    //alert("btn show");
     $(".add_update_payment_btn").show();
   }
 
-  // Update the balance_amount span with the calculated balance, ensuring it has 2 decimal places
   $(".balance_amount").text(balanceAmount.toFixed(2));
 }
 
-// Trigger balance update when total_amount or any payment_amount changes
 $("#total_amount, #payment-section").on(
   "input",
   ".payment_amount",
@@ -395,7 +360,6 @@ $("#total_amount, #payment-section").on(
   }
 );
 
-// Initially calculate balance on page load
 $(document).ready(function () {
   updateTotalBalance();
 });

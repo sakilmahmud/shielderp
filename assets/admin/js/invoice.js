@@ -164,7 +164,7 @@ $(document).ready(function () {
       "<td>₹" +
       total.toFixed(2) +
       "</td>" +
-      "<td class='text-center'><button type='button' class='btn btn-info btn-sm edit-item me-2'>Edit</button><button type='button' class='btn btn-danger btn-sm remove-item'>X</button></td>" +
+      "<td class='text-center'><button type='button' class='btn btn-info btn-sm edit-item me-2'><i class='bi bi-pencil-square me-1'></i></button><button type='button' class='btn btn-danger btn-sm remove-item'><i class='bi bi-x-circle me-1'></i></button></td>" +
       hiddenFields +
       "</tr>";
 

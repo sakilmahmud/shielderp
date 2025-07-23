@@ -46,8 +46,8 @@
                         </td>
                         <td>₹<?php echo $product['final_price']; ?></td>
                         <td width="5%" class="text-center">
-                            <button type="button" class="btn btn-info btn-sm edit-item">Edit</button>
-                            <button type="button" class="btn btn-danger btn-sm remove-item">X</button>
+                            <button type="button" class="btn btn-info btn-sm edit-item"><i class="bi bi-pencil-square"></i></button>
+                            <button type="button" class="btn btn-danger btn-sm remove-item"><i class="bi bi-x-circle"></i></button>
                         </td>
                         <input type="hidden" name="product_id[]" value="<?php echo $product['product_id']; ?>">
                         <input type="hidden" name="product_descriptions[]" value="<?php echo $product['product_descriptions']; ?>">
