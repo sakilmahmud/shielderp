@@ -162,9 +162,10 @@ class InvoiceModel extends CI_Model
 
     public function get_invoice_details($invoice_id)
     {
-        $this->db->select('invoice_details.*, products.name as product_name');
+        $this->db->select('invoice_details.*, products.name as product_name, hsn_codes.hsn_code');
         $this->db->from('invoice_details');
         $this->db->join('products', 'invoice_details.product_id = products.id');
+        $this->db->join('hsn_codes', 'products.hsn_code_id = hsn_codes.id', 'left');
         $this->db->where('invoice_details.invoice_id', $invoice_id);
         $query = $this->db->get();
         return $query->result_array();

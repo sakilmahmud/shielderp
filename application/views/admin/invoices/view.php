@@ -57,6 +57,7 @@
                                         <th>Product</th>
                                         <th>Quantity</th>
                                         <th>Price</th>
+                                        <th>HSN Code</th>
                                         <th>Discount</th>
                                         <th>GST</th>
                                         <th>Unit Price</th>
@@ -72,6 +73,7 @@
                                             </td>
                                             <td><?php echo $detail['quantity']; ?></td>
                                             <td>₹<?php echo $detail['price']; ?></td>
+                                            <td><?php echo $detail['hsn_code']; ?></td>
                                             <td><?php echo $detail['discount']; ?></td>
                                             <td><?php echo $detail['gst_amount']; ?></td>
                                             <td>
