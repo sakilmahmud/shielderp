@@ -181,20 +181,27 @@ class InvoiceController extends MY_Controller
             }
             $invoice_date = $this->input->post('invoice_date');
             // Prepare invoice data
+            $sub_total = $this->input->post('sub_total');
+            $total_discount = $this->input->post('total_discount');
+            $taxable_value = $sub_total - $total_discount;
+
+            // Prepare invoice data
             $invoiceData = [
                 'invoice_no' => $invoice_no,
                 'invoice_date' => $invoice_date,
                 'due_date' => $invoice_date,
                 'customer_id' => $customer_id, // Use the correct customer ID
                 'is_gst' => $is_gst,
-                'sub_total' => $this->input->post('sub_total'),
-                'total_discount' => $this->input->post('total_discount'),
+                'sub_total' => $sub_total,
+                'total_discount' => $total_discount,
                 'total_gst' => $this->input->post('total_gst'),
+                'round_off' => $this->input->post('round_off'),
                 'total_amount' => $total_amount,
+                'taxable_value' => $taxable_value,
+                'adjustment_balance' => 0.00,
                 'customer_name' => $customer_name,
                 'mobile' => $customer_phone,
                 'address' => $customer_address,
-                'round_off' => $this->input->post('round_off'),
                 'note' => $this->input->post('note'),
                 'created_by' => $this->session->userdata('user_id'),
                 'created_at' => $current_date_time
@@ -405,17 +412,22 @@ class InvoiceController extends MY_Controller
             }
 
             $round_off = $this->input->post('round_off');
+            $sub_total = $this->input->post('sub_total');
+            $total_discount = $this->input->post('total_discount');
+            $taxable_value = $sub_total - $total_discount;
             $total_amount = array_sum($this->input->post('final_price'));
             // Prepare updated invoice data
             $invoiceData = [
                 'invoice_date' => $this->input->post('invoice_date'),
                 'due_date' => $this->input->post('invoice_date'),
                 'customer_id' => $this->input->post('customer_id'),
-                'sub_total' => $this->input->post('sub_total'),
-                'total_discount' => $this->input->post('total_discount'),
+                'sub_total' => $sub_total,
+                'total_discount' => $total_discount,
                 'total_gst' => $this->input->post('total_gst'),
                 'round_off' => $this->input->post('round_off'),
                 'total_amount' => ($total_amount + $round_off),
+                'taxable_value' => $taxable_value,
+                'adjustment_balance' => 0.00,
                 'customer_name' => $this->input->post('customer_name'),
                 'mobile' => $this->input->post('mobile'),
                 'address' => $this->input->post('address'),

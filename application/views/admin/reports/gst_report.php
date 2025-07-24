@@ -18,17 +18,21 @@
                                 <div class="form-row">
                                     <div class="col-md-3">
                                         <label for="fromDate">From Date</label>
-                                        <input type="date" class="form-control" id="fromDate" name="from_date" required>
+                                        <input type="date" class="form-control" id="fromDate" name="from_date" value="<?= isset($from_date) ? $from_date : '' ?>" required>
                                     </div>
                                     <div class="col-md-3">
                                         <label for="toDate">To Date</label>
-                                        <input type="date" class="form-control" id="toDate" name="to_date" required>
+                                        <input type="date" class="form-control" id="toDate" name="to_date" value="<?= isset($to_date) ? $to_date : '' ?>" required>
                                     </div>
                                     <div class="col-md-3">
                                         <label for="gstType">GST Type</label>
                                         <select class="form-control" id="gstType" name="gst_type" required>
-                                            <option value="GSTR-1">GSTR-1</option>
-                                            <option value="GSTR3B">GSTR3B</option>
+                                            <option value="">Select GST Type</option>
+                                            <option value="gstr1_b2b" <?= (isset($gst_type) && $gst_type == 'gstr1_b2b') ? 'selected' : '' ?>>GSTR-1 B2B</option>
+                                            <option value="gstr1_b2cl" <?= (isset($gst_type) && $gst_type == 'gstr1_b2cl') ? 'selected' : '' ?>>GSTR-1 B2CL</option>
+                                            <option value="gstr1_b2cs" <?= (isset($gst_type) && $gst_type == 'gstr1_b2cs') ? 'selected' : '' ?>>GSTR-1 B2CS</option>
+                                            <option value="gstr1_hsn" <?= (isset($gst_type) && $gst_type == 'gstr1_hsn') ? 'selected' : '' ?>>GSTR-1 HSN</option>
+                                            <option value="gstr3b" <?= (isset($gst_type) && $gst_type == 'gstr3b') ? 'selected' : '' ?>>GSTR-3B</option>
                                         </select>
                                     </div>
                                     <div class="col-md-3">
@@ -75,6 +79,7 @@
                             <div class="text-right mt-3">
                                 <button id="exportExcel" class="btn btn-success">Export to Excel</button>
                                 <button id="exportPDF" class="btn btn-danger">Export to PDF</button>
+                                <button id="exportJson" class="btn btn-info">Export to JSON</button>
                             </div>
                         </div>
                     </div>
@@ -104,6 +109,21 @@
         // Export to PDF
         $('#exportPDF').on('click', function() {
             window.location.href = '<?= base_url("ReportsController/exportToPDF") ?>';
+        });
+
+        // Export to JSON
+        $('#exportJson').on('click', function() {
+            var fromDate = $('#fromDate').val();
+            var toDate = $('#toDate').val();
+            var gstType = $('#gstType').val();
+
+            if (fromDate && toDate && gstType) {
+                var url = '<?= base_url('admin/reports/exportGstJson') ?>';
+                url += '?from_date=' + fromDate + '&to_date=' + toDate + '&gst_type=' + gstType;
+                window.location.href = url;
+            } else {
+                alert('Please select From Date, To Date and GST Type.');
+            }
         });
     });
 </script>

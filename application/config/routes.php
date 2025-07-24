@@ -335,6 +335,8 @@ $route['admin/reports/accounts/export_expense_ledger/(:any)'] = 'admin/reports/A
 $route['admin/reports/accounts/tax'] = 'admin/reports/AccountController/tax';
 $route['admin/reports/gstr'] = 'admin/reports/GstrController/index';
 $route['admin/reports/gstr/generate_json'] = 'admin/reports/GstrController/generate_json';
+$route['admin/reports/gstr/download_report/(:num)'] = 'admin/reports/GstrController/download_report/$1';
+$route['admin/reports/exportGstJson'] = 'admin/ReportsController/exportGstJson';
 $route['admin/reports/accounts/chart-of-accounts'] = 'admin/reports/AccountController/chart_of_accounts';
 
 $route['admin/reminder/add'] = 'AdminController/add_reminder';

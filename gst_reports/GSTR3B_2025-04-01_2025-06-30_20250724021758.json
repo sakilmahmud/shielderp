@@ -1,0 +1,41 @@
+{
+    "gstin": "19BPJPM7847E1ZE",
+    "ret_period": "042025",
+    "sup_details": {
+        "osup_det": {
+            "txval": 494676.74,
+            "iamt": 0,
+            "camt": 41976.89,
+            "samt": 41976.89,
+            "csamt": 0
+        }
+    },
+    "itc_elg": {
+        "itc_avl": [
+            {
+                "ty": "IGST",
+                "val": 4481.54
+            },
+            {
+                "ty": "CGST",
+                "val": 31486.48
+            },
+            {
+                "ty": "SGST",
+                "val": 31486.48
+            },
+            {
+                "ty": "CESS",
+                "val": 0
+            }
+        ]
+    },
+    "inter_sup": [],
+    "inward_sup": [],
+    "is_rev_chrg": [],
+    "elg_itc": [],
+    "tx_pay": [],
+    "intr_itc_adj": [],
+    "tds_tcs": [],
+    "gst_paid": []
+}

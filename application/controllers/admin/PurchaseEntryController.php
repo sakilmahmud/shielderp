@@ -141,15 +141,21 @@ class PurchaseEntryController extends MY_Controller
 
             $purchase_invoice_no = $this->input->post('invoice_no');
 
+            $sub_total = $this->input->post('sub_total');
+            $total_discount = $this->input->post('total_discount');
+            $taxable_value = $sub_total - $total_discount;
+
             $purchaseOrderData = array(
                 'purchase_date' => $this->input->post('purchase_date'),
                 'invoice_no' => $purchase_invoice_no,
                 'supplier_id' => $this->input->post('supplier_id'),
                 'is_gst' => $this->input->post('is_gst'),
-                'sub_total' => $this->input->post('sub_total'),
-                'total_discount' => $this->input->post('total_discount'),
+                'sub_total' => $sub_total,
+                'total_discount' => $total_discount,
                 'total_gst' => $this->input->post('total_gst'),
-                'total_amount' => $this->input->post('total_amount')
+                'total_amount' => $this->input->post('total_amount'),
+                'taxable_value' => $taxable_value,
+                'adjustment_balance' => 0.00
             );
 
             // Insert the purchase order
@@ -278,16 +284,22 @@ class PurchaseEntryController extends MY_Controller
                 return;
             }
 
+            $sub_total = $this->input->post('sub_total');
+            $total_discount = $this->input->post('total_discount');
+            $taxable_value = $sub_total - $total_discount;
+
             // Update the purchase order
             $purchaseOrderData = array(
                 'purchase_date' => $this->input->post('purchase_date'),
                 'invoice_no' => $this->input->post('invoice_no'),
                 'supplier_id' => $this->input->post('supplier_id'),
                 'is_gst' => $this->input->post('is_gst'),
-                'sub_total' => $this->input->post('sub_total'),
-                'total_discount' => $this->input->post('total_discount'),
+                'sub_total' => $sub_total,
+                'total_discount' => $total_discount,
                 'total_gst' => $this->input->post('total_gst'),
-                'total_amount' => $this->input->post('total_amount')
+                'total_amount' => $this->input->post('total_amount'),
+                'taxable_value' => $taxable_value,
+                'adjustment_balance' => 0.00
             );
 
             $this->PurchaseOrderModel->update_purchase_order($id, $purchaseOrderData);

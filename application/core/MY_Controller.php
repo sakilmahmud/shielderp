@@ -7,6 +7,8 @@ class MY_Controller extends CI_Controller
     {
         parent::__construct();
 
+        $this->load->helper('form'); // Load form helper
+
         // Get current route
         $current_url = uri_string();
 

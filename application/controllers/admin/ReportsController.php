@@ -54,10 +54,51 @@ class ReportsController extends MY_Controller
 
             // Fetch GST report data from model
             $data['gst_report_data'] = $this->ReportModel->getGSTReportData($fromDate, $toDate, $gstType);
+            $data['from_date'] = $fromDate;
+            $data['to_date'] = $toDate;
+            $data['gst_type'] = $gstType;
         }
 
         // Load the views
 
         $this->render_admin('admin/reports/gst_report', $data);
+    }
+
+    public function exportGstJson()
+    {
+        $this->load->model('GstrModel');
+        $fromDate = $this->input->get('from_date');
+        $toDate = $this->input->get('to_date');
+        $gstType = $this->input->get('gst_type');
+
+        $data = [];
+        $filename = 'gst_report.json';
+
+        switch ($gstType) {
+            case 'gstr1_b2b':
+                $data = $this->GstrModel->get_gstr1_b2b_data($fromDate, $toDate);
+                $filename = 'gstr1_b2b_' . $fromDate . '_to_' . $toDate . '.json';
+                break;
+            case 'gstr1_b2cl':
+                $data = $this->GstrModel->get_gstr1_b2cl_data($fromDate, $toDate);
+                $filename = 'gstr1_b2cl_' . $fromDate . '_to_' . $toDate . '.json';
+                break;
+            case 'gstr1_b2cs':
+                $data = $this->GstrModel->get_gstr1_b2cs_data($fromDate, $toDate);
+                $filename = 'gstr1_b2cs_' . $fromDate . '_to_' . $toDate . '.json';
+                break;
+            case 'gstr1_hsn':
+                $data = $this->GstrModel->get_gstr1_hsn_data($fromDate, $toDate);
+                $filename = 'gstr1_hsn_' . $fromDate . '_to_' . $toDate . '.json';
+                break;
+            case 'gstr3b':
+                $data = $this->GstrModel->get_gstr3b_data($fromDate, $toDate);
+                $filename = 'gstr3b_' . $fromDate . '_to_' . $toDate . '.json';
+                break;
+        }
+
+        header('Content-Type: application/json');
+        header('Content-Disposition: attachment; filename="' . $filename . '"');
+        echo json_encode($data, JSON_PRETTY_PRINT);
     }
 }

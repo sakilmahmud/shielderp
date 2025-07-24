@@ -47,7 +47,9 @@
                     <select name="company_state" class="form-control">
                         <option value="">Select State</option>
                         <?php foreach ($states as $state): ?>
-                            <option value="<?php echo $state['id']; ?>" <?php echo ($settings['company_state'] == $state['id']) ? 'selected' : ''; ?>><?php echo $state['state_name']; ?></option>
+                            <option value="<?php echo $state['id']; ?>" <?php echo (isset($settings['company_state']) && $settings['company_state'] == $state['id']) ? 'selected' : ''; ?>>
+                                <?php echo $state['state_name']; ?>
+                            </option>
                         <?php endforeach; ?>
                     </select>
                 </div>
