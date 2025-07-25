@@ -13,13 +13,13 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="from_date">From Date</label>
-                                    <input type="date" class="form-control" id="from_date" name="from_date" required>
+                                    <input type="date" class="form-control" id="from_date" name="from_date" value="2025-04-01" required>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="to_date">To Date</label>
-                                    <input type="date" class="form-control" id="to_date" name="to_date" required>
+                                    <input type="date" class="form-control" id="to_date" name="to_date" value="2025-06-30" required>
                                 </div>
                             </div>
                             <div class="col-md-4">
@@ -27,7 +27,7 @@
                                     <label for="report_type">Report Type</label>
                                     <select class="form-control" id="report_type" name="report_type" required>
                                         <option value="">Select Report Type</option>
-                                        <option value="gstr1">GSTR-1</option>
+                                        <option value="gstr1" selected>GSTR-1</option>
                                         <option value="gstr3b">GSTR-3B</option>
                                     </select>
                                 </div>

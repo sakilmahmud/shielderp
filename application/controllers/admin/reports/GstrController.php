@@ -459,8 +459,34 @@ class GstrController extends MY_Controller
 
                 // HSN Sheet
                 $hsn_data = $this->GstrModel->get_gstr1_hsn_data($from_date, $to_date);
+
+                $total_hsn_value = 0;
+                $total_hsn_taxable_value = 0;
+                $total_hsn_integrated_tax_amount = 0;
+                $total_hsn_central_tax_amount = 0;
+                $total_hsn_state_ut_tax_amount = 0;
+                $total_hsn_cess_amount = 0;
+
+                foreach ($hsn_data as $hsn_row) {
+                    $total_hsn_value += (float)(($hsn_row['txval'] ?? 0) + ($hsn_row['iamt'] ?? 0) + ($hsn_row['camt'] ?? 0) + ($hsn_row['samt'] ?? 0) + ($hsn_row['csamt'] ?? 0));
+                    $total_hsn_taxable_value += (float)($hsn_row['txval'] ?? 0);
+                    $total_hsn_integrated_tax_amount += (float)($hsn_row['iamt'] ?? 0);
+                    $total_hsn_central_tax_amount += (float)($hsn_row['camt'] ?? 0);
+                    $total_hsn_state_ut_tax_amount += (float)($hsn_row['samt'] ?? 0);
+                    $total_hsn_cess_amount += (float)($hsn_row['csamt'] ?? 0);
+                }
+
+                $hsn_summary = [
+                    'total_value' => round($total_hsn_value, 2),
+                    'total_taxable_value' => round($total_hsn_taxable_value, 2),
+                    'total_integrated_tax_amount' => round($total_hsn_integrated_tax_amount, 2),
+                    'total_central_tax_amount' => round($total_hsn_central_tax_amount, 2),
+                    'total_state_ut_tax_amount' => round($total_hsn_state_ut_tax_amount, 2),
+                    'total_cess_amount' => round($total_hsn_cess_amount, 2)
+                ];
+
                 $hsn_headers = ['HSN', 'Description', 'UQC', 'Total Quantity', 'Total Value', 'Taxable Value', 'Integrated Tax Amount', 'Central Tax Amount', 'State/UT Tax Amount', 'Cess Amount', 'Rate'];
-                $this->addSheetToSpreadsheet($spreadsheet, $sheetIndex++, 'hsn', $hsn_headers, $hsn_data, 'hsn');
+                $this->addSheetToSpreadsheet($spreadsheet, $sheetIndex++, 'hsn', $hsn_headers, $hsn_data, 'hsn', $hsn_summary);
 
                 // Placeholder for CDNR and CDNUR - requires headers and data fetching
                 // If you provide headers for CDNR and CDNUR, I can add them here.
@@ -472,8 +498,78 @@ class GstrController extends MY_Controller
             } elseif ($report_type === 'gstr3b') {
                 // GSTR-3B Sheet
                 $gstr3b_data = $this->GstrModel->get_gstr3b_data($from_date, $to_date);
-                $gstr3b_headers = array_keys((array) $gstr3b_data['sup_details'][0]); // Assuming sup_details has data
-                $this->addSheetToSpreadsheet($spreadsheet, $sheetIndex++, 'gstr3b', $gstr3b_headers, $gstr3b_data['sup_details'], 'gstr3b');
+
+                // Table 3.1 Headers and Data
+                $table3_1_headers = ['Nature of Supplies', 'Total Taxable Value', 'Integrated Tax', 'Central Tax', 'State/UT Tax', 'Cess'];
+                $table3_1_data = [];
+
+                // (a) Outward Taxable supplies (other than zero rated, nil rated and exempted)
+                $osup_det = $gstr3b_data['sup_details']['osup_det'] ?? [];
+                $table3_1_data[] = [
+                    '(a) Outward Taxable supplies (other than zero rated, nil rated and exempted)',
+                    (float)($osup_det['txval'] ?? 0),
+                    (float)($osup_det['iamt'] ?? 0),
+                    (float)($osup_det['camt'] ?? 0),
+                    (float)($osup_det['samt'] ?? 0),
+                    (float)($osup_det['csamt'] ?? 0)
+                ];
+
+                // (b) Outward Taxable supplies (zero rated )
+                $table3_1_data[] = [
+                    '(b) Outward Taxable supplies (zero rated )',
+                    0.00, 0.00, 0.00, 0.00, 0.00
+                ];
+
+                // (c) Other Outward Taxable supplies (Nil rated, exempted)
+                $table3_1_data[] = [
+                    '(c) Other Outward Taxable supplies (Nil rated, exempted)',
+                    0.00, 0.00, 0.00, 0.00, 0.00
+                ];
+
+                // (d) Inward supplies (liable to reverse charge)
+                $rchrg_data = $gstr3b_data['sup_details']['inward_sup']['rchrg'] ?? [];
+                $table3_1_data[] = [
+                    '(d) Inward supplies (liable to reverse charge)',
+                    (float)($rchrg_data['txval'] ?? 0),
+                    (float)($rchrg_data['iamt'] ?? 0),
+                    (float)($rchrg_data['camt'] ?? 0),
+                    (float)($rchrg_data['samt'] ?? 0),
+                    (float)($rchrg_data['csamt'] ?? 0)
+                ];
+
+                // (e) Non-GST Outward supplies
+                $table3_1_data[] = [
+                    '(e) Non-GST Outward supplies',
+                    0.00, 0.00, 0.00, 0.00, 0.00
+                ];
+
+                $this->addSheetToSpreadsheet($spreadsheet, $sheetIndex++, 'Table 3.1', $table3_1_headers, $table3_1_data, 'gstr3b_table3_1');
+
+                // Table 4 Headers and Data
+                $table4_headers = ['Details', 'Integrated Tax', 'Central Tax', 'State/UT Tax', 'Cess'];
+                $table4_data = [];
+                if (isset($gstr3b_data['itc_elg']['itc_avl'])) {
+                    foreach ($gstr3b_data['itc_elg']['itc_avl'] as $itc_item) {
+                        $table4_data[] = [
+                            $itc_item['ty'] ?? '',
+                            (float)(($itc_item['ty'] == 'IGST') ? ($itc_item['val'] ?? 0) : 0),
+                            (float)(($itc_item['ty'] == 'CGST') ? ($itc_item['val'] ?? 0) : 0),
+                            (float)(($itc_item['ty'] == 'SGST') ? ($itc_item['val'] ?? 0) : 0),
+                            (float)(($itc_item['ty'] == 'CESS') ? ($itc_item['val'] ?? 0) : 0)
+                        ];
+                    }
+                }
+                $this->addSheetToSpreadsheet($spreadsheet, $sheetIndex++, 'Table 4', $table4_headers, $table4_data, 'gstr3b_table4');
+
+                // Table 5 Headers and Data (Placeholder - requires GstrModel update for real data)
+                $table5_headers = ['Nature of Supplies', 'Inter-state Supplies', 'Intra-state Supplies'];
+                $table5_data = [
+                    ['Outward supplies of goods (exempted)', 0.00, 0.00],
+                    ['Outward supplies of services (exempted)', 0.00, 0.00],
+                    ['Nil rated supplies', 0.00, 0.00],
+                    ['Non-GST supplies', 0.00, 0.00]
+                ];
+                $this->addSheetToSpreadsheet($spreadsheet, $sheetIndex++, 'Table 5', $table5_headers, $table5_data, 'gstr3b_table5');
             }
 
             $file_name = $file_name_prefix . '_' . $from_date . '_' . $to_date . '_' . $timestamp . '.xlsx';
@@ -536,6 +632,22 @@ class GstrController extends MY_Controller
             $sheet->setCellValue('E' . $currentRow, $summaryData['total_invoice_value']);
             $sheet->setCellValue('L' . $currentRow, $summaryData['total_taxable_value']);
             $sheet->setCellValue('M' . $currentRow, $summaryData['total_cess']);
+            $currentRow += 2; // Add an extra row for spacing before main headers
+        } elseif ($sheetName === 'hsn' && is_array($summaryData)) {
+            $sheet->setCellValue('E' . $currentRow, 'Total Value');
+            $sheet->setCellValue('F' . $currentRow, 'Total Taxable Value');
+            $sheet->setCellValue('G' . $currentRow, 'Total Integrated Tax Amount');
+            $sheet->setCellValue('H' . $currentRow, 'Total Central Tax Amount');
+            $sheet->setCellValue('I' . $currentRow, 'Total State/UT Tax Amount');
+            $sheet->setCellValue('J' . $currentRow, 'Total Cess Amount');
+            $currentRow++;
+
+            $sheet->setCellValue('E' . $currentRow, $summaryData['total_value']);
+            $sheet->setCellValue('F' . $currentRow, $summaryData['total_taxable_value']);
+            $sheet->setCellValue('G' . $currentRow, $summaryData['total_integrated_tax_amount']);
+            $sheet->setCellValue('H' . $currentRow, $summaryData['total_central_tax_amount']);
+            $sheet->setCellValue('I' . $currentRow, $summaryData['total_state_ut_tax_amount']);
+            $sheet->setCellValue('J' . $currentRow, $summaryData['total_cess_amount']);
             $currentRow += 2; // Add an extra row for spacing before main headers
         }
 
@@ -648,13 +760,10 @@ class GstrController extends MY_Controller
                             ];
                         }
                         break;
-                    case 'gstr3b':
-                        // For GSTR-3B, the data is expected to be a flat array of objects/arrays
-                        // from the 'sup_details' or 'itc_elg' sections.
-                        // Assuming 'data' here is directly the array of rows for the sheet.
-                        foreach ($data as $row) {
-                            $rowData[] = array_values((array) $row);
-                        }
+                    case 'gstr3b_table3_1':
+                    case 'gstr3b_table4':
+                    case 'gstr3b_table5':
+                        $rowData = $data;
                         break;
                 }
             }
