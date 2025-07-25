@@ -34,7 +34,7 @@ class GstrModel extends CI_Model
     {
         $this->db->select(
             'i.invoice_no, i.invoice_date, i.total_amount, i.total_discount, i.round_off, i.is_reverse_charge, i.supply_type,
-             c.gst_number as cust_gstin, s.state_code as pos_state_code,
+             c.gst_number as cust_gstin, c.customer_name as receiver_name, s.state_code as pos_state_code,
              id.quantity, id.price, id.discount, id.cess_amount, id.final_price,
              h.hsn_code, h.gst_rate as hsn_gst_rate'
         );
@@ -77,6 +77,7 @@ class GstrModel extends CI_Model
             if (!isset($b2b_invoices[$cust_gstin])) {
                 $b2b_invoices[$cust_gstin] = [
                     'ctin' => $cust_gstin,
+                    'receiver_name' => $row['receiver_name'], // Add receiver name here
                     'inv' => []
                 ];
             }

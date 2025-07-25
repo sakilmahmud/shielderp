@@ -338,6 +338,7 @@ $route['admin/reports/gstr/generate_json'] = 'admin/reports/GstrController/gener
 $route['admin/reports/gstr/generate_csv'] = 'admin/reports/GstrController/generate_csv';
 $route['admin/reports/gstr/generate_xlsx'] = 'admin/reports/GstrController/generate_xlsx';
 $route['admin/reports/gstr/download_report/(:num)'] = 'admin/reports/GstrController/download_report/$1';
+$route['admin/reports/gstr/delete_report/(:num)'] = 'admin/reports/GstrController/delete_report/$1';
 $route['admin/reports/exportGstJson'] = 'admin/ReportsController/exportGstJson';
 $route['admin/reports/accounts/chart-of-accounts'] = 'admin/reports/AccountController/chart_of_accounts';
 

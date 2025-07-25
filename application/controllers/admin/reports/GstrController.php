@@ -341,7 +341,6 @@ class GstrController extends MY_Controller
             }
             $status = 'success';
             $this->session->set_flashdata('success', 'GST CSV report generated and saved to: ' . $relative_file_path);
-
         } catch (Exception $e) {
             log_message('error', 'Error during CSV generation: ' . $e->getMessage());
             $error_message = 'Error during CSV generation: ' . $e->getMessage();
@@ -410,8 +409,43 @@ class GstrController extends MY_Controller
             if ($report_type === 'gstr1') {
                 // B2B Sheet
                 $b2b_data = $this->GstrModel->get_gstr1_b2b_data($from_date, $to_date);
-                $b2b_headers = ['GSTIN/UIN of Recipient', 'Receiver Name', 'Invoice Number', 'Invoice date', 'Invoice Value', 'Place Of Supply', 'Reverse Charge', 'Applicable % of Tax Rate', 'Invoice Type', 'E-Commerce GSTIN', 'Rate', 'Taxable Value', 'Cess Amount'];
-                $this->addSheetToSpreadsheet($spreadsheet, $sheetIndex++, 'b2b', $b2b_headers, $b2b_data, 'b2b');
+
+                $num_recipients = 0;
+                $num_invoices = 0;
+                $total_invoice_value = 0;
+                $total_taxable_value = 0;
+                $total_cess = 0;
+
+                $unique_recipients = [];
+                $unique_invoices = [];
+
+                foreach ($b2b_data as $gstin_data) {
+                    $unique_recipients[$gstin_data['ctin']] = true;
+                    foreach ($gstin_data['inv'] as $inv) {
+                        $unique_invoices[$inv['inum']] = true;
+                        $total_invoice_value += (float)($inv['val'] ?? 0);
+                        foreach ($inv['itms'] as $item) {
+                            $item_details = $item['itm_det'];
+                            $total_taxable_value += (float)($item_details['txval'] ?? 0);
+                            $total_cess += (float)($item_details['csamt'] ?? 0);
+                        }
+                    }
+                }
+
+                $num_recipients = count($unique_recipients);
+                $num_invoices = count($unique_invoices);
+
+                $b2b_summary = [
+                    'num_recipients' => $num_recipients,
+                    'num_invoices' => $num_invoices,
+                    'total_invoice_value' => round($total_invoice_value, 2),
+                    'total_taxable_value' => round($total_taxable_value, 2),
+                    'total_cess' => round($total_cess, 2)
+                ];
+
+                $b2b_headers = ['GSTIN/UIN of Recipient', 'Receiver Name', 'Invoice Number', 'Invoice date', 'Invoice Value', 'Place Of Supply', 'Reverse Charge', 'Invoice Type', 'Taxable Value', 'Integrated Tax Amount', 'Central Tax Amount', 'State/UT Tax Amount', 'Cess Amount'];
+                log_message('debug', 'B2B Data for XLSX: ' . json_encode($b2b_data));
+                $this->addSheetToSpreadsheet($spreadsheet, $sheetIndex++, 'b2b', $b2b_headers, $b2b_data, 'b2b', $b2b_summary);
 
                 // B2CL Sheet
                 $b2cl_data = $this->GstrModel->get_gstr1_b2cl_data($from_date, $to_date);
@@ -457,7 +491,6 @@ class GstrController extends MY_Controller
 
             $status = 'success';
             $this->session->set_flashdata('success', 'GST XLSX report generated and saved to: ' . $relative_file_path);
-
         } catch (Exception $e) {
             log_message('error', 'Error during XLSX generation: ' . $e->getMessage());
             $error_message = 'Error during XLSX generation: ' . $e->getMessage();
@@ -478,7 +511,7 @@ class GstrController extends MY_Controller
         redirect('admin/reports/gstr');
     }
 
-    private function addSheetToSpreadsheet($spreadsheet, $sheetIndex, $sheetName, $headers, $data, $dataType)
+    private function addSheetToSpreadsheet($spreadsheet, $sheetIndex, $sheetName, $headers, $data, $dataType, $summaryData = null)
     {
         if ($sheetIndex > 0) {
             $spreadsheet->createSheet();
@@ -487,8 +520,28 @@ class GstrController extends MY_Controller
         $sheet = $spreadsheet->getActiveSheet();
         $sheet->setTitle($sheetName);
 
+        $currentRow = 1;
+
+        // Add summary data if provided and it's the B2B sheet
+        if ($sheetName === 'b2b' && is_array($summaryData)) {
+            $sheet->setCellValue('A' . $currentRow, 'No. of Recipients');
+            $sheet->setCellValue('C' . $currentRow, 'No. of Invoices');
+            $sheet->setCellValue('E' . $currentRow, 'Total Invoice Value');
+            $sheet->setCellValue('L' . $currentRow, 'Total Taxable Value');
+            $sheet->setCellValue('M' . $currentRow, 'Total Cess');
+            $currentRow++;
+
+            $sheet->setCellValue('A' . $currentRow, $summaryData['num_recipients']);
+            $sheet->setCellValue('C' . $currentRow, $summaryData['num_invoices']);
+            $sheet->setCellValue('E' . $currentRow, $summaryData['total_invoice_value']);
+            $sheet->setCellValue('L' . $currentRow, $summaryData['total_taxable_value']);
+            $sheet->setCellValue('M' . $currentRow, $summaryData['total_cess']);
+            $currentRow += 2; // Add an extra row for spacing before main headers
+        }
+
         // Add headers
-        $sheet->fromArray($headers, NULL, 'A1');
+        $sheet->fromArray($headers, NULL, 'A' . $currentRow);
+        $currentRow++;
 
         // Add data
         if (!empty($data)) {
@@ -497,72 +550,156 @@ class GstrController extends MY_Controller
                 $csv_row = [];
                 switch ($dataType) {
                     case 'b2b':
-                        $csv_row = [
-                            $row['gstin'] ?? '',
-                            $row['receiver_name'] ?? '',
-                            $row['invoice_number'] ?? '',
-                            (isset($row['invoice_date']) && $row['invoice_date'] != '') ? date('d-M-y', strtotime($row['invoice_date'])) : '',
-                            $row['invoice_value'] ?? '',
-                            $row['place_of_supply'] ?? '',
-                            $row['reverse_charge'] ?? '',
-                            $row['applicable_tax_rate'] ?? '',
-                            $row['invoice_type'] ?? '',
-                            $row['e_commerce_gstin'] ?? '',
-                            $row['rate'] ?? '',
-                            $row['taxable_value'] ?? '',
-                            $row['cess_amount'] ?? ''
-                        ];
+                        $gstin = $row['ctin'] ?? '';
+                        $receiver_name = $row['receiver_name'] ?? '';
+
+                        foreach ($row['inv'] as $inv) {
+                            $invoice_number = $inv['inum'] ?? '';
+                            $invoice_date = (isset($inv['idt']) && $inv['idt'] != '') ? date('d-M-y', strtotime($inv['idt'])) : '';
+                            $invoice_value = $inv['val'] ?? '';
+                            $pos = $inv['pos'] ?? '';
+                            $rchrg = $inv['rchrg'] ?? '';
+                            $inv_typ = $inv['inv_typ'] ?? '';
+
+                            $total_invoice_taxable_value = 0;
+                            $total_invoice_iamt = 0;
+                            $total_invoice_camt = 0;
+                            $total_invoice_samt = 0;
+                            $total_invoice_csamt = 0;
+
+                            foreach ($inv['itms'] as $item) {
+                                $item_details = $item['itm_det'];
+                                $total_invoice_taxable_value += (float)($item_details['txval'] ?? 0);
+                                $total_invoice_iamt += (float)($item_details['iamt'] ?? 0);
+                                $total_invoice_camt += (float)($item_details['camt'] ?? 0);
+                                $total_invoice_samt += (float)($item_details['samt'] ?? 0);
+                                $total_invoice_csamt += (float)($item_details['csamt'] ?? 0);
+                            }
+
+                            $rowData[] = [
+                                $gstin,
+                                $receiver_name,
+                                $invoice_number,
+                                $invoice_date,
+                                $invoice_value,
+                                $pos,
+                                $rchrg,
+                                $inv_typ,
+                                round($total_invoice_taxable_value, 2),
+                                round($total_invoice_iamt, 2),
+                                round($total_invoice_camt, 2),
+                                round($total_invoice_samt, 2),
+                                round($total_invoice_csamt, 2)
+                            ];
+                        }
                         break;
                     case 'b2cl':
-                        $csv_row = [
-                            $row['invoice_number'] ?? '',
-                            (isset($row['invoice_date']) && $row['invoice_date'] != '') ? date('d-M-y', strtotime($row['invoice_date'])) : '',
-                            $row['invoice_value'] ?? '',
-                            $row['place_of_supply'] ?? '',
-                            $row['applicable_tax_rate'] ?? '',
-                            $row['rate'] ?? '',
-                            $row['taxable_value'] ?? '',
-                            $row['cess_amount'] ?? '',
-                            $row['e_commerce_gstin'] ?? ''
-                        ];
+                        foreach ($data as $pos_data) {
+                            $pos = $pos_data['pos'] ?? '';
+                            foreach ($pos_data['inv'] as $inv) {
+                                $invoice_number = $inv['inum'] ?? '';
+                                $invoice_date = (isset($inv['idt']) && $inv['idt'] != '') ? date('d-M-y', strtotime($inv['idt'])) : '';
+                                $invoice_value = $inv['val'] ?? '';
+
+                                foreach ($inv['itms'] as $item) {
+                                    $item_details = $item['itm_det'];
+                                    $rowData[] = [
+                                        $invoice_number,
+                                        $invoice_date,
+                                        $invoice_value,
+                                        $pos,
+                                        $item_details['rt'] ?? '', // Applicable % of Tax Rate
+                                        $item_details['rt'] ?? '',
+                                        $item_details['txval'] ?? '',
+                                        $item_details['csamt'] ?? '',
+                                        '' // E-Commerce GSTIN
+                                    ];
+                                }
+                            }
+                        }
                         break;
                     case 'b2cs':
-                        $csv_row = [
-                            $row['type'] ?? '',
-                            $row['place_of_supply'] ?? '',
-                            $row['rate'] ?? '',
-                            $row['applicable_tax_rate'] ?? '',
-                            $row['taxable_value'] ?? '',
-                            $row['cess_amount'] ?? '',
-                            $row['e_commerce_gstin'] ?? ''
-                        ];
+                        foreach ($data as $summary_row) {
+                            $rowData[] = [
+                                $summary_row['sp_typ'] ?? '', // Type (Supply Type)
+                                $summary_row['pos'] ?? '',
+                                $summary_row['rt'] ?? '',
+                                $summary_row['rt'] ?? '', // Applicable % of Tax Rate
+                                $summary_row['txval'] ?? '',
+                                $summary_row['csamt'] ?? '',
+                                '' // E-Commerce GSTIN
+                            ];
+                        }
                         break;
                     case 'hsn':
-                        $csv_row = [
-                            $row['hsn'] ?? '',
-                            $row['description'] ?? '',
-                            $row['uqc'] ?? '',
-                            $row['total_quantity'] ?? '',
-                            $row['total_value'] ?? '',
-                            $row['taxable_value'] ?? '',
-                            $row['integrated_tax_amount'] ?? '',
-                            $row['central_tax_amount'] ?? '',
-                            $row['state_ut_tax_amount'] ?? '',
-                            $row['cess_amount'] ?? '',
-                            $row['rate'] ?? ''
-                        ];
+                        foreach ($data as $hsn_row) {
+                            $rowData[] = [
+                                $hsn_row['num'] ?? '', // HSN
+                                $hsn_row['desc'] ?? '', // Description
+                                $hsn_row['uqc'] ?? '', // UQC
+                                $hsn_row['qty'] ?? '', // Total Quantity
+                                ($hsn_row['txval'] ?? 0) + ($hsn_row['iamt'] ?? 0) + ($hsn_row['camt'] ?? 0) + ($hsn_row['samt'] ?? 0) + ($hsn_row['csamt'] ?? 0), // Total Value (sum of all tax components and taxable value)
+                                $hsn_row['txval'] ?? '', // Taxable Value
+                                $hsn_row['iamt'] ?? '', // Integrated Tax Amount
+                                $hsn_row['camt'] ?? '', // Central Tax Amount
+                                $hsn_row['samt'] ?? '', // State/UT Tax Amount
+                                $hsn_row['csamt'] ?? '', // Cess Amount
+                                $hsn_row['rt'] ?? '' // Rate
+                            ];
+                        }
                         break;
                     case 'gstr3b':
-                        // For GSTR-3B, assuming data is already flattened or needs specific mapping
-                        // This is a placeholder, adjust based on actual GSTR-3B data structure
-                        $csv_row = array_values((array) $row);
+                        // For GSTR-3B, the data is expected to be a flat array of objects/arrays
+                        // from the 'sup_details' or 'itc_elg' sections.
+                        // Assuming 'data' here is directly the array of rows for the sheet.
+                        foreach ($data as $row) {
+                            $rowData[] = array_values((array) $row);
+                        }
                         break;
                 }
-                $rowData[] = $csv_row;
             }
-            $sheet->fromArray($rowData, NULL, 'A2');
+            if (!empty($rowData)) {
+                $sheet->fromArray($rowData, NULL, 'A' . $currentRow);
+            } else {
+                $sheet->setCellValue('A' . $currentRow, 'No data found for ' . $sheetName);
+            }
         } else {
-            $sheet->setCellValue('A2', 'No data found for ' . $sheetName);
+            $sheet->setCellValue('A' . $currentRow, 'No data found for ' . $sheetName);
         }
+    }
+
+    public function delete_report($report_id)
+    {
+        $this->output->set_content_type('application/json');
+
+        // Fetch report details from the database
+        $report = $this->db->get_where('gst_report_exports', ['id' => $report_id])->row_array();
+
+        if (!$report) {
+            echo json_encode(['status' => 'error', 'message' => 'Report not found.']);
+            exit;
+        }
+
+        // Delete physical file if it exists
+        $full_file_path = FCPATH . $report['file_path'];
+        if (file_exists($full_file_path)) {
+            if (unlink($full_file_path)) {
+                log_message('debug', 'Physical file deleted: ' . $full_file_path);
+            } else {
+                log_message('error', 'Failed to delete physical file: ' . $full_file_path);
+                // Even if file deletion fails, we might still want to remove the DB record
+            }
+        } else {
+            log_message('debug', 'Physical file not found, skipping deletion: ' . $full_file_path);
+        }
+
+        // Delete record from the database
+        if ($this->db->delete('gst_report_exports', ['id' => $report_id])) {
+            echo json_encode(['status' => 'success', 'message' => 'Report deleted successfully.']);
+        } else {
+            log_message('error', 'Failed to delete report record from DB: ' . $report_id);
+            echo json_encode(['status' => 'error', 'message' => 'Failed to delete report from database.']);
+        }
+        exit;
     }
 }
