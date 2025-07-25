@@ -148,7 +148,7 @@
                                             <select class="form-control product_type_id" id="product_type_id" name="product_type_id">
                                                 <option value="">Select product type</option>
                                                 <?php foreach ($product_types as $product_type) {
-                                                    $selected = ($product_type['id'] == 1) ? 'selected' : '';
+                                                    $selected = ($product_type['id'] == $product['product_type_id']) ? 'selected' : '';
                                                 ?>
                                                     <option value="<?php echo $product_type['id']; ?>" <?php echo $selected; ?>>
                                                         <?php echo $product_type['product_type_name']; ?>
