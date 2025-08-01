@@ -345,3 +345,13 @@ $route['admin/reports/accounts/chart-of-accounts'] = 'admin/reports/AccountContr
 $route['admin/reminder/add'] = 'AdminController/add_reminder';
 $route['admin/reminder/detail/(:num)'] = 'AdminController/get_reminder_detail/$1';
 $route['admin/reminder/done/(:num)'] = 'AdminController/mark_reminder_done/$1';
+
+/** Inventory Reports */
+$route['admin/reports/inventory'] = 'admin/reports/InventoryController/index';
+$route['admin/reports/inventory/stock-availability'] = 'admin/reports/InventoryController/stock_availability';
+$route['admin/reports/inventory/fast-moving-items'] = 'admin/reports/InventoryController/fast_moving_items';
+$route['admin/reports/inventory/items-not-moving'] = 'admin/reports/InventoryController/items_not_moving';
+$route['admin/reports/inventory/fetch_stock_availability'] = 'admin/reports/InventoryController/fetch_stock_availability';
+$route['admin/reports/inventory/export_stock_availability/(:any)'] = 'admin/reports/InventoryController/export_stock_availability/$1';
+$route['admin/reports/inventory/export_fast_moving_items/(:any)'] = 'admin/reports/InventoryController/export_fast_moving_items/$1';
+$route['admin/reports/inventory/export_items_not_moving/(:any)'] = 'admin/reports/InventoryController/export_items_not_moving/$1';

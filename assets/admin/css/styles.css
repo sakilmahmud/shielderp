@@ -1,61 +1,75 @@
 .icon-blue {
-  color: #3498db;
+  color: #21618C;
 }
+
 
 .icon-inventory {
-  color: rgb(189, 247, 90);
+  color: #8BC34A;
 }
+
 
 .icon-purple {
-  color: #8e44ad;
+  color: #6C3483;
 }
+
 
 .icon-yellow {
-  color: rgb(233, 29, 161);
+  color: #B71C1C;
 }
+
 
 .icon-invoice {
-  color: rgb(246, 110, 205);
+  color: #C2185B;
 }
+
 
 .icon-orange {
-  color: #f39c12;
+  color: #D35400;
 }
+
 
 .icon-deeporange {
-  color: #e67e22;
+  color: #BF360C;
 }
+
 
 .icon-lightgreen {
-  color: #2ecc71;
+  color: #1B5E20;
 }
+
 
 .icon-red {
-  color: #e74c3c;
+  color: #B71C1C;
 }
+
 
 .icon-teal {
-  color: #16a085;
+  color: #00695C;
 }
+
 
 .icon-darkblue {
-  color: #2980b9;
+  color: #154360;
 }
+
 
 .icon-gray {
-  color: #7f8c8d;
+  color: #424949;
 }
+
 
 .icon-bluegray {
-  color: #34495e;
+  color: #212F3C;
 }
 .icon-social {
-  color: #9cf2f8;
+  color: #00BCD4;
 }
 
+
 .icon-darkred {
-  color: #c0392b;
+  color: #8B0000;
 }
+
 
 .product-row {
   background: #efefef;
@@ -80,6 +94,7 @@ ul#customer_suggestions {
   padding: 10px;
 }
 
+
 .last_purchase_prices ul {
   list-style: none;
   padding: 0px;
@@ -88,6 +103,7 @@ ul#customer_suggestions {
   flex-wrap: wrap;
   gap: 8px;
 }
+
 
 .last_purchase_prices ul li {
   display: inline-block;
@@ -99,31 +115,38 @@ ul#customer_suggestions {
   font-size: 13px;
 }
 
+
 .form-group p {
   color: red;
 }
+
 
 label:not(.form-check-label):not(.custom-file-label) {
   font-weight: 700;
   font-size: 13px;
 }
 
+
 .table thead th {
   font-size: 12px;
 }
 
+
 .form-control {
   font-size: 14px;
 }
+
 
 .table td {
   font-size: 12px !important;
   padding: 5px 7px !important;
 }
 
+
 .table td p {
   margin-bottom: 2px;
 }
+
 
 sup {
   color: red;
@@ -131,18 +154,22 @@ sup {
   top: -0.2em;
 }
 
+
 .chosen-container-single {
   width: 100% !important;
   clear: both !important;
 }
 
+
 .form-control.error:focus {
   border: 1px solid red !important;
 }
 
+
 .error {
   border: 1px solid red !important;
 }
+
 
 /* Shake animation */
 @keyframes shake {
@@ -167,9 +194,11 @@ sup {
   }
 }
 
+
 .shake {
   animation: shake 0.5s;
 }
+
 
 /**neww style for due list */
 .due-scroll-container {
@@ -178,15 +207,18 @@ sup {
   padding-right: 10px;
 }
 
+
 .list-group-item {
   border: none;
   border-bottom: 1px solid #f1f1f1;
   transition: background 0.3s;
 }
 
+
 .list-group-item:hover {
   background: #f9f9f9;
 }
+
 
 .nav-sidebar > .nav-item > .nav-treeview {
   background-color: #666;
@@ -202,19 +234,23 @@ sup {
   min-height: 330px;
 }
 
+
 #ajax-low-stock-content .list-group-item {
   padding: 5px 10px;
   font-size: 13px;
 }
+
 
 .list-group-item {
   font-size: 14px;
   transition: background-color 0.3s;
 }
 
+
 .list-group-item:hover {
   background-color: #f8f9fa;
 }
+
 
 .table-body-scroll {
   max-height: 190px;
@@ -222,9 +258,11 @@ sup {
   display: block;
 }
 
+
 .table-body-scroll table {
   border-collapse: collapse;
 }
+
 
 .table-body-scroll thead th {
   position: sticky;
