@@ -1,24 +1,22 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
+require 'vendor/autoload.php';
+
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use Dompdf\Dompdf;
+use Dompdf\Options;
+
 class InventoryController extends MY_Controller
 {
     public function __construct()
     {
         parent::__construct();
-
-        // Check if the user is logged in
         if (!$this->session->userdata('user_id')) {
-            redirect('login'); // Redirect to login if not logged in
-        } else if ($this->session->userdata('role') != 1) { // Only allow admin access
-            $this->session->set_flashdata('error', 'You are not allowed for admin access!');
-            $this->session->unset_userdata('username');
-            $this->session->unset_userdata('role');
-            $this->session->unset_userdata('user_id');
             redirect('login');
         }
-
-        $this->load->model('reports/InventoryModel');
+        $this->load->model('reports/InventoryModel', 'InventoryModel');
         $this->load->model('CategoryModel');
         $this->load->model('BrandModel');
         $this->load->library('pdf'); // For Dompdf
@@ -65,210 +63,101 @@ class InventoryController extends MY_Controller
         $brand_id = $this->input->post('brand_id');
 
         $data = $this->InventoryModel->get_stock_availability_ajax($start, $length, $searchValue, $category_id, $brand_id);
+        $totalRecords = $this->InventoryModel->count_all_stock();
+        $filteredRecords = $this->InventoryModel->count_filtered_stock($searchValue, $category_id, $brand_id);
 
-        $output = array(
-            "draw" => $draw,
-            "recordsTotal" => $this->InventoryModel->count_all_stock(),
-            "recordsFiltered" => $this->InventoryModel->count_filtered_stock($searchValue, $category_id, $brand_id),
+        $response = [
+            "draw" => intval($draw),
+            "recordsTotal" => intval($totalRecords),
+            "recordsFiltered" => intval($filteredRecords),
             "data" => $data
-        );
+        ];
 
-        echo json_encode($output);
+        echo json_encode($response);
     }
 
     public function export_stock_availability($format)
     {
-        $data = $this->InventoryModel->get_stock_availability_ajax(null, null, null, null, null); // Get all data for export
+        $searchValue = $this->input->get('search_value');
+        $category_id = $this->input->get('category_id');
+        $brand_id = $this->input->get('brand_id');
+
+        $data = $this->InventoryModel->get_stock_availability_ajax(0, -1, $searchValue, $category_id, $brand_id);
 
         if ($format == 'xlsx') {
-            $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
-            $sheet = $spreadsheet->getActiveSheet();
-
-            // Set headers
-            $headers = ['SNo.', 'Item Name', 'Current Stock', 'Unit', 'Valuation', 'Category', 'Brand'];
-            $sheet->fromArray($headers, NULL, 'A1');
-
-            // Make headers bold
-            $sheet->getStyle('A1:G1')->getFont()->setBold(true);
-
-            // Populate data
-            $row = 2;
-            foreach ($data as $sno => $item) {
-                $sheet->setCellValue('A' . $row, $sno + 1);
-                $sheet->setCellValue('B' . $row, $item['product_name']);
-                $sheet->setCellValue('C' . $row, $item['quantity']);
-                $sheet->setCellValue('D' . $row, 'Pcs'); // Assuming unit is Pcs, adjust if needed
-                $sheet->setCellValue('E' . $row, $item['price']);
-                $sheet->setCellValue('F' . $row, $item['category_name']);
-                $sheet->setCellValue('G' . $row, $item['brand_name']);
-                $row++;
-            }
-
-            // Auto-size columns
-            foreach (range('A', 'G') as $column) {
-                $sheet->getColumnDimension($column)->setAutoSize(true);
-            }
-
-            $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
-            $filename = 'stock_availability_' . date('YmdHis') . '.xlsx';
-
-            header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-            header('Content-Disposition: attachment;filename="' . $filename . '"');
-            header('Cache-Control: max-age=0');
-            $writer->save('php://output');
+            $this->export_xlsx($data);
         } elseif ($format == 'pdf') {
-
-            $html = '<h1 style="text-align: center;">Stock Availability Report</h1>';
-            $html .= '<table border="1" width="100%" cellpadding="5" cellspacing="0">';
-            $html .= '<thead><tr>';
-            $html .= '<th style="font-weight: bold;">SNo.</th>';
-            $html .= '<th style="font-weight: bold;">Item Name</th>';
-            $html .= '<th style="font-weight: bold;">Current Stock</th>';
-            $html .= '<th style="font-weight: bold;">Unit</th>';
-            $html .= '<th style="font-weight: bold;">Valuation</th>';
-            $html .= '<th style="font-weight: bold;">Category</th>';
-            $html .= '<th style="font-weight: bold;">Brand</th>';
-            $html .= '</tr></thead><tbody>';
-
-            foreach ($data as $sno => $item) {
-                $html .= '<tr>';
-                $html .= '<td>' . ($sno + 1) . '</td>';
-                $html .= '<td>' . $item['product_name'] . '</td>';
-                $html .= '<td>' . $item['quantity'] . '</td>';
-                $html .= '<td>Pcs</td>'; // Assuming unit is Pcs, adjust if needed
-                $html .= '<td>' . $item['price'] . '</td>';
-                $html .= '<td>' . $item['category_name'] . '</td>';
-                $html .= '<td>' . $item['brand_name'] . '</td>';
-                $html .= '</tr>';
-            }
-            $html .= '</tbody></table>';
-
-            $this->pdf->loadHtml($html);
-            $this->pdf->setPaper('A4', 'portrait');
-            $this->pdf->render();
-            $this->pdf->stream('stock_availability_' . date('YmdHis') . '.pdf', array('Attachment' => 0));
+            $this->export_pdf($data);
         }
     }
 
-    public function export_fast_moving_items($format)
+    private function export_xlsx($data)
     {
-        $data = $this->InventoryModel->get_fast_moving_items();
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
 
-        if ($format == 'xlsx') {
-            $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
-            $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setCellValue('A1', 'Product Name');
+        $sheet->setCellValue('B1', 'Quantity');
+        $sheet->setCellValue('C1', 'Price');
+        $sheet->setCellValue('D1', 'Valuation');
+        $sheet->setCellValue('E1', 'Category');
+        $sheet->setCellValue('F1', 'Brand');
+        $sheet->setCellValue('G1', 'Unit');
 
-            // Set headers
-            $headers = ['SNo.', 'Item Name', 'Total Sold'];
-            $sheet->fromArray($headers, NULL, 'A1');
-
-            // Make headers bold
-            $sheet->getStyle('A1:C1')->getFont()->setBold(true);
-
-            // Populate data
-            $row = 2;
-            foreach ($data as $sno => $item) {
-                $sheet->setCellValue('A' . $row, $sno + 1);
-                $sheet->setCellValue('B' . $row, $item['product_name']);
-                $sheet->setCellValue('C' . $row, $item['total_sold']);
-                $row++;
-            }
-
-            // Auto-size columns
-            foreach (range('A', 'C') as $column) {
-                $sheet->getColumnDimension($column)->setAutoSize(true);
-            }
-
-            $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
-            $filename = 'fast_moving_items_' . date('YmdHis') . '.xlsx';
-
-            header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-            header('Content-Disposition: attachment;filename="' . $filename . '"');
-            header('Cache-Control: max-age=0');
-            $writer->save('php://output');
-        } elseif ($format == 'pdf') {
-            $html = '<h1 style="text-align: center;">Fast Moving Items Report</h1>';
-            $html .= '<table border="1" width="100%" cellpadding="5" cellspacing="0">';
-            $html .= '<thead><tr>';
-            $html .= '<th style="font-weight: bold;">SNo.</th>';
-            $html .= '<th style="font-weight: bold;">Item Name</th>';
-            $html .= '<th style="font-weight: bold;">Total Sold</th>';
-            $html .= '</tr></thead><tbody>';
-
-            foreach ($data as $sno => $item) {
-                $html .= '<tr>';
-                $html .= '<td>' . ($sno + 1) . '</td>';
-                $html .= '<td>' . $item['product_name'] . '</td>';
-                $html .= '<td>' . $item['total_sold'] . '</td>';
-                $html .= '</tr>';
-            }
-            $html .= '</tbody></table>';
-
-            $this->pdf->loadHtml($html);
-            $this->pdf->setPaper('A4', 'portrait');
-            $this->pdf->render();
-            $this->pdf->stream('fast_moving_items_' . date('YmdHis') . '.pdf', array('Attachment' => 0));
+        $row = 2;
+        $total_valuation = 0;
+        foreach ($data as $item) {
+            $sheet->setCellValue('A' . $row, $item['product_name']);
+            $sheet->setCellValue('B' . $row, $item['quantity']);
+            $sheet->setCellValue('C' . $row, $item['price']);
+            $sheet->setCellValue('D' . $row, $item['valuation']);
+            $sheet->setCellValue('E' . $row, $item['category_name']);
+            $sheet->setCellValue('F' . $row, $item['brand_name']);
+            $sheet->setCellValue('G' . $row, $item['unit_name']);
+            $total_valuation += $item['valuation'];
+            $row++;
         }
+
+        $sheet->setCellValue('C' . ($row + 1), 'Total Valuation:');
+        $sheet->setCellValue('D' . ($row + 1), $total_valuation);
+
+        $writer = new Xlsx($spreadsheet);
+        $filename = 'stock_availability.xlsx';
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment; filename="' . $filename . '"');
+        $writer->save('php://output');
     }
 
-    public function export_items_not_moving($format)
+    private function export_pdf($data)
     {
-        $data = $this->InventoryModel->get_items_not_moving();
+        $options = new Options();
+        $options->set('isHtml5ParserEnabled', true);
+        $dompdf = new Dompdf($options);
 
-        if ($format == 'xlsx') {
-            $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
-            $sheet = $spreadsheet->getActiveSheet();
-
-            // Set headers
-            $headers = ['SNo.', 'Item Name', 'Current Stock'];
-            $sheet->fromArray($headers, NULL, 'A1');
-            
-            // Make headers bold
-            $sheet->getStyle('A1:C1')->getFont()->setBold(true);
-
-            // Populate data
-            $row = 2;
-            foreach ($data as $sno => $item) {
-                $sheet->setCellValue('A' . $row, $sno + 1);
-                $sheet->setCellValue('B' . $row, $item['product_name']);
-                $sheet->setCellValue('C' . $row, $item['quantity']);
-                $row++;
-            }
-
-            // Auto-size columns
-            foreach (range('A', 'C') as $column) {
-                $sheet->getColumnDimension($column)->setAutoSize(true);
-            }
-
-            $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
-            $filename = 'items_not_moving_' . date('YmdHis') . '.xlsx';
-
-            header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-            header('Content-Disposition: attachment;filename="' . $filename . '"');
-            header('Cache-Control: max-age=0');
-            $writer->save('php://output');
-        } elseif ($format == 'pdf') {
-            $html = '<h1 style="text-align: center;">Items Not Moving Report</h1>';
-            $html .= '<table border="1" width="100%" cellpadding="5" cellspacing="0">';
-            $html .= '<thead><tr>';
-            $html .= '<th style="font-weight: bold;">SNo.</th>';
-            $html .= '<th style="font-weight: bold;">Item Name</th>';
-            $html .= '<th style="font-weight: bold;">Current Stock</th>';
-            $html .= '</tr></thead><tbody>';
-
-            foreach ($data as $sno => $item) {
-                $html .= '<tr>';
-                $html .= '<td>' . ($sno + 1) . '</td>';
-                $html .= '<td>' . $item['product_name'] . '</td>';
-                $html .= '<td>' . $item['quantity'] . '</td>';
-                $html .= '</tr>';
-            }
-            $html .= '</tbody></table>';
-
-            $this->pdf->loadHtml($html);
-            $this->pdf->setPaper('A4', 'portrait');
-            $this->pdf->render();
-            $this->pdf->stream('items_not_moving_' . date('YmdHis') . '.pdf', array('Attachment' => 0));
+        $html = '<h1>Stock Availability</h1>';
+        $html .= '<table border="1" cellspacing="0" cellpadding="5">';
+        $html .= '<thead><tr><th>Product Name</th><th>Quantity</th><th>Price</th><th>Valuation</th><th>Category</th><th>Brand</th><th>Unit</th></tr></thead>';
+        $html .= '<tbody>';
+        $total_valuation = 0;
+        foreach ($data as $item) {
+            $html .= '<tr>';
+            $html .= '<td>' . $item['product_name'] . '</td>';
+            $html .= '<td>' . $item['quantity'] . '</td>';
+            $html .= '<td>' . $item['price'] . '</td>';
+            $html .= '<td>' . $item['valuation'] . '</td>';
+            $html .= '<td>' . $item['category_name'] . '</td>';
+            $html .= '<td>' . $item['brand_name'] . '</td>';
+            $html .= '<td>' . $item['unit_name'] . '</td>';
+            $html .= '</tr>';
+            $total_valuation += $item['valuation'];
         }
+        $html .= '</tbody>';
+        $html .= '<tfoot><tr><td colspan="3"></td><td>Total Valuation:</td><td colspan="3">' . $total_valuation . '</td></tr></tfoot>';
+        $html .= '</table>';
+
+        $dompdf->loadHtml($html);
+        $dompdf->setPaper('A4', 'landscape');
+        $dompdf->render();
+        $dompdf->stream('stock_availability.pdf', ['Attachment' => 1]);
     }
 }

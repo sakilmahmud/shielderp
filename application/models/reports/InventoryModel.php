@@ -39,7 +39,7 @@ class InventoryModel extends CI_Model
 
     private function _get_stock_query($searchValue, $category_id, $brand_id)
     {
-        $this->db->select('p.name as product_name, sm.available_stock as quantity, p.sale_price as price, c.name as category_name, b.brand_name, u.name as unit_name');
+        $this->db->select('p.name as product_name, SUM(sm.available_stock) as quantity, p.sale_price as price, (SUM(sm.available_stock) * p.sale_price) as valuation, c.name as category_name, b.brand_name, u.name as unit_name');
         $this->db->from('products p');
         $this->db->join('stock_management sm', 'p.id = sm.product_id');
         $this->db->join('categories c', 'c.id = p.category_id', 'left');
@@ -57,6 +57,9 @@ class InventoryModel extends CI_Model
         if ($brand_id) {
             $this->db->where('p.brand_id', $brand_id);
         }
+
+        $this->db->group_by('p.id');
+        $this->db->having('quantity >', 0);
     }
 
     public function get_stock_availability_ajax($start, $length, $searchValue, $category_id, $brand_id)
@@ -71,7 +74,13 @@ class InventoryModel extends CI_Model
 
     public function count_all_stock()
     {
-        return $this->db->count_all('products');
+        $this->db->select('p.id');
+        $this->db->from('products p');
+        $this->db->join('stock_management sm', 'p.id = sm.product_id');
+        $this->db->where('sm.available_stock >', 0);
+        $this->db->group_by('p.id');
+        $query = $this->db->get();
+        return $query->num_rows();
     }
 
     public function count_filtered_stock($searchValue, $category_id, $brand_id)

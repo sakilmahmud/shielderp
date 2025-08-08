@@ -1,17 +1,13 @@
 <div class="content-wrapper">
     <section class="content-header">
-        <div class="container-fluid">
-            <div class="row mb-2">
-                <div class="col-sm-6">
-                    <h1>Fast Moving Items</h1>
-                </div>
-                <div class="col-sm-6">
-                    <div class="btn-group float-sm-right">
-                        <a href="<?= base_url('admin/reports/inventory') ?>" class="btn btn-secondary" style="margin-right: 10px;">Back to Inventory Reports</a>
-                        <a href="<?= base_url('admin/reports/inventory/export_fast_moving_items/xlsx') ?>" class="btn btn-success" style="margin-right: 10px;">Export to XLSX</a>
-                        <a href="<?= base_url('admin/reports/inventory/export_fast_moving_items/pdf') ?>" class="btn btn-danger">Export to PDF</a>
-                    </div>
-                </div>
+        <div class="container-fluid d-flex justify-content-between align-items-center my-2">
+            <h2>Fast Moving Items</h2>
+            <div class="back">
+                <a href="<?= base_url('admin/reports/inventory') ?>" class="btn btn-secondary" style="margin-right: 10px;">Back to Inventory Reports</a>
+            </div>
+            <div class="export_items">
+                <a href="<?= base_url('admin/reports/inventory/export_fast_moving_items/xlsx') ?>" class="btn btn-info" style="margin-right: 10px;">Export to XLSX</a>
+                <a href="<?= base_url('admin/reports/inventory/export_fast_moving_items/pdf') ?>" class="btn btn-dark">Export to PDF</a>
             </div>
         </div>
     </section>

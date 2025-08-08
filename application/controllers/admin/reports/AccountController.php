@@ -15,7 +15,7 @@ class AccountController extends MY_Controller
 
     public function index()
     {
-        $data['activePage'] = 'accounts';
+        $data['activePage'] = 'report_accounts';
 
         $this->render_admin('admin/reports/accounts/index', $data);
     }

@@ -296,6 +296,7 @@ $route['doer/tasks'] = 'doer/tasks';
 
 
 /** Reports */
+$route['admin/reports'] = 'admin/ReportsController/index';
 $route['admin/reports/accounts'] = 'admin/reports/AccountController/index';
 $route['admin/reports/accounts/cashbook'] = 'admin/reports/AccountController/cashbook';
 $route['admin/reports/accounts/export_cashbook/(:any)'] = 'admin/reports/AccountController/export_cashbook/$1';
@@ -355,3 +356,17 @@ $route['admin/reports/inventory/fetch_stock_availability'] = 'admin/reports/Inve
 $route['admin/reports/inventory/export_stock_availability/(:any)'] = 'admin/reports/InventoryController/export_stock_availability/$1';
 $route['admin/reports/inventory/export_fast_moving_items/(:any)'] = 'admin/reports/InventoryController/export_fast_moving_items/$1';
 $route['admin/reports/inventory/export_items_not_moving/(:any)'] = 'admin/reports/InventoryController/export_items_not_moving/$1';
+
+$route['admin/reports/sales'] = 'admin/ReportsController/sales';
+$route['admin/reports/customers'] = 'admin/ReportsController/customers';
+$route['admin/reports/purchases'] = 'admin/ReportsController/purchases';
+$route['admin/reports/suppliers'] = 'admin/ReportsController/suppliers';
+$route['admin/reports/expenses'] = 'admin/ReportsController/expenses';
+$route['admin/reports/staff'] = 'admin/ReportsController/staff';
+
+$route['admin/reports/fetch_sales'] = 'admin/ReportsController/fetch_sales';
+$route['admin/reports/fetch_customers'] = 'admin/ReportsController/fetch_customers';
+$route['admin/reports/fetch_purchases'] = 'admin/ReportsController/fetch_purchases';
+$route['admin/reports/fetch_suppliers'] = 'admin/ReportsController/fetch_suppliers';
+$route['admin/reports/fetch_expenses'] = 'admin/ReportsController/fetch_expenses';
+$route['admin/reports/fetch_staff'] = 'admin/ReportsController/fetch_staff';

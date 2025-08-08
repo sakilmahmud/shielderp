@@ -1,17 +1,13 @@
 <div class="content-wrapper">
     <section class="content-header">
-        <div class="container-fluid">
-            <div class="row mb-2">
-                <div class="col-sm-6">
-                    <h1>Stock Availability</h1>
-                </div>
-                <div class="col-sm-6">
-                    <div class="btn-group float-sm-right">
-                        <a href="<?= base_url('admin/reports/inventory') ?>" class="btn btn-secondary" style="margin-right: 10px;">Back to Inventory Reports</a>
-                        <a href="<?= base_url('admin/reports/inventory/export_stock_availability/xlsx') ?>" class="btn btn-success" style="margin-right: 10px;">Export to XLSX</a>
-                        <a href="<?= base_url('admin/reports/inventory/export_stock_availability/pdf') ?>" class="btn btn-danger">Export to PDF</a>
-                    </div>
-                </div>
+        <div class="container-fluid d-flex justify-content-between align-items-center my-2">
+            <h2>Stock Availability</h2>
+            <div class="back">
+                <a href="<?= base_url('admin/reports/inventory') ?>" class="btn btn-secondary" style="margin-right: 10px;">Back to Inventory Reports</a>
+            </div>
+            <div class="export_items">
+                <a href="<?= base_url('admin/reports/inventory/export_stock_availability/xlsx') ?>" class="btn btn-info" style="margin-right: 10px;">Export to XLSX</a>
+                <a href="<?= base_url('admin/reports/inventory/export_stock_availability/pdf') ?>" class="btn btn-dark">Export to PDF</a>
             </div>
         </div>
     </section>
@@ -52,6 +48,7 @@
                                         <th>Product Name</th>
                                         <th>Quantity</th>
                                         <th>Price</th>
+                                        <th>Valuation</th>
                                         <th>Category</th>
                                         <th>Brand</th>
                                         <th>Unit</th>
@@ -81,13 +78,27 @@
                     d.brand_id = $('#brand_id').val();
                 }
             },
-            "columns": [
-                { "data": "product_name" },
-                { "data": "quantity" },
-                { "data": "price" },
-                { "data": "category_name" },
-                { "data": "brand_name" },
-                { "data": "unit_name" }
+            "columns": [{
+                    "data": "product_name"
+                },
+                {
+                    "data": "quantity"
+                },
+                {
+                    "data": "price"
+                },
+                {
+                    "data": "valuation"
+                },
+                {
+                    "data": "category_name"
+                },
+                {
+                    "data": "brand_name"
+                },
+                {
+                    "data": "unit_name"
+                }
             ],
             "pageLength": 50
         });
