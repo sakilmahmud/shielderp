@@ -13,13 +13,15 @@
                 <?php foreach ($due_suppliers as $sup): ?>
                     <tr>
                         <td>
-                            <a
-                                href="javascript:void(0)"
-                                class="ms-3 link-dark link-underline-opacity-100-hover"><?= $sup['name'] ?></a>
+                            <span class="sensitive-data">
+                                <a
+                                    href="javascript:void(0)"
+                                    class="ms-3 link-dark link-underline-opacity-100-hover"><?= $sup['name'] ?></a>
+                            </span>
                         </td>
-                        <td><small class="text-muted"><i class="far fa-calendar-alt"></i> Due: <?= date('d M Y', strtotime($sup['due_date'])) ?></small></td>
+                        <td><span class="sensitive-data"><small class="text-muted"><i class="far fa-calendar-alt"></i> Due: <?= date('d M Y', strtotime($sup['due_date'])) ?></small></span></td>
                         <td>
-                            <b class="">
+                            <b class="sensitive-data">
                                 ₹<?= number_format($sup['due_amount'], 2) ?>
                             </b>
                         </td>

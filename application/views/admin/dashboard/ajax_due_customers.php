@@ -12,13 +12,15 @@
                 <?php foreach ($due_customers as $cust): ?>
                     <tr>
                         <td>
-                            <a href="<?= base_url('admin/customers/show/' . $cust['c_id']) ?>"
-                                class="ms-3 link-dark link-underline-opacity-100-hover">
-                                <?= $cust['name'] ?></a>
+                            <span class="sensitive-data">
+                                <a href="<?= base_url('admin/customers/show/' . $cust['c_id']) ?>"
+                                    class="ms-3 link-dark link-underline-opacity-100-hover">
+                                    <?= $cust['name'] ?></a>
+                            </span>
                         </td>
-                        <td><?= $cust['mobile'] ?></td>
+                        <td><span class="sensitive-data"><?= $cust['mobile'] ?></span></td>
                         <td>
-                            <b>
+                            <b class="sensitive-data">
                                 ₹<?= number_format($cust['due_amount'], 2) ?>
                             </b>
                         </td>

@@ -1,4 +1,14 @@
+<style>
+    .sensitive-data {
+        display: none;
+    }
+    .hidden-data-placeholder::after {
+        content: '*****';
+        color: #ccc;
+    }
+</style>
 <!-- Chart -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <link rel="stylesheet" href="<?php echo base_url('assets/admin/css/calc.css/chart.min.css') ?>">
 <div class="container-fluid mt-3">
 
@@ -112,8 +122,9 @@
             <div class="card card-min-height card-success card-outline">
                 <div class="card-header d-flex justify-content-between">
                     <h3 class="card-title">Customer Due</h3>
+                    <a href="javascript:void(0)" class="text-dark toggle-datatable" data-target="#ajax-customer-due-content"><i class="fa fa-eye"></i></a>
                     <h3 class="ms-3 badge text-bg-dark">
-                        ₹<?= round($total_customer_due ?? 0) ?>
+                        <span class="sensitive-data">₹<?= round($total_customer_due ?? 0) ?></span>
                     </h3>
                 </div>
                 <!-- /.card-header -->
@@ -138,8 +149,9 @@
             <div class="card card-min-height card-danger card-outline">
                 <div class="card-header d-flex justify-content-between">
                     <h3 class="card-title">Suppliers Due</h3>
+                    <a href="javascript:void(0)" class="text-dark toggle-datatable" data-target="#ajax-supplier-due-content"><i class="fa fa-eye"></i></a>
                     <h3 class="ms-3 badge text-bg-dark">
-                        ₹<?= round($total_supplier_due ?? 0) ?>
+                        <span class="sensitive-data">₹<?= round($total_supplier_due ?? 0) ?></span>
                     </h3>
                 </div>
                 <!-- /.card-header -->
@@ -214,6 +226,9 @@
     <div class="row mt-3">
         <div class="col-md-8">
             <div class="card">
+                <div class="card-title p-2">
+                    <h4>Montly Sales vs Purchase</h4>
+                </div>
                 <div class="card-body">
                     <canvas id="salesChart" height="140"></canvas>
                 </div>
@@ -221,6 +236,9 @@
         </div>
         <div class="col-md-4">
             <div class="card">
+                <div class="card-title p-2">
+                    <h4>Top Selling Categories</h4>
+                </div>
                 <div class="card-body">
                     <canvas id="categorySalesChart" height="300"></canvas>
                 </div>
@@ -304,6 +322,8 @@ foreach ($top_categories as $cat) {
 
             $.get('<?= base_url('admin/dashboard/due_customers') ?>', function(data) {
                 $('#ajax-customer-due-content').html(data);
+                $('#ajax-customer-due-content').find('.sensitive-data').hide();
+                $('#ajax-customer-due-content').find('td:has(.sensitive-data)').addClass('hidden-data-placeholder');
             });
         }
 
@@ -319,6 +339,8 @@ foreach ($top_categories as $cat) {
                 `);
             $.get('<?= base_url('admin/dashboard/due_suppliers') ?>', function(data) {
                 $('#ajax-supplier-due-content').html(data);
+                $('#ajax-supplier-due-content').find('.sensitive-data').hide();
+                $('#ajax-supplier-due-content').find('td:has(.sensitive-data)').addClass('hidden-data-placeholder');
             });
         }
     });
@@ -341,5 +363,46 @@ foreach ($top_categories as $cat) {
                 $('#markAsDoneBtn').attr('href', '<?= base_url('admin/reminder/done/') ?>' + reminder.id);
             });
         });
+    });
+</script>
+<script>
+    $(document).ready(function() {
+
+        $(document).on('click', '.toggle-datatable', function(e) {
+            e.preventDefault();
+            var target = $(this).data('target');
+            var tableSensitiveData = $(target).find('.sensitive-data');
+            var headerSensitiveData = $(this).closest('.card').find('.card-header .sensitive-data');
+
+            // Toggle table data
+            tableSensitiveData.toggle();
+            tableSensitiveData.each(function() {
+                if ($(this).is(':visible')) {
+                    $(this).parent().removeClass('hidden-data-placeholder');
+                } else {
+                    $(this).parent().addClass('hidden-data-placeholder');
+                }
+            });
+
+            // Toggle header data
+            headerSensitiveData.toggle();
+            if(headerSensitiveData.is(':visible')) {
+                headerSensitiveData.parent().removeClass('hidden-data-placeholder');
+            } else {
+                headerSensitiveData.parent().addClass('hidden-data-placeholder');
+            }
+
+            var icon = $(this).find('i');
+            if (icon.hasClass('fa-eye')) {
+                icon.removeClass('fa-eye').addClass('fa-eye-slash');
+            } else {
+                icon.removeClass('fa-eye-slash').addClass('fa-eye');
+            }
+        });
+
+        // Initially hide the sensitive data
+        $('.sensitive-data').hide();
+        $('h3:has(.sensitive-data)').addClass('hidden-data-placeholder');
+
     });
 </script>
