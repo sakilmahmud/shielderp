@@ -1,0 +1,43 @@
+GitHub Multi-Remote Setup (Manual Push)
+===================================
+
+This setup keeps "gcshop" as the main repo, and allows manual push to "shielderp".
+
+------------------------------------------------
+Step 1: Go to your existing local repo (gcshop)
+------------------------------------------------
+cd gcshop
+
+------------------------------------------------
+Step 2: Add second repo as a remote (shielderp)
+------------------------------------------------
+git remote add shield https://github.com/sakilmahmud/shielderp.git
+
+------------------------------------------------
+Step 3: Verify remotes
+------------------------------------------------
+git remote -v
+
+Expected output:
+origin  https://github.com/sakilmahmud/gcshop.git (fetch)
+origin  https://github.com/sakilmahmud/gcshop.git (push)
+shield  https://github.com/sakilmahmud/shielderp.git (fetch)
+shield  https://github.com/sakilmahmud/shielderp.git (push)
+
+------------------------------------------------
+Step 4: Daily usage
+------------------------------------------------
+# Push changes to main repo (gcshop)
+git add .
+git commit -m "your changes"
+git push origin main
+
+# Push to second repo (shielderp) only when you want (weekly or later)
+git push shield main
+
+------------------------------------------------
+Notes:
+------------------------------------------------
+- 'origin' = gcshop (main repo)
+- 'shield' = shielderp (secondary repo)
+- You control when to update shielderp by running "git push shield main".

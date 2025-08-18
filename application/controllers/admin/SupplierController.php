@@ -26,6 +26,7 @@ class SupplierController extends MY_Controller
     {
         $data['activePage'] = 'suppliers';
         $this->load->model('StateModel');
+        $this->load->model('SettingsModel');
         $data['states'] = $this->StateModel->get_all_states();
         $data['company_state'] = $this->SettingsModel->get_setting('company_state');
 
